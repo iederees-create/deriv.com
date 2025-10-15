@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Deriv-style Landing</title>
+  <title>Online broker for trading anytime, anywhere | Deriv</title>
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -172,5 +172,109 @@
     />
   </section>
 
+<!-- ================= TRUSTPILOT SECTION ================= -->
+<section class="trustpilot">
+  <style>
+    .trustpilot {
+      background: #181a1e;
+      padding: 16px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .trustpilot-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 14px;
+    }
+
+    .trustpilot .stars {
+      display: flex;
+      gap: 2px;
+    }
+
+    .trustpilot .star {
+      width: 18px;
+      height: 18px;
+      background: #00b67a;
+      clip-path: polygon(
+        50% 0%,
+        63% 38%,
+        100% 38%,
+        69% 59%,
+        82% 100%,
+        50% 75%,
+        18% 100%,
+        31% 59%,
+        0% 38%,
+        37% 38%
+      );
+    }
+
+    .trustpilot .star.half {
+      background: linear-gradient(
+        to right,
+        #00b67a 50%,
+        #333 50%
+      );
+    }
+
+    .trustpilot .trust-text {
+      color: #d0d0d0;
+      margin: 0;
+    }
+
+    .trustpilot .trust-logo {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 8px;
+    }
+
+    .trustpilot .trust-star {
+      color: #00b67a;
+      font-size: 16px;
+    }
+
+    .trustpilot .trust-name {
+      font-weight: 600;
+      color: #00b67a;
+      letter-spacing: 0.2px;
+    }
+  </style>
+
+  <div class="trustpilot-inner">
+    <!-- Star rating -->
+    <div class="stars">
+      <div class="star filled"></div>
+      <div class="star filled"></div>
+      <div class="star filled"></div>
+      <div class="star filled"></div>
+      <div class="star half"></div>
+    </div>
+
+    <!-- Text -->
+    <p class="trust-text">
+      4.4 out of 5 based on <strong>68,061 reviews</strong>
+    </p>
+
+    <!-- Trustpilot logo -->
+    <div class="trust-logo">
+      <span class="trust-star">★</span>
+      <span class="trust-name">Trustpilot</span>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+  
 </body>
 </html>
