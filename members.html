@@ -112,7 +112,6 @@
       cursor: pointer;
       width: 100%;
     }
-
   </style>
 </head>
 
@@ -129,23 +128,18 @@
     <!-- CASHIER -->
     <div class="cashier-box">
       <h1>Cashier</h1>
-
       <p>Your available balance:</p>
       <div id="balance" class="balance">R 0.00</div>
-
       <p style="max-width:600px; line-height:1.5;">
         Add funds to your Raversus wallet and use it to join syndicates or subscribe to premium services.
         Deposits reflect instantly and are safely stored in your protected member account.
       </p>
-
       <button class="deposit-btn" onclick="alert('Deposit integration coming soon')">Make a Deposit</button>
     </div>
 
     <!-- PRODUCTS -->
     <h1>Investment Options</h1>
-
     <div class="product-grid">
-
       <div class="card">
         <h2>Weekly Trade Syndicate – R1500</h2>
         <p>Fast-return trading pool managed by experts. Earn weekly returns based on real trading performance.</p>
@@ -166,7 +160,6 @@
         <p><strong>Minimum: R2000</strong></p>
         <button class="buy-btn" onclick="buyProduct('Monthly Syndicate', 2000)">Join Monthly Syndicate</button>
       </div>
-
     </div>
 
   </div>
@@ -183,7 +176,10 @@
 
     async function loadUser() {
       const { data } = await supabaseClient.auth.getUser();
-      if (!data.user) window.location.href = "/index.html";
+      if (!data.user) {
+        window.location.href = "/deriv.com/index.html";
+        return;
+      }
       currentUser = data.user;
 
       await ensureBalanceRow();
@@ -227,14 +223,12 @@
         return;
       }
 
-      // Store purchase
       await supabaseClient.from("purchases").insert({
         user_id: currentUser.id,
         product_name: name,
         amount: cost
       });
 
-      // Deduct balance
       await supabaseClient
         .from("user_balances")
         .update({ balance: bal.balance - cost })
@@ -246,9 +240,10 @@
 
     async function logout() {
       await supabaseClient.auth.signOut();
-      window.location.href = "/index.html";
+      window.location.href = "/deriv.com/index.html";
     }
 
+    // Initialize on load
     loadUser();
   </script>
 
