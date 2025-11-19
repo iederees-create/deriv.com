@@ -113,7 +113,6 @@
     }
   </style>
 </head>
-
 <body>
 
   <section class="hero">
@@ -135,7 +134,7 @@
           <div class="item">Partners <span class="ext">↗</span></div>
         </nav>
 
-        <!-- Right: Lang + Login Buttons -->
+        <!-- Right: Lang + Buttons -->
         <div class="right">
           <span class="lang">
             <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -154,7 +153,7 @@
       </div>
     </div>
 
-    <!-- Hero Text -->
+    <!-- Hero copy -->
     <div class="hero-inner">
       <div class="kicker">Trading for</div>
       <h1 class="headline">Anyone</h1>
@@ -252,7 +251,6 @@
   </style>
 
   <div class="trustpilot-inner">
-    <!-- Star rating -->
     <div class="stars">
       <div class="star filled"></div>
       <div class="star filled"></div>
@@ -261,12 +259,10 @@
       <div class="star half"></div>
     </div>
 
-    <!-- Text -->
     <p class="trust-text">
       4.4 out of 5 based on <strong>68,061 reviews</strong>
     </p>
 
-    <!-- Trustpilot logo -->
     <div class="trust-logo">
       <span class="trust-star">★</span>
       <span class="trust-name">Trustpilot</span>
@@ -284,7 +280,7 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
   );
 
-  // Google Login
+  // Google Login function
   async function loginWithGoogle() {
     const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: "google",
@@ -297,6 +293,13 @@
       alert("Google Login Failed");
     }
   }
+
+  // Handle OAuth redirect & auto-redirect to members.html
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      window.location.href = "/members.html";
+    }
+  });
 </script>
 
 </body>
