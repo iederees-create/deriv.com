@@ -1,699 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Trader's Hub – Members Area</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Member Dashboard | Raversus Syndicates</title>
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --bg: #f5f7fb;
-      --card-bg:#ffffff;
-      --border:#e3e6ef;
-      --text-main:#15171f;
-      --text-muted:#6b7280;
-      --brand:#ff444f;
-      --brand-soft:#ffe3e6;
-      --green:#00a79e;
-      --shadow-soft:0 8px 24px rgba(15,23,42,0.08);
-      --radius-lg:16px;
-      --radius-pill:999px;
-      --nav-height:64px;
-      --maxw:1120px;
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f5f6f8;
+      color: #1a1a1a;
     }
 
-    *{ box-sizing:border-box; }
-
-    body{
-      margin:0;
-      padding:0;
-      font-family:'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:var(--bg);
-      color:var(--text-main);
+    .header {
+      background: #ffffff;
+      padding: 16px 24px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    /* ============ TOP APP BAR ============ */
-    .app-topbar{
-      height:var(--nav-height);
-      background:#ffffff;
-      border-bottom:1px solid #e5e7eb;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .app-topbar-inner{
-      width:100%;
-      max-width:var(--maxw);
-      padding:0 24px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-    }
-    .top-left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .logo-circle{
-      width:32px;
-      height:32px;
-      border-radius:50%;
-      background:var(--brand);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#fff;
-      font-weight:800;
-      font-size:18px;
-    }
-    .brand-text{
-      font-weight:700;
-      font-size:18px;
-    }
-    .top-right{
-      display:flex;
-      align-items:center;
-      gap:16px;
-    }
-    .icon-pill{
-      width:32px;
-      height:32px;
-      border-radius:999px;
-      border:1px solid #e5e7eb;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:#fff;
-      cursor:pointer;
-      font-size:14px;
-    }
-    .user-chip{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      padding:4px 10px;
-      border-radius:999px;
-      background:#f3f4f6;
-      font-size:13px;
-      color:var(--text-muted);
-    }
-    .user-avatar{
-      width:26px;
-      height:26px;
-      border-radius:999px;
-      background:#111827;
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:13px;
-      font-weight:600;
-      text-transform:uppercase;
-    }
-    .logout-btn{
-      border:none;
-      background:#fee2e2;
-      color:#b91c1c;
-      font-size:12px;
-      font-weight:600;
-      padding:6px 10px;
-      border-radius:999px;
-      cursor:pointer;
-    }
-    .logout-btn:hover{
-      background:#fecaca;
+    .logout-btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: #ff4459;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
     }
 
-    /* ============ MAIN LAYOUT ============ */
-    .page-wrap{
-      width:100%;
-      min-height:calc(100vh - var(--nav-height));
-      display:flex;
-      justify-content:center;
-      padding:24px 16px 40px;
-    }
-    .page-inner{
-      width:100%;
-      max-width:var(--maxw);
-      display:flex;
-      gap:20px;
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 16px;
     }
 
-    /* Sidebar (left) */
-    .sidebar{
-      width:220px;
-      min-width:200px;
-      background:#ffffff;
-      border-radius:var(--radius-lg);
-      box-shadow:var(--shadow-soft);
-      padding:16px 14px;
-      height:fit-content;
-    }
-    .menu-title{
-      font-size:12px;
-      font-weight:600;
-      color:#9ca3af;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      margin-bottom:8px;
-      padding:0 6px;
-    }
-    .menu-list{
-      list-style:none;
-      margin:0;
-      padding:0;
-    }
-    .menu-item{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:8px 10px;
-      border-radius:10px;
-      font-size:14px;
-      cursor:pointer;
-      color:#4b5563;
-      margin-bottom:2px;
-    }
-    .menu-item span{
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .menu-item .bullet{
-      width:6px;
-      height:6px;
-      border-radius:999px;
-      background:#d1d5db;
-    }
-    .menu-item.active{
-      background:#fef2f2;
-      color:var(--brand);
-    }
-    .menu-item.active .bullet{
-      background:var(--brand);
-    }
-    .menu-item:hover{
-      background:#f3f4f6;
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      font-weight: 800;
     }
 
-    /* Content Area */
-    .content{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      gap:16px;
+    .cashier-box {
+      background: #fff;
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      margin-bottom: 35px;
     }
 
-    .content-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:16px;
-    }
-    .title-block h1{
-      margin:0 0 4px;
-      font-size:24px;
-      font-weight:700;
-    }
-    .title-block .mode-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:4px 10px;
-      font-size:12px;
-      background:#ecfdf5;
-      border-radius:999px;
-      color:#047857;
-      font-weight:600;
-      border:1px solid #bbf7d0;
-      cursor:pointer;
-    }
-    .mode-pill span.badge{
-      padding:2px 8px;
-      border-radius:999px;
-      background:#047857;
-      color:#fff;
-      font-size:11px;
-      font-weight:600;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-    }
-    .title-sub{
-      font-size:13px;
-      color:#6b7280;
-      margin-top:6px;
+    .balance {
+      font-size: 36px;
+      font-weight: 900;
+      margin: 10px 0;
     }
 
-    .balance-card{
-      background:#ffffff;
-      border-radius:var(--radius-lg);
-      box-shadow:var(--shadow-soft);
-      padding:12px 16px;
-      min-width:220px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .balance-left span.label{
-      font-size:11px;
-      text-transform:uppercase;
-      color:#9ca3af;
-      letter-spacing:.08em;
-    }
-    .balance-amount{
-      margin-top:4px;
-      font-size:22px;
-      font-weight:700;
-    }
-    .balance-currency{
-      margin-top:2px;
-      font-size:12px;
-      color:#6b7280;
-    }
-    .balance-status-pill{
-      padding:4px 10px;
-      border-radius:999px;
-      border:1px solid #d1d5db;
-      font-size:12px;
-      color:#374151;
-      background:#f9fafb;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-    }
-    .balance-status-dot{
-      width:8px;
-      height:8px;
-      border-radius:999px;
-      background:#22c55e;
-    }
-    .balance-btn{
-      margin-top:8px;
-      padding:6px 12px;
-      border-radius:999px;
-      background:var(--brand);
-      color:#fff;
-      border:none;
-      font-size:12px;
-      font-weight:600;
-      cursor:pointer;
-    }
-    .balance-btn:hover{
-      background:#ff5b5b;
+    .deposit-btn {
+      padding: 12px 18px;
+      background: #ff4459;
+      color: white;
+      border-radius: 8px;
+      font-weight: 700;
+      margin-top: 8px;
+      cursor: pointer;
+      border: none;
     }
 
-    /* Sections */
-    .section-card{
-      background:#ffffff;
-      border-radius:var(--radius-lg);
-      padding:16px 18px 18px;
-      box-shadow:var(--shadow-soft);
-    }
-    .section-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:12px;
-    }
-    .section-title{
-      font-size:16px;
-      font-weight:600;
-    }
-    .section-subtext{
-      font-size:13px;
-      color:#6b7280;
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 24px;
+      margin-top: 20px;
     }
 
-    .products-grid{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:14px;
-      margin-top:6px;
-    }
-    .product-card{
-      border-radius:14px;
-      border:1px solid var(--border);
-      padding:12px 12px 12px;
-      background:#ffffff;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .product-badge{
-      width:32px;
-      height:32px;
-      border-radius:9px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      font-size:14px;
-      color:#fff;
-      background:var(--brand);
-    }
-    .product-badge.blue{ background:#312e81; }
-    .product-badge.green{ background:#047857; }
-    .product-badge.purple{ background:#6b21a8; }
-
-    .product-title{
-      margin-top:6px;
-      font-weight:600;
-      font-size:14px;
-    }
-    .product-desc{
-      font-size:12px;
-      color:#6b7280;
-      line-height:1.4;
-      min-height:32px;
-    }
-    .product-footer{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-top:4px;
-    }
-    .product-cta{
-      padding:6px 12px;
-      border-radius:999px;
-      border:none;
-      background:var(--brand);
-      color:#fff;
-      font-size:12px;
-      font-weight:600;
-      cursor:pointer;
-    }
-    .product-cta:hover{
-      background:#ff5b5b;
-    }
-    .product-tag{
-      font-size:11px;
-      color:#9ca3af;
+    .card {
+      background: #fff;
+      padding: 22px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
-    /* Responsive */
-    @media (max-width: 960px){
-      .page-inner{
-        flex-direction:column;
-      }
-      .sidebar{
-        width:100%;
-        display:flex;
-        flex-wrap:wrap;
-        gap:4px;
-      }
-      .menu-title{
-        width:100%;
-      }
-      .menu-item{
-        flex:1 1 120px;
-      }
-      .content-header{
-        flex-direction:column;
-        align-items:stretch;
-      }
-      .balance-card{
-        width:100%;
-      }
-      .products-grid{
-        grid-template-columns:repeat(2, minmax(0,1fr));
-      }
+    .card h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: #111;
     }
-    @media (max-width: 640px){
-      .app-topbar-inner{
-        padding:0 12px;
-      }
-      .page-wrap{
-        padding:16px 10px 32px;
-      }
-      .sidebar{
-        padding:10px;
-      }
-      .products-grid{
-        grid-template-columns:1fr;
-      }
+
+    .card p {
+      margin: 12px 0;
+      line-height: 1.5;
+      color: #444;
     }
+
+    .buy-btn {
+      margin-top: 12px;
+      padding: 12px 18px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+
   </style>
+</head>
 
-  <!-- ⚡️ EARLY AUTH SCRIPT — MUST RUN BEFORE DOM LOADS -->
-  <script type="module">
-    // Load Supabase early
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+<body>
 
-    const supabaseClient = createClient(
+  <!-- HEADER -->
+  <div class="header">
+    <div style="font-size:20px; font-weight:800;">Raversus Members Area</div>
+    <button class="logout-btn" onclick="logout()">Log out</button>
+  </div>
+
+  <div class="container">
+
+    <!-- CASHIER -->
+    <div class="cashier-box">
+      <h1>Cashier</h1>
+
+      <p>Your available balance:</p>
+      <div id="balance" class="balance">R 0.00</div>
+
+      <p style="max-width:600px; line-height:1.5;">
+        Add funds to your Raversus wallet and use it to join syndicates or subscribe to premium services.
+        Deposits reflect instantly and are safely stored in your protected member account.
+      </p>
+
+      <button class="deposit-btn" onclick="alert('Deposit integration coming soon')">Make a Deposit</button>
+    </div>
+
+    <!-- PRODUCTS -->
+    <h1>Investment Options</h1>
+
+    <div class="product-grid">
+
+      <div class="card">
+        <h2>Weekly Trade Syndicate – R1500</h2>
+        <p>Fast-return trading pool managed by experts. Earn weekly returns based on real trading performance.</p>
+        <p><strong>Minimum: R1500</strong></p>
+        <button class="buy-btn" onclick="buyProduct('Weekly Trade Syndicate', 1500)">Join Weekly Syndicate</button>
+      </div>
+
+      <div class="card">
+        <h2>WhatsApp Signals Group</h2>
+        <p>Ask for signals on any chart and get expert guidance anytime.</p>
+        <p><strong>Monthly Subscription</strong></p>
+        <button class="buy-btn" onclick="buyProduct('Signals Group', 300)">Join Signals Group</button>
+      </div>
+
+      <div class="card">
+        <h2>Monthly Syndicate – R2000</h2>
+        <p>Stable long-term investment with steady monthly returns.</p>
+        <p><strong>Minimum: R2000</strong></p>
+        <button class="buy-btn" onclick="buyProduct('Monthly Syndicate', 2000)">Join Monthly Syndicate</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
       "https://whnnyuozicuphrpgomno.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
     );
 
-    // ✅ Process OAuth hash IMMEDIATELY
-    const {  { session }, error } = await supabaseClient.auth.getSession();
+    let currentUser = null;
 
-    if (error) {
-      console.error('Auth init error:', error);
+    async function loadUser() {
+      const { data } = await supabaseClient.auth.getUser();
+      if (!data.user) window.location.href = "/index.html";
+      currentUser = data.user;
+
+      await ensureBalanceRow();
+      await loadBalance();
     }
 
-    // Now check user
-    const {  { user } } = await supabaseClient.auth.getUser();
+    async function ensureBalanceRow() {
+      const { data: existing } = await supabaseClient
+        .from("user_balances")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
 
-    if (!user) {
-      // Not logged in — go home
-      window.location.href = '/';
-    } else {
-      // Wait for DOM to update UI
-      document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('user-email').textContent = user.email || 'No email';
-        const initial = user.email ? user.email.charAt(0).toUpperCase() : 'U';
-        document.getElementById('user-avatar').textContent = initial;
+      if (!existing) {
+        await supabaseClient.from("user_balances").insert({
+          id: currentUser.id,
+          balance: 0
+        });
+      }
+    }
+
+    async function loadBalance() {
+      const { data } = await supabaseClient
+        .from("user_balances")
+        .select("balance")
+        .eq("id", currentUser.id)
+        .single();
+
+      document.getElementById("balance").innerText = "R " + Number(data.balance).toFixed(2);
+    }
+
+    async function buyProduct(name, cost) {
+      const { data: bal } = await supabaseClient
+        .from("user_balances")
+        .select("balance")
+        .eq("id", currentUser.id)
+        .single();
+
+      if (bal.balance < cost) {
+        alert("Insufficient balance. Please deposit funds.");
+        return;
+      }
+
+      // Store purchase
+      await supabaseClient.from("purchases").insert({
+        user_id: currentUser.id,
+        product_name: name,
+        amount: cost
       });
+
+      // Deduct balance
+      await supabaseClient
+        .from("user_balances")
+        .update({ balance: bal.balance - cost })
+        .eq("id", currentUser.id);
+
+      alert("Purchase successful: " + name);
+      await loadBalance();
     }
 
-    // Attach logout globally
-    window.logout = async () => {
+    async function logout() {
       await supabaseClient.auth.signOut();
-      window.location.href = '/';
-    };
+      window.location.href = "/index.html";
+    }
+
+    loadUser();
   </script>
-</head>
-<body>
-
-<!-- ============ TOP BAR ============ -->
-<header class="app-topbar">
-  <div class="app-topbar-inner">
-    <div class="top-left">
-      <div class="logo-circle">d</div>
-      <div class="brand-text">Trader's Hub</div>
-    </div>
-
-    <div class="top-right">
-      <div class="icon-pill" title="Notifications">🔔</div>
-      <div class="icon-pill" title="Cashier">💳</div>
-      <div class="user-chip">
-        <div class="user-avatar" id="user-avatar">U</div>
-        <span id="user-email">Loading…</span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-      </div>
-    </div>
-  </div>
-</header>
-
-<!-- ============ MAIN ============ -->
-<main class="page-wrap">
-  <div class="page-inner">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="menu-title">Menu</div>
-      <ul class="menu-list">
-        <li class="menu-item active"><span><span class="bullet"></span>Trader's Hub</span> ▸</li>
-        <li class="menu-item"><span><span class="bullet"></span>Cashier</span></li>
-        <li class="menu-item"><span><span class="bullet"></span>Reports</span></li>
-        <li class="menu-item"><span><span class="bullet"></span>Strategies</span></li>
-        <li class="menu-item"><span><span class="bullet"></span>Account Settings</span></li>
-      </ul>
-    </aside>
-
-    <!-- Content -->
-    <section class="content">
-      <!-- Header row -->
-      <div class="content-header">
-        <div class="title-block">
-          <h1>Trader's Hub</h1>
-          <button class="mode-pill">
-            <span class="badge">Real</span>
-            <span>Switch to demo</span>
-          </button>
-          <div class="title-sub">
-            Quickly access your favourite platforms, tools, and trading accounts in one place.
-          </div>
-        </div>
-
-        <div class="balance-card">
-          <div class="balance-left">
-            <span class="label">Total assets</span>
-            <div class="balance-amount">0.05 USD</div>
-            <div class="balance-currency">USD wallet</div>
-          </div>
-          <div style="text-align:right;">
-            <div class="balance-status-pill">
-              <span class="balance-status-dot"></span>
-              Active account
-            </div>
-            <button class="balance-btn">Deposit</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Options section -->
-      <div class="section-card">
-        <div class="section-header">
-          <div>
-            <div class="section-title">Options</div>
-            <div class="section-subtext">
-              Predict the market, profit if you’re right, risk only what you put in.
-            </div>
-          </div>
-        </div>
-
-        <div class="products-grid">
-          <!-- Deriv Trader -->
-          <article class="product-card">
-            <div>
-              <div class="product-badge">DT</div>
-              <div class="product-title">Deriv Trader</div>
-              <div class="product-desc">
-                The options and multipliers trading platform.
-              </div>
-            </div>
-            <div class="product-footer">
-              <button class="product-cta">Open</button>
-              <span class="product-tag">Web platform</span>
-            </div>
-          </article>
-
-          <!-- Deriv Bot -->
-          <article class="product-card">
-            <div>
-              <div class="product-badge red">DB</div>
-              <div class="product-title">Deriv Bot</div>
-              <div class="product-desc">
-                Build automated strategies with a visual bot builder.
-              </div>
-            </div>
-            <div class="product-footer">
-              <button class="product-cta">Open</button>
-              <span class="product-tag">Automation</span>
-            </div>
-          </article>
-
-          <!-- Deriv GO -->
-          <article class="product-card">
-            <div>
-              <div class="product-badge green">GO</div>
-              <div class="product-title">Deriv GO</div>
-              <div class="product-desc">
-                Mobile app for trading multipliers and options on the go.
-              </div>
-            </div>
-            <div class="product-footer">
-              <button class="product-cta">Open</button>
-              <span class="product-tag">Mobile</span>
-            </div>
-          </article>
-
-          <!-- SmartTrader -->
-          <article class="product-card">
-            <div>
-              <div class="product-badge blue">ST</div>
-              <div class="product-title">SmartTrader</div>
-              <div class="product-desc">
-                The legacy options trading platform for advanced users.
-              </div>
-            </div>
-            <div class="product-footer">
-              <button class="product-cta">Open</button>
-              <span class="product-tag">Legacy</span>
-            </div>
-          </article>
-        </div>
-      </div>
-
-      <!-- CFDs section -->
-      <div class="section-card">
-        <div class="section-header">
-          <div>
-            <div class="section-title">CFDs</div>
-            <div class="section-subtext">
-              Trade bigger positions with less capital on a wide range of markets.
-            </div>
-          </div>
-        </div>
-
-        <div class="products-grid">
-          <article class="product-card">
-            <div>
-              <div class="product-badge purple">DX</div>
-              <div class="product-title">CFD Platform</div>
-              <div class="product-desc">
-                Trade CFDs on forex, indices, commodities, and more with leverage.
-              </div>
-            </div>
-            <div class="product-footer">
-              <button class="product-cta">Open</button>
-              <span class="product-tag">CFD</span>
-            </div>
-          </article>
-
-          <article class="product-card">
-            <div>
-              <div class="product-badge green">MT</div>
-              <div class="product-title">MT5</div>
-              <div class="product-desc">
-                Multi-asset platform for experienced traders seeking depth and tools.
-              </div>
-            </div>
-            <div class="product-footer">
-              <button class="product-cta">Open</button>
-              <span class="product-tag">MetaTrader</span>
-            </div>
-          </article>
-
-          <article class="product-card">
-            <div>
-              <div class="product-badge">SP</div>
-              <div class="product-title">Synthetic Indices</div>
-              <div class="product-desc">
-                Trade 24/7 on proprietary synthetic indices that mimic market behaviour.
-              </div>
-            </div>
-            <div class="product-footer">
-              <button class="product-cta">Open</button>
-              <span class="product-tag">Synthetic</span>
-            </div>
-          </article>
-
-          <article class="product-card">
-            <div>
-              <div class="product-badge">ED</div>
-              <div class="product-title">Education Hub</div>
-              <div class="product-desc">
-                Access guides, courses, and strategies to sharpen your trading skills.
-              </div>
-            </div>
-            <div class="product-footer">
-              <button class="product-cta">Open</button>
-              <span class="product-tag">Learn</span>
-            </div>
-          </article>
-        </div>
-      </div>
-
-    </section>
-  </div>
-</main>
 
 </body>
 </html>
