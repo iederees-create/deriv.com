@@ -56,6 +56,7 @@
       display:flex; align-items:center; justify-content:space-between; gap:16px;
       box-shadow:0 2px 12px rgba(0,0,0,.35);
     }
+
     .logo-row{display:flex;align-items:center;gap:10px;}
     .logo-row img{ height:22px; width:auto; display:block; }
     .years{ color:#3dd6ff; font-weight:700; font-size:12px; white-space:nowrap; }
@@ -86,195 +87,58 @@
     .sub{ margin-top:14px; max-width:780px; color:var(--muted); font-size:16px; line-height:1.6; }
     .hero-cta{ margin-top:28px; }
 
-    /* ===== PERSON ON RIGHT ===== */
-    .person{
-      position:absolute; right:min(3vw, 32px); bottom:0;
-      height:min(88vh, 760px); width:auto; z-index:1; object-fit:contain;
-      pointer-events:none;
-    }
-
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 1100px){
-      .person{ height:72vh; right:16px; opacity:.95; }
-    }
     @media (max-width: 900px){
       .nav{ display:none; }
       .years{ display:none; }
-      .person{ height:56vh; right:8px; opacity:.9; }
-      .kicker{ font-size:24px; }
-    }
-    @media (max-width: 560px){
-      .hero{ padding:12px; }
-      .header{ border-radius:24px; }
-      .person{ display:none; }
-      .hero-inner{ margin-top:36px; }
-      .headline{ font-size:clamp(44px, 12vw, 64px); }
-      .sub{ font-size:15px; }
     }
   </style>
 </head>
 <body>
 
   <section class="hero">
-    <!-- Header -->
     <div class="header-wrap">
       <div class="header">
-        <!-- Left: Logo -->
         <div class="logo-row">
           <img src="images/deriv-removebg-preview.png" alt="Deriv logo"/>
           <span class="years">25 years</span>
         </div>
 
-        <!-- Middle: Nav -->
-        <nav class="nav" aria-label="Primary">
-          <div class="item">Trading <span class="chev">⌄</span></div>
-          <div class="item">Platforms <span class="chev">⌄</span></div>
-          <div class="item">Learning &amp; support <span class="chev">⌄</span></div>
-          <div class="item">About <span class="chev">⌄</span></div>
-          <div class="item">Partners <span class="ext">↗</span></div>
+        <nav class="nav">
+          <div class="item">Trading ⌄</div>
+          <div class="item">Platforms ⌄</div>
+          <div class="item">Support ⌄</div>
+          <div class="item">About ⌄</div>
+          <div class="item">Partners ↗</div>
         </nav>
 
-        <!-- Right: Lang + Buttons -->
         <div class="right">
-          <span class="lang">
-            <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"></path>
-            </svg>
-            EN
-          </span>
-
+          <span class="lang">🌐 EN</span>
           <button onclick="loginWithGoogle()" class="btn btn-outline">Log in</button>
           <button onclick="loginWithGoogle()" class="btn btn-red">Open account</button>
         </div>
       </div>
     </div>
 
-    <!-- Hero copy -->
     <div class="hero-inner">
       <div class="kicker">Trading for</div>
       <h1 class="headline">Anyone</h1>
       <h1 class="headline">Anywhere</h1>
       <h1 class="headline">Anytime</h1>
-
-      <p class="sub">Widest range of products, markets, platforms with 24/7 customer support.</p>
+      <p class="sub">Widest range of products with 24/7 customer support.</p>
 
       <div class="hero-cta">
         <button onclick="loginWithGoogle()" class="btn btn-red" style="padding:14px 24px; font-size:16px;">Open account</button>
       </div>
     </div>
-
-    <!-- Person (right) -->
-    <img
-      class="person"
-      src="images/686e070c619272d4129cdcea_global-hero.webp"
-      alt="Smiling person holding phone and coffee"
-    />
   </section>
 
-<!-- ================= TRUSTPILOT SECTION ================= -->
-<section class="trustpilot">
-  <style>
-    .trustpilot {
-      background: #181a1e;
-      padding: 16px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .trustpilot-inner {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      font-size: 14px;
-    }
-
-    .trustpilot .stars {
-      display: flex;
-      gap: 2px;
-    }
-
-    .trustpilot .star {
-      width: 18px;
-      height: 18px;
-      background: #00b67a;
-      clip-path: polygon(
-        50% 0%,
-        63% 38%,
-        100% 38%,
-        69% 59%,
-        82% 100%,
-        50% 75%,
-        18% 100%,
-        31% 59%,
-        0% 38%,
-        37% 38%
-      );
-    }
-
-    .trustpilot .star.half {
-      background: linear-gradient(
-        to right,
-        #00b67a 50%,
-        #333 50%
-      );
-    }
-
-    .trustpilot .trust-text {
-      color: #d0d0d0;
-      margin: 0;
-    }
-
-    .trustpilot .trust-logo {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-left: 8px;
-    }
-
-    .trustpilot .trust-star {
-      color: #00b67a;
-      font-size: 16px;
-    }
-
-    .trustpilot .trust-name {
-      font-weight: 600;
-      color: #00b67a;
-      letter-spacing: 0.2px;
-    }
-  </style>
-
-  <div class="trustpilot-inner">
-    <div class="stars">
-      <div class="star filled"></div>
-      <div class="star filled"></div>
-      <div class="star filled"></div>
-      <div class="star filled"></div>
-      <div class="star half"></div>
-    </div>
-
-    <p class="trust-text">
-      4.4 out of 5 based on <strong>68,061 reviews</strong>
-    </p>
-
-    <div class="trust-logo">
-      <span class="trust-star">★</span>
-      <span class="trust-name">Trustpilot</span>
-    </div>
-  </div>
-</section>
-
-<!-- ================= SUPABASE GOOGLE LOGIN ================= -->
+<!-- SUPABASE LOGIN SCRIPT -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const supabaseClient = supabase.createClient(
     "https://whnnyuozicuphrpgomno.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
+    "YOUR_PUBLIC_ANON_KEY"
   );
 
   async function loginWithGoogle() {
@@ -284,9 +148,10 @@
         redirectTo: "https://iederees-create.github.io/deriv.com/members.html"
       }
     });
+
     if (error) {
       console.error(error);
-      alert("Google Login Failed");
+      alert("Google login failed");
     }
   }
 </script>
