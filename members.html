@@ -439,6 +439,45 @@
       }
     }
   </style>
+
+  <!-- ⚡️ EARLY AUTH SCRIPT — MUST RUN BEFORE DOM LOADS -->
+  <script type="module">
+    // Load Supabase early
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const supabaseClient = createClient(
+      "https://whnnyuozicuphrpgomno.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
+    );
+
+    // ✅ Process OAuth hash IMMEDIATELY
+    const {  { session }, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      console.error('Auth init error:', error);
+    }
+
+    // Now check user
+    const {  { user } } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+      // Not logged in — go home
+      window.location.href = '/';
+    } else {
+      // Wait for DOM to update UI
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('user-email').textContent = user.email || 'No email';
+        const initial = user.email ? user.email.charAt(0).toUpperCase() : 'U';
+        document.getElementById('user-avatar').textContent = initial;
+      });
+    }
+
+    // Attach logout globally
+    window.logout = async () => {
+      await supabaseClient.auth.signOut();
+      window.location.href = '/';
+    };
+  </script>
 </head>
 <body>
 
@@ -655,47 +694,6 @@
     </section>
   </div>
 </main>
-
-<!-- ============ SUPABASE AUTH ============ -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const supabaseClient = supabase.createClient(
-    "https://whnnyuozicuphrpgomno.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
-  );
-
-  // ✅ Properly initialize auth and handle OAuth callback
-  async function initAuth() {
-    // This processes the OAuth code from URL (critical!)
-    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-    
-    if (sessionError) {
-      console.warn("Session retrieval issue:", sessionError.message);
-    }
-
-    // Now get user — should be available if session exists
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
-
-    if (userError || !user) {
-      console.log("Not authenticated. Redirecting to home...");
-      window.location.href = "/";
-      return;
-    }
-
-    // Update UI with user info
-    const email = user.email || "";
-    document.getElementById("user-email").textContent = email;
-    document.getElementById("user-avatar").textContent = email ? email.charAt(0).toUpperCase() : "U";
-  }
-
-  async function logout() {
-    await supabaseClient.auth.signOut();
-    window.location.href = "/";
-  }
-
-  // Run on page load
-  initAuth();
-</script>
 
 </body>
 </html>
