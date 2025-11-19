@@ -72,6 +72,7 @@
       display:inline-flex; align-items:center; justify-content:center;
       padding:8px 16px; border-radius:var(--pill-radius);
       font-weight:700; text-decoration:none; transition:.2s; white-space:nowrap;
+      cursor:pointer;
     }
     .btn-outline{ border:2px solid var(--outline); color:#fff; background:transparent; }
     .btn-outline:hover{ background:#fff; color:#000; }
@@ -112,6 +113,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <section class="hero">
@@ -133,7 +135,7 @@
           <div class="item">Partners <span class="ext">↗</span></div>
         </nav>
 
-        <!-- Right: Lang + Buttons -->
+        <!-- Right: Lang + Login Buttons -->
         <div class="right">
           <span class="lang">
             <svg class="globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -144,13 +146,15 @@
             </svg>
             EN
           </span>
-          <a href="#" class="btn btn-outline">Log in</a>
-          <a href="#" class="btn btn-red">Open account</a>
+
+          <!-- Updated Login Buttons -->
+          <button onclick="loginWithGoogle()" class="btn btn-outline">Log in</button>
+          <button onclick="loginWithGoogle()" class="btn btn-red">Open account</button>
         </div>
       </div>
     </div>
 
-    <!-- Hero copy -->
+    <!-- Hero Text -->
     <div class="hero-inner">
       <div class="kicker">Trading for</div>
       <h1 class="headline">Anyone</h1>
@@ -160,7 +164,7 @@
       <p class="sub">Widest range of products, markets, platforms with 24/7 customer support.</p>
 
       <div class="hero-cta">
-        <a href="#" class="btn btn-red" style="padding:14px 24px; font-size:16px;">Open account</a>
+        <button onclick="loginWithGoogle()" class="btn btn-red" style="padding:14px 24px; font-size:16px;">Open account</button>
       </div>
     </div>
 
@@ -270,11 +274,30 @@
   </div>
 </section>
 
+<!-- ================= SUPABASE GOOGLE LOGIN ================= -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+  // Connect to Supabase
+  const supabaseClient = supabase.createClient(
+    "https://whnnyuozicuphrpgomno.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
+  );
 
+  // Google Login
+  async function loginWithGoogle() {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + "/members.html"
+      }
+    });
+    if (error) {
+      console.error(error);
+      alert("Google Login Failed");
+    }
+  }
+</script>
 
-
-
-  
 </body>
 </html>
