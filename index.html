@@ -146,7 +146,6 @@
             EN
           </span>
 
-          <!-- Updated Login Buttons -->
           <button onclick="loginWithGoogle()" class="btn btn-outline">Log in</button>
           <button onclick="loginWithGoogle()" class="btn btn-red">Open account</button>
         </div>
@@ -272,20 +271,17 @@
 
 <!-- ================= SUPABASE GOOGLE LOGIN ================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-  // Connect to Supabase
   const supabaseClient = supabase.createClient(
     "https://whnnyuozicuphrpgomno.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
   );
 
-  // Google Login function
   async function loginWithGoogle() {
     const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin + "/members.html"
+        redirectTo: "https://iederees-create.github.io/deriv.com/members.html"
       }
     });
     if (error) {
@@ -293,13 +289,6 @@
       alert("Google Login Failed");
     }
   }
-
-  // Handle OAuth redirect & auto-redirect to members.html
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (session) {
-      window.location.href = "/members.html";
-    }
-  });
 </script>
 
 </body>
