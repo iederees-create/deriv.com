@@ -664,20 +664,28 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
   );
 
-  async function checkUser() {
-    const { data, error } = await supabaseClient.auth.getUser();
-    if (error || !data.user) {
-      // Not logged in -> send back to landing page
+  // ✅ Properly initialize auth and handle OAuth callback
+  async function initAuth() {
+    // This processes the OAuth code from URL (critical!)
+    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+    
+    if (sessionError) {
+      console.warn("Session retrieval issue:", sessionError.message);
+    }
+
+    // Now get user — should be available if session exists
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+      console.log("Not authenticated. Redirecting to home...");
       window.location.href = "/";
       return;
     }
 
-    const email = data.user.email || "";
-    const avatar = document.getElementById("user-avatar");
-    const emailSpan = document.getElementById("user-email");
-
-    emailSpan.textContent = email;
-    avatar.textContent = email ? email.charAt(0).toUpperCase() : "U";
+    // Update UI with user info
+    const email = user.email || "";
+    document.getElementById("user-email").textContent = email;
+    document.getElementById("user-avatar").textContent = email ? email.charAt(0).toUpperCase() : "U";
   }
 
   async function logout() {
@@ -685,7 +693,8 @@
     window.location.href = "/";
   }
 
-  checkUser();
+  // Run on page load
+  initAuth();
 </script>
 
 </body>
