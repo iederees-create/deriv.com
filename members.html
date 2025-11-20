@@ -52,10 +52,7 @@
       font-weight: 800;
     }
 
-    .subtle {
-      color:#555;
-      margin-bottom: 24px;
-    }
+    .subtle { color:#555; margin-bottom: 24px; }
 
     .cashier-box {
       background: #fff;
@@ -65,11 +62,7 @@
       margin-bottom: 24px;
     }
 
-    .balance {
-      font-size: 32px;
-      font-weight: 900;
-      margin: 10px 0 2px;
-    }
+    .balance { font-size: 32px; font-weight: 900; margin: 10px 0 2px; }
 
     .balance-sub {
       font-size:13px;
@@ -88,30 +81,6 @@
       border: none;
     }
 
-    .min-text {
-      font-size:13px;
-      color:#666;
-      margin-top:6px;
-    }
-
-    .bonus-box {
-      margin-top:16px;
-      padding:14px;
-      border-radius:10px;
-      background:#111827;
-      color:#e5e7eb;
-      font-size:14px;
-    }
-    .bonus-title{
-      font-weight:700;
-      margin-bottom:4px;
-      color:#fbbf24;
-    }
-    .bonus-line {
-      font-size:13px;
-      margin-top:2px;
-    }
-
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
@@ -126,19 +95,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
-    .card h2 {
-      margin: 0;
-      font-size: 20px;
-      font-weight: 800;
-      color: #111;
-    }
-
-    .card p {
-      margin: 10px 0;
-      line-height: 1.5;
-      color: #444;
-      font-size:14px;
-    }
+    .card h2 { margin: 0; font-size: 20px; font-weight: 800; }
 
     .price-pill {
       display:inline-block;
@@ -162,11 +119,9 @@
       cursor: pointer;
       width: 100%;
     }
-    .buy-btn.subscribed {
-      background:#059669;
-    }
+    .buy-btn.subscribed { background:#059669; }
 
-    /* Modals: deposit method, bank, XRP, payout */
+    /* ---- MODALS ---- */
     .modal-bg {
       position: fixed;
       inset: 0;
@@ -209,6 +164,7 @@
 
 <body>
 
+  <!-- ========================= HEADER ========================= -->
   <div class="header">
     <div>
       <div style="font-size:20px; font-weight:800;">Deriv Members Area</div>
@@ -221,59 +177,46 @@
     </div>
   </div>
 
+  <!-- ========================= BODY ========================= -->
   <div class="container">
 
+    <!-- ====== CASHIER ====== -->
     <div class="cashier-box">
       <h1>Cashier</h1>
-      <p class="subtle">Your trading wallet for syndicates and premium services.</p>
+      <p class="subtle">Your wallet for syndicates & premium services.</p>
 
       <div id="balance" class="balance">–</div>
       <div id="balanceSub" class="balance-sub"></div>
 
-      <p>
-        Add funds once (minimum 50 USD), then use your balance to join weekly syndicates,
-        monthly pools, and WhatsApp signals – all from this dashboard.
-      </p>
+      <p>Add funds once (minimum 50 USD). Then join weekly / monthly syndicates and WhatsApp signals.</p>
 
       <div style="margin-top:8px;">
         <button class="deposit-btn" onclick="openDeposit()">Make a Deposit</button>
-        <button class="deposit-btn" style="background:#111;margin-left:8px;" onclick="openPayout()">
-          Request Payout
-        </button>
+        <button class="deposit-btn" style="background:#111;margin-left:8px;" onclick="openPayout()">Request Payout</button>
       </div>
-      <div class="min-text" id="min-text"></div>
 
-      <div class="bonus-box">
-        <div class="bonus-title">Bonus tiers – get more when you deposit more</div>
-        <div id="bonus-lines">
-          <!-- filled in by JS -->
-        </div>
-      </div>
+      <div class="min-text" id="min-text"></div>
     </div>
 
-    <h1>Investment & Service Options</h1>
-    <p class="subtle">
-      Build your own mix. As long as you meet the minimum wallet deposit, you can subscribe to all three.
-    </p>
-
+    <h1>Investment Options</h1>
     <div class="product-grid">
       <div class="card">
         <h2>Weekly Trade Syndicate</h2>
-        <p>Short-term trades pooled with other members. Weekly performance updates and payouts into your wallet.</p>
+        <p>Weekly pooled trades & weekly updates.</p>
         <div id="price-weekly" class="price-pill"></div>
         <button id="btn-weekly" class="buy-btn" onclick="buyProduct('weekly')">Join Weekly Syndicate</button>
       </div>
 
       <div class="card">
-        <h2>WhatsApp Signals Group</h2>
-        <p>Request signals on any chart. Great for hands-on traders who want guidance and confirmation.</p>
+        <h2>WhatsApp Signals</h2>
+        <p>Ask for signals on any chart — anytime.</p>
         <div id="price-signals" class="price-pill"></div>
         <button id="btn-signals" class="buy-btn" onclick="buyProduct('signals')">Join Signals Group</button>
       </div>
 
       <div class="card">
-        <h2>Monthly Syndicate Pool</h2>
-        <p>Longer-term, more stable pool. Focused on steady monthly growth and compounding.</p>
+        <h2>Monthly Syndicate</h2>
+        <p>Stable monthly compounding & reduced volatility.</p>
         <div id="price-monthly" class="price-pill"></div>
         <button id="btn-monthly" class="buy-btn" onclick="buyProduct('monthly')">Join Monthly Syndicate</button>
       </div>
@@ -281,29 +224,25 @@
 
   </div>
 
-  <!-- DEPOSIT SELECT MODAL -->
+  <!-- ========================= DEPOSIT TYPE MODAL ========================= -->
   <div id="depositModal" class="modal-bg">
     <div class="modal-content">
       <h2>Select Deposit Method</h2>
-      <p style="font-size:13px;color:#555;margin-top:4px;">
-        Minimum first deposit: 50 USD (or local equivalent).
-      </p>
+      <p style="font-size:13px;color:#555;margin-top:4px;">Minimum first deposit: 50 USD.</p>
       <button class="modal-btn" onclick="showBank()">Bank Deposit</button>
       <button class="modal-btn" style="margin-top:8px;background:#111;" onclick="showXRP()">Deposit with XRP</button>
       <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeDeposit()">Cancel</button>
     </div>
   </div>
 
-  <!-- BANK MODAL -->
+  <!-- ========================= BANK MODAL ========================= -->
   <div id="bankModal" class="modal-bg">
     <div class="modal-content">
       <h2>Bank Deposit</h2>
+
       <p><strong>Bank:</strong> Nedbank</p>
       <p><strong>Account Number:</strong> 1236268857</p>
       <p><strong>Reference:</strong> Your Name + Surname</p>
-      <p style="font-size:13px;color:#555;">
-        Enter the amount you are sending (in USD equivalent) so we can allocate it correctly.
-      </p>
 
       <input id="bankAmount" type="number" placeholder="Amount in USD" />
 
@@ -312,24 +251,15 @@
     </div>
   </div>
 
-  <!-- XRP MODAL -->
+  <!-- ========================= XRP MODAL ========================= -->
   <div id="xrpModal" class="modal-bg">
     <div class="modal-content">
       <h2>Deposit with XRP</h2>
 
       <img src="images/xrp_qr.png" style="width:180px; margin:10px auto; display:block;">
 
-      <p style="font-size:13px;color:#111;">
-        <strong>Address:</strong><br>
-        rsRy14FvipgqudiGmptJBhr1RtpsgfzKMM
-      </p>
-      <p style="font-size:13px;color:#111;">
-        <strong>Tag:</strong> 1574868947
-      </p>
-
-      <p style="font-size:13px;color:#555;">
-        Send XRP, then enter the USD value you intended so we can match it on our side.
-      </p>
+      <p><strong>Address:</strong><br>rsRy14FvipgqudiGmptJBhr1RtpsgfzKMM</p>
+      <p><strong>Tag:</strong> 1574868947</p>
 
       <input id="xrpAmount" type="number" placeholder="Amount in USD" />
 
@@ -338,53 +268,32 @@
     </div>
   </div>
 
-  <!-- PAYOUT MODAL -->
+  <!-- ========================= PAYOUT MODAL ========================= -->
   <div id="payoutModal" class="modal-bg">
     <div class="modal-content">
       <h2>Payout Request</h2>
-      <p style="font-size:13px;color:#555;margin-top:4px;">
-        Enter the amount you want to withdraw from your USD wallet.
-      </p>
       <input id="payoutAmount" type="number" placeholder="Amount in USD" />
       <button class="modal-btn" onclick="submitPayout()">Submit Request</button>
       <button class="modal-btn" style="margin-top:8px;background:#333;" onclick="closePayout()">Cancel</button>
     </div>
   </div>
 
+  <!-- ========================= JS ========================= -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // =========================
-    //  SUPABASE CONFIG
-    // =========================
-    const SUPABASE_URL = "https://whnnyuozicuphrpgomno.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ";
 
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-      },
-    });
+    const supabaseClient = supabase.createClient(
+      "https://whnnyuozicuphrpgomno.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
+      { auth: { persistSession: true, autoRefreshToken: true } }
+    );
 
     let currentUser = null;
-    let userProfile = null;
-
-    // =========================
-    //  PRICING / CONSTANTS
-    // =========================
-    const MIN_DEPOSIT_USD = 50;
-    const PRICES_USD = {
-      weekly: 50,
-      signals: 15,
-      monthly: 50,
-    };
-
-    // Geo display (still store everything in USD)
     let displayCurrency = "USD";
     let symbol = "$";
-    let fxRate = 1; // multiply USD by this for display
+    let fxRate = 1;
 
+    // ---------- GEO PRICING ----------
     function detectGeoPricing() {
       try {
         const lang = navigator.language || "";
@@ -393,296 +302,160 @@
         if (lang.includes("ZA") || tz.toLowerCase().includes("johannesburg")) {
           displayCurrency = "ZAR";
           symbol = "R";
-          fxRate = 18.5; // static approximation
-        } else {
-          displayCurrency = "USD";
-          symbol = "$";
-          fxRate = 1;
+          fxRate = 18.5;
         }
-      } catch (e) {
-        displayCurrency = "USD";
-        symbol = "$";
-        fxRate = 1;
-      }
+      } catch (e) {}
     }
 
     function formatAmount(usd) {
-      const local = usd * fxRate;
-      return symbol + local.toFixed(2) + (displayCurrency === "USD" ? " USD" : " " + displayCurrency);
+      return symbol + (usd * fxRate).toFixed(2);
     }
 
-    function updatePriceLabels() {
-      document.getElementById("price-weekly").innerText =
-        "Weekly: " + formatAmount(PRICES_USD.weekly) + " per slot";
-      document.getElementById("price-signals").innerText =
-        "Signals: " + formatAmount(PRICES_USD.signals) + " / month";
-      document.getElementById("price-monthly").innerText =
-        "Monthly: " + formatAmount(PRICES_USD.monthly) + " per cycle";
-
-      document.getElementById("min-text").innerText =
-        "Your minimum starting deposit is " + formatAmount(MIN_DEPOSIT_USD) + ". You can top up anytime.";
-    }
-
-    // =========================
-    //  LOAD USER + PROFILE + BALANCE
-    // =========================
     async function loadUser() {
       detectGeoPricing();
-      updatePriceLabels();
 
-      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-      if (sessionError) {
-        console.error("Error getting session:", sessionError);
-      }
-
-      if (!session) {
-        window.location.href = "index.html";
-        return;
-      }
+      const { data: { session }} = await supabaseClient.auth.getSession();
+      if (!session) return window.location.href = "index.html";
 
       currentUser = session.user;
-      document.getElementById("welcome-line").innerText =
-        "Signed in as " + (currentUser.email || "");
 
-      // Admin visibility
-      if (currentUser.email === "iedereesfrancis@gmail.com") {
+      if (currentUser.email === "iedereesfrancis@gmail.com")
         document.getElementById("admin-btn").style.display = "inline-block";
-      }
 
-      await loadProfileOrRedirect();
+      document.getElementById("welcome-line").innerText =
+        "Signed in as " + currentUser.email;
+
       await ensureBalanceRow();
       await loadBalance();
-      await refreshBonusTiers();
-    }
-
-    async function loadProfileOrRedirect() {
-      const { data, error } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", currentUser.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("Error loading profile:", error);
-        return;
-      }
-
-      userProfile = data;
-      if (
-        !userProfile ||
-        !userProfile.first_name ||
-        !userProfile.last_name ||
-        !userProfile.mobile ||
-        !userProfile.address
-      ) {
-        // KYC required
-        window.location.href = "profile.html";
-      }
+      updatePrices();
+      markSubscriptions();
     }
 
     async function ensureBalanceRow() {
-      const { data: existing, error } = await supabaseClient
+      const { data } = await supabaseClient
         .from("user_balances")
         .select("*")
         .eq("id", currentUser.id)
         .maybeSingle();
 
-      if (error) {
-        console.error("Error checking balance row:", error);
-      }
-
-      if (!existing) {
-        const { error: insertError } = await supabaseClient.from("user_balances").insert({
+      if (!data) {
+        await supabaseClient.from("user_balances").insert({
           id: currentUser.id,
-          balance: 0, // stored in USD
+          balance: 0
         });
-        if (insertError) {
-          console.error("Error creating balance row:", insertError);
-        }
       }
     }
 
     async function loadBalance() {
-      const { data, error } = await supabaseClient
+      const { data } = await supabaseClient
         .from("user_balances")
         .select("balance")
         .eq("id", currentUser.id)
         .single();
 
-      if (error) {
-        console.error("Error loading balance:", error);
-        return;
-      }
+      const usd = Number(data.balance || 0);
 
-      const usd = Number(data.balance) || 0;
       document.getElementById("balance").innerText = formatAmount(usd);
       document.getElementById("balanceSub").innerText =
         "Balance stored in USD: $" + usd.toFixed(2);
     }
 
-    // =========================
-    //  BONUS TIERS
-    // =========================
-    async function refreshBonusTiers() {
-      const { data, error } = await supabaseClient
-        .from("deposits")
-        .select("amount")
-        .eq("user_id", currentUser.id);
+    const PRICES_USD = { weekly: 50, signals: 15, monthly: 50 };
 
-      if (error) {
-        console.error("Error loading deposits:", error);
-        return;
-      }
+    function updatePrices() {
+      document.getElementById("price-weekly").innerText =
+        "Weekly: " + formatAmount(PRICES_USD.weekly);
 
-      let totalDepositsUsd = 0;
-      if (data && data.length) {
-        totalDepositsUsd = data.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-      }
+      document.getElementById("price-signals").innerText =
+        "Signals: " + formatAmount(PRICES_USD.signals);
 
-      const container = document.getElementById("bonus-lines");
-      container.innerHTML = "";
+      document.getElementById("price-monthly").innerText =
+        "Monthly: " + formatAmount(PRICES_USD.monthly);
 
-      function line(text, unlocked) {
-        const div = document.createElement("div");
-        div.className = "bonus-line";
-        div.textContent = (unlocked ? "✅ " : "🔓 ") + text;
-        container.appendChild(div);
-      }
-
-      line("Base access: Syndicates + Signals", totalDepositsUsd >= MIN_DEPOSIT_USD);
-      line("Advanced signals pack (extra setups)", totalDepositsUsd >= 150);
-      line("VIP syndicate slots & priority entry", totalDepositsUsd >= 300);
-      line("Strategy Q&A priority support (WhatsApp)", totalDepositsUsd >= 500);
-      line("1:1 monthly review call", totalDepositsUsd >= 1000);
+      document.getElementById("min-text").innerText =
+        "Minimum starting deposit: " + formatAmount(50);
     }
 
-    // =========================
-    //  BUY / SUBSCRIPTIONS
-    // =========================
-    async function buyProduct(productKey) {
-      const costUsd = PRICES_USD[productKey];
-      if (!costUsd) return;
+    async function buyProduct(key) {
+      const cost = PRICES_USD[key];
 
-      const { data: bal, error: balError } = await supabaseClient
+      const { data } = await supabaseClient
         .from("user_balances")
         .select("balance")
         .eq("id", currentUser.id)
         .single();
 
-      if (balError) {
-        console.error("Error getting balance:", balError);
-        alert("Unable to check your balance. Please try again.");
-        return;
-      }
+      const usd = Number(data.balance || 0);
 
-      const balanceUsd = Number(bal.balance) || 0;
-
-      if (balanceUsd < costUsd) {
-        alert("Insufficient balance. Please deposit more funds to join this option.");
+      if (usd < cost) {
+        alert("Insufficient funds. Please deposit first.");
         openDeposit();
         return;
       }
 
-      let productName = "";
-      if (productKey === "weekly") productName = "Weekly Trade Syndicate";
-      if (productKey === "signals") productName = "WhatsApp Signals Group";
-      if (productKey === "monthly") productName = "Monthly Syndicate Pool";
+      const productName =
+        key === "weekly" ? "Weekly Trade Syndicate" :
+        key === "signals" ? "WhatsApp Signals Group" :
+        "Monthly Syndicate";
 
-      const { error: purchaseError } = await supabaseClient.from("purchases").insert({
+      await supabaseClient.from("purchases").insert({
         user_id: currentUser.id,
-        product_key: productKey,
+        product_key: key,
         product_name: productName,
-        amount: costUsd,
+        amount: cost
       });
 
-      if (purchaseError) {
-        console.error("Error saving purchase:", purchaseError);
-        alert("Could not complete purchase. Please try again.");
-        return;
-      }
-
-      const { error: updateBalanceError } = await supabaseClient
+      await supabaseClient
         .from("user_balances")
-        .update({ balance: balanceUsd - costUsd })
+        .update({ balance: usd - cost })
         .eq("id", currentUser.id);
 
-      if (updateBalanceError) {
-        console.error("Error updating balance:", updateBalanceError);
-      }
+      await supabaseClient.from("subscriptions").upsert({
+        user_id: currentUser.id,
+        product_key: key,
+        product_name: productName,
+        status: "active"
+      }, { onConflict: "user_id,product_key" });
 
-      const { error: subError } = await supabaseClient.from("subscriptions").upsert(
-        {
-          user_id: currentUser.id,
-          product_key: productKey,
-          product_name: productName,
-          status: "active",
-        },
-        { onConflict: "user_id,product_key" }
-      );
-
-      if (subError) {
-        console.error("Error upserting subscription:", subError);
-      }
-
-      alert("You are now subscribed: " + productName);
+      alert("You are now subscribed to " + productName);
       await loadBalance();
-      markSubscribedButtons();
+      markSubscriptions();
     }
 
-    async function markSubscribedButtons() {
-      const { data, error } = await supabaseClient
+    async function markSubscriptions() {
+      const { data } = await supabaseClient
         .from("subscriptions")
         .select("product_key,status")
         .eq("user_id", currentUser.id);
 
-      if (error) {
-        console.error("Error loading subscriptions:", error);
-        return;
+      const active = new Set((data || []).map(r => r.product_key));
+
+      if (active.has("weekly")) {
+        const btn = document.getElementById("btn-weekly");
+        btn.innerText = "Active Subscription";
+        btn.classList.add("subscribed");
       }
-
-      const activeKeys = new Set(
-        (data || []).filter((r) => r.status === "active").map((r) => r.product_key)
-      );
-
-      function mark(id, key) {
-        const btn = document.getElementById(id);
-        if (!btn) return;
-        if (activeKeys.has(key)) {
-          btn.classList.add("subscribed");
-          btn.innerText = "Active Subscription";
-        }
+      if (active.has("signals")) {
+        const btn = document.getElementById("btn-signals");
+        btn.innerText = "Active Subscription";
+        btn.classList.add("subscribed");
       }
-
-      mark("btn-weekly", "weekly");
-      mark("btn-signals", "signals");
-      mark("btn-monthly", "monthly");
+      if (active.has("monthly")) {
+        const btn = document.getElementById("btn-monthly");
+        btn.innerText = "Active Subscription";
+        btn.classList.add("subscribed");
+      }
     }
 
-    // =========================
-    //  DEPOSITS (BANK / XRP)
-    // =========================
-    function openDeposit() {
-      document.getElementById("depositModal").style.display = "flex";
-    }
-    function closeDeposit() {
-      document.getElementById("depositModal").style.display = "none";
-    }
+    // ------------------- DEPOSIT MODALS -------------------
+    function openDeposit() { document.getElementById("depositModal").style.display = "flex"; }
+    function closeDeposit() { document.getElementById("depositModal").style.display = "none"; }
 
-    function showBank() {
-      closeDeposit();
-      document.getElementById("bankModal").style.display = "flex";
-    }
-    function closeBank() {
-      document.getElementById("bankModal").style.display = "none";
-    }
+    function showBank() { closeDeposit(); document.getElementById("bankModal").style.display = "flex"; }
+    function closeBank() { document.getElementById("bankModal").style.display = "none"; }
 
-    function showXRP() {
-      closeDeposit();
-      document.getElementById("xrpModal").style.display = "flex";
-    }
-    function closeXRP() {
-      document.getElementById("xrpModal").style.display = "none";
-    }
+    function showXRP() { closeDeposit(); document.getElementById("xrpModal").style.display = "flex"; }
+    function closeXRP() { document.getElementById("xrpModal").style.display = "none"; }
 
     async function submitDeposit(type) {
       let amount =
@@ -691,7 +464,7 @@
           : Number(document.getElementById("xrpAmount").value);
 
       if (!amount || amount <= 0) {
-        alert("Enter a valid amount in USD (or equivalent).");
+        alert("Enter a valid USD amount.");
         return;
       }
 
@@ -699,16 +472,17 @@
         user_id: currentUser.id,
         method: type,
         amount: amount,
-        status: "pending",
+        currency: "USD",  // 🔥 FIXED SO INSERT NO LONGER FAILS
+        status: "pending"
       });
 
       if (error) {
-        console.error("Error saving deposit:", error);
+        console.error(error);
         alert("Could not submit deposit. Please try again.");
         return;
       }
 
-      alert("Deposit submitted. Once we receive and allocate it, your wallet balance will update.");
+      alert("Deposit submitted. Admin will approve shortly.");
 
       if (type === "bank") {
         document.getElementById("bankAmount").value = "";
@@ -717,81 +491,52 @@
         document.getElementById("xrpAmount").value = "";
         closeXRP();
       }
-
-      await refreshBonusTiers();
     }
 
-    // =========================
-    //  PAYOUTS
-    // =========================
-    function openPayout() {
-      document.getElementById("payoutModal").style.display = "flex";
-    }
-    function closePayout() {
-      document.getElementById("payoutModal").style.display = "none";
-    }
+    // ------------------- PAYOUT -------------------
+    function openPayout() { document.getElementById("payoutModal").style.display = "flex"; }
+    function closePayout() { document.getElementById("payoutModal").style.display = "none"; }
 
     async function submitPayout() {
       const amount = Number(document.getElementById("payoutAmount").value);
 
-      if (!amount || amount <= 0) {
-        alert("Enter a valid amount in USD.");
+      if (amount <= 0) {
+        alert("Enter a valid USD amount.");
         return;
       }
 
-      const { data: bal, error: balError } = await supabaseClient
+      const { data } = await supabaseClient
         .from("user_balances")
         .select("balance")
         .eq("id", currentUser.id)
         .single();
 
-      if (balError) {
-        console.error("Error getting balance:", balError);
-        alert("Unable to check your balance. Please try again.");
+      const balance = Number(data.balance || 0);
+
+      if (amount > balance) {
+        alert("You cannot withdraw more than your balance.");
         return;
       }
 
-      const balanceUsd = Number(bal.balance) || 0;
-
-      if (amount > balanceUsd) {
-        alert("You cannot request more than your available wallet balance.");
-        return;
-      }
-
-      const { error } = await supabaseClient.from("payouts").insert({
+      await supabaseClient.from("payouts").insert({
         user_id: currentUser.id,
         amount: amount,
-        status: "pending",
+        status: "pending"
       });
 
-      if (error) {
-        console.error("Error submitting payout:", error);
-        alert("Could not submit payout request. Please try again.");
-        return;
-      }
-
-      alert("Payout request submitted. Admin will process it shortly.");
-      document.getElementById("payoutAmount").value = "";
+      alert("Payout request submitted.");
       closePayout();
     }
 
-    // =========================
-    //  NAVIGATION + LOGOUT
-    // =========================
-    function goProfile() {
-      window.location.href = "profile.html";
-    }
-    function goAdmin() {
-      window.location.href = "admin.html";
-    }
+    function goProfile() { window.location.href = "profile.html"; }
+    function goAdmin() { window.location.href = "admin.html"; }
 
     async function logout() {
       await supabaseClient.auth.signOut();
       window.location.href = "index.html";
     }
 
-    // Boot
-    loadUser().then(markSubscribedButtons);
+    loadUser();
   </script>
 
 </body>
