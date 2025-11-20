@@ -457,6 +457,7 @@
     function showXRP() { closeDeposit(); document.getElementById("xrpModal").style.display = "flex"; }
     function closeXRP() { document.getElementById("xrpModal").style.display = "none"; }
 
+    // ------------------- FIXED DEPOSIT INSERT -------------------
     async function submitDeposit(type) {
       let amount =
         type === "bank"
@@ -470,9 +471,9 @@
 
       const { error } = await supabaseClient.from("deposits").insert({
         user_id: currentUser.id,
-        method: type,
+        method: type,      // <--- NOW VALID (column added)
         amount: amount,
-        currency: "USD",  // 🔥 FIXED SO INSERT NO LONGER FAILS
+        currency: "USD",
         status: "pending"
       });
 
