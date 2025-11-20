@@ -113,7 +113,7 @@
       width: 100%;
     }
 
-    /* Deposit modal */
+    /* Modal */
     #depositModal {
       position: fixed;
       inset: 0;
@@ -208,18 +208,28 @@
   <script>
     const supabaseClient = supabase.createClient(
       "https://whnnyuozicuphrpgomno.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ
+",
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true
+        }
+      }
     );
 
     let currentUser = null;
 
     async function loadUser() {
-      const { data } = await supabaseClient.auth.getUser();
-      if (!data.user) {
-        window.location.href = "https://iederees-create.github.io/deriv.com/index.html";
+      const { data: { session } } = await supabaseClient.auth.getSession();
+
+      if (!session) {
+        window.location.href = "index.html";
         return;
       }
-      currentUser = data.user;
+
+      currentUser = session.user;
+
       await ensureBalanceRow();
       await loadBalance();
     }
@@ -276,8 +286,7 @@
       await loadBalance();
     }
 
-    // ------------------ Deposit System ------------------
-
+    // Deposit Modal
     function openDeposit() {
       document.getElementById("depositModal").style.display = "flex";
     }
@@ -288,7 +297,6 @@
 
     async function submitDeposit() {
       const amount = Number(document.getElementById("depositAmount").value);
-
       if (!amount || amount <= 0) {
         alert("Enter a valid amount.");
         return;
@@ -315,11 +323,10 @@
       await loadBalance();
     }
 
-    // ------------------ Logout ------------------
-
+    // Logout
     async function logout() {
       await supabaseClient.auth.signOut();
-      window.location.href = "https://iederees-create.github.io/deriv.com/index.html";
+      window.location.href = "index.html";
     }
 
     loadUser();
