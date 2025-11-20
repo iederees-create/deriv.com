@@ -1,433 +1,556 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deriv Members Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deriv Members Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
-<style>
-  body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: #f4f5f7;
-    color: #111;
-  }
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f4f5f7;
+      color: #111;
+    }
 
-  .header {
-    background: #111;
-    padding: 16px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
+    .header {
+      background: #111;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-  .logout-btn {
-    background: #ff4459;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    font-weight: 700;
-  }
+    .logout-btn {
+      background: #ff4459;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-weight: 700;
+    }
 
-  .container {
-    max-width: 1100px;
-    margin: 30px auto;
-    padding: 0 16px;
-  }
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 0 16px;
+    }
 
-  .section {
-    background: white;
-    padding: 26px;
-    border-radius: 12px;
-    margin-bottom: 26px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
+    .section {
+      background: white;
+      padding: 26px;
+      border-radius: 12px;
+      margin-bottom: 26px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
 
-  h1 { font-size: 28px; font-weight: 800; margin-bottom: 14px; }
-  h2 { font-size: 22px; font-weight: 700; margin-top: 0; }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 14px; }
+    h2 { font-size: 22px; font-weight: 700; margin-top: 0; }
 
-  .balance {
-    font-size: 36px;
-    font-weight: 900;
-    margin: 10px 0;
-  }
+    .balance-row {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
 
-  .btn {
-    display: inline-block;
-    padding: 12px 18px;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
-    color: white;
-    margin-top: 10px;
-  }
+    .balance-label {
+      font-size: 14px;
+      color: #555;
+    }
 
-  .btn-red { background: #ff4459; }
-  .btn-black { background: #111; }
+    .balance-value {
+      font-size: 32px;
+      font-weight: 900;
+      margin: 4px 0 10px;
+    }
 
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-    gap: 20px;
-  }
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      color: white;
+      margin-top: 10px;
+    }
 
-  .card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-  }
+    .btn-red { background: #ff4459; }
+    .btn-black { background: #111; }
 
-  .bonus-item {
-    background: #e8e8e8;
-    padding: 14px;
-    border-radius: 8px;
-    margin-top: 10px;
-  }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 20px;
+    }
 
-  /* Deposit modals */
-  .modal-bg {
-    position: fixed;
-    inset: 0;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.6);
-    z-index: 999;
-  }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
 
-  .modal-content {
-    background: #fff;
-    padding: 26px;
-    width: 360px;
-    border-radius: 12px;
-    text-align: center;
-  }
+    .card h2 { margin-bottom: 6px; }
+    .card p { margin-top: 6px; margin-bottom: 10px; }
 
-  .modal-content input {
-    width: 100%;
-    padding: 12px;
-    margin-top: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-  }
-</style>
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .bonus-item {
+      background: #f2f2f2;
+      padding: 14px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    /* Modals */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 26px;
+      width: 360px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .modal-content h2 { margin-top: 0; }
+    .modal-content input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div style="font-size:20px; font-weight:800;">Deriv Members Portal</div>
-  <button class="logout-btn" onclick="logout()">Log out</button>
-</div>
-
-<div class="container">
-
-  <!-- WALLET SECTION -->
-  <div class="section">
-    <h1>Wallet</h1>
-    <p>Your available balance:</p>
-    <div id="balance" class="balance">0</div>
-
-    <button class="btn btn-red" onclick="openDeposit()">Deposit</button>
-    <button class="btn btn-black" onclick="openPayout()">Request Payout</button>
+  <!-- HEADER -->
+  <div class="header">
+    <div style="font-size:20px; font-weight:800;">Deriv Members Portal</div>
+    <button class="logout-btn" onclick="logout()">Log out</button>
   </div>
 
-  <!-- BONUS FEATURES -->
-  <div class="section">
-    <h1>Bonus Features</h1>
-    <div id="bonusList"></div>
+  <div class="container">
+
+    <!-- WALLET -->
+    <div class="section">
+      <h1>Your Wallet</h1>
+      <div class="balance-row">
+        <div>
+          <div class="balance-label">Available balance</div>
+          <div id="balance" class="balance-value">$0.00</div>
+        </div>
+        <div>
+          <div class="balance-label">Invested balance</div>
+          <div id="investedBalance" class="balance-value">$0.00</div>
+          <div class="balance-label" style="max-width:360px;">
+            This is the capital we actively trade for you. Once you invest a minimum of $50 you unlock access to all services.
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-red" onclick="openDeposit()">Make a Deposit</button>
+      <button class="btn btn-black" onclick="openPayout()">Request Payout</button>
+    </div>
+
+    <!-- BONUSES / INCENTIVES -->
+    <div class="section">
+      <h1>Investment Tiers & Benefits</h1>
+      <p>We reward clients who grow their trading capital:</p>
+
+      <div id="bonusList"></div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="section">
+      <h1>Trading Services</h1>
+      <p style="margin-bottom:18px;">
+        A one-time <strong>minimum investment of $50</strong> unlocks access to <strong>all three</strong> services below.
+        If you click join and don’t have enough available balance, you’ll be taken to the deposit screen.
+      </p>
+
+      <div class="product-grid">
+        <div class="card">
+          <span class="tag">Weekly</span>
+          <h2>Weekly Trade Syndicate</h2>
+          <p>Active trading pool targeting weekly profit opportunities on major indices and FX.</p>
+          <button class="btn btn-black" onclick="joinService('Weekly Syndicate')">Join / Access</button>
+        </div>
+
+        <div class="card">
+          <span class="tag">On-demand</span>
+          <h2>WhatsApp Signals Group</h2>
+          <p>Ask for a signal on the chart of your choice and receive focused, technical entries.</p>
+          <button class="btn btn-black" onclick="joinService('Signals Group')">Join / Access</button>
+        </div>
+
+        <div class="card">
+          <span class="tag">Monthly</span>
+          <h2>Monthly Syndicate</h2>
+          <p>Longer-term positions with more stable monthly growth and lower noise.</p>
+          <button class="btn btn-black" onclick="joinService('Monthly Syndicate')">Join / Access</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPOSIT HISTORY -->
+    <div class="section">
+      <h1>Deposit History</h1>
+      <div id="depositHistory"></div>
+    </div>
+
   </div>
 
-  <!-- SERVICES -->
-  <div class="section">
-    <h1>Available Services</h1>
-
-    <div class="product-grid">
-
-      <div class="card">
-        <h2>Weekly Syndicate</h2>
-        <p>Earn weekly returns from our trading pool.</p>
-        <button class="btn btn-black" onclick="buyProduct('Weekly Syndicate', weeklyPrice)">Join</button>
-      </div>
-
-      <div class="card">
-        <h2>Signals Group</h2>
-        <p>Get high-quality signals on request.</p>
-        <button class="btn btn-black" onclick="buyProduct('Signals Group', signalsPrice)">Join</button>
-      </div>
-
-      <div class="card">
-        <h2>Monthly Syndicate</h2>
-        <p>Stable monthly returns.</p>
-        <button class="btn btn-black" onclick="buyProduct('Monthly Syndicate', monthlyPrice)">Join</button>
-      </div>
-
+  <!-- DEPOSIT SELECT MODAL -->
+  <div id="depositModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Select Deposit Method</h2>
+      <p style="margin-bottom:12px;">Minimum deposit: <strong>$50</strong></p>
+      <button class="btn btn-black" onclick="showBank()">Bank Deposit (Nedbank)</button>
+      <button class="btn btn-red" onclick="showXRP()">Deposit with XRP</button>
+      <button class="btn btn-black" style="background:#666;" onclick="closeDeposit()">Cancel</button>
     </div>
   </div>
 
-  <!-- DEPOSIT HISTORY -->
-  <div class="section">
-    <h1>Deposit History</h1>
-    <div id="depositHistory"></div>
+  <!-- BANK MODAL -->
+  <div id="bankModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Bank Deposit</h2>
+      <p><strong>Bank:</strong> Nedbank</p>
+      <p><strong>Account Type:</strong> Savings</p>
+      <p><strong>Account Number:</strong> 1236268857</p>
+      <p><strong>Reference:</strong> Your Name + Surname</p>
+      <p style="font-size:13px; color:#555;">To help us match your deposit quickly, always use your full name as the reference.</p>
+
+      <input id="bankAmount" type="number" placeholder="Deposit amount in USD (min 50)">
+      <button class="btn btn-black" onclick="submitDeposit('bank')">I’ve Made the Deposit</button>
+      <button class="btn btn-black" style="background:#666;" onclick="closeBank()">Cancel</button>
+    </div>
   </div>
 
-</div>
+  <!-- XRP MODAL -->
+  <div id="xrpModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Deposit with XRP</h2>
 
-<!-- DEPOSIT SELECT MODAL -->
-<div id="depositModal" class="modal-bg">
-  <div class="modal-content">
-    <h2>Select Deposit Method</h2>
-    <button class="btn btn-black" onclick="showBank()">Bank Deposit</button>
-    <button class="btn btn-red" onclick="showXRP()">Deposit with XRP</button>
-    <button class="btn btn-black" style="background:#666;" onclick="closeDeposit()">Cancel</button>
+      <img src="images/xrp_qr.png" style="width:180px; margin-bottom:10px;">
+
+      <p><strong>Address:</strong><br> rsRy14FvipgqudiGmptJBhr1RtpsgfzKMM</p>
+      <p><strong>Tag:</strong> 1574868947</p>
+      <p style="font-size:13px; color:#555;">Send the equivalent of at least $50 in XRP.</p>
+
+      <input id="xrpAmount" type="number" placeholder="Deposit amount in USD (min 50)">
+      <button class="btn btn-red" onclick="submitDeposit('xrp')">I’ve Sent the XRP</button>
+      <button class="btn btn-black" style="background:#666;" onclick="closeXRP()">Cancel</button>
+    </div>
   </div>
-</div>
 
-<!-- BANK MODAL -->
-<div id="bankModal" class="modal-bg">
-  <div class="modal-content">
-    <h2>Bank Deposit</h2>
-    <p><strong>Bank:</strong> Nedbank</p>
-    <p><strong>Account Number:</strong> 1236268857</p>
-    <p><strong>Reference:</strong> Your Name + Surname</p>
-
-    <input id="bankAmount" type="number" placeholder="Amount">
-
-    <button class="btn btn-black" onclick="submitDeposit('bank')">I’ve Deposited</button>
-    <button class="btn btn-black" style="background:#666;" onclick="closeBank()">Cancel</button>
+  <!-- PAYOUT MODAL -->
+  <div id="payoutModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Payout Request</h2>
+      <input id="payoutAmount" type="number" placeholder="Amount in USD">
+      <button onclick="submitPayout()" class="btn btn-red">Submit Request</button>
+      <button onclick="closePayout()" class="btn btn-black" style="background:#666;">Cancel</button>
+    </div>
   </div>
-</div>
 
-<!-- XRP MODAL -->
-<div id="xrpModal" class="modal-bg">
-  <div class="modal-content">
-    <h2>Deposit with XRP</h2>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
+      "https://whnnyuozicuphrpgomno.supabase.co",
+      "YOUR_ANON_KEY_HERE",
+      { auth: { persistSession: true, autoRefreshToken: true } }
+    );
 
-    <img src="images/xrp_qr.png" style="width:180px;">
+    let currentUser = null;
+    let availableBalance = 0;
+    let investedBalance = 0;
+    const MIN_INVESTMENT = 50;   // USD minimum to unlock all services
 
-    <p><strong>Address:</strong><br> rsRy14FvipgqudiGmptJBhr1RtpsgfzKMM</p>
-    <p><strong>Tag:</strong> 1574868947</p>
+    // =========================
+    // CORE LOAD
+    // =========================
+    async function loadUser() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = "index.html";
+        return;
+      }
+      currentUser = session.user;
 
-    <input id="xrpAmount" type="number" placeholder="Amount (USD)">
-    <button class="btn btn-red" onclick="submitDeposit('xrp')">I’ve Sent the XRP</button>
-    <button class="btn btn-black" style="background:#666;" onclick="closeXRP()">Cancel</button>
-  </div>
-</div>
+      await enforceKYC();
+      await ensureBalanceRow();
+      await loadBalance();
+      await loadDeposits();
+      updateBonuses();
+    }
 
-<!-- PAYOUT MODAL -->
-<div id="payoutModal" class="modal-bg">
-  <div class="modal-content">
-    <h2>Payout Request</h2>
-    <input id="payoutAmount" type="number" placeholder="Amount">
-    <button onclick="submitPayout()" class="btn btn-red">Submit Request</button>
-    <button onclick="closePayout()" class="btn btn-black" style="background:#666;">Cancel</button>
-  </div>
-</div>
+    async function enforceKYC() {
+      const { data } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
+      if (!data || !data.first_name || !data.last_name || !data.dob || !data.mobile) {
+        alert("Please complete your profile before using your dashboard.");
+        window.location.href = "profile.html";
+      }
+    }
 
-const supabaseClient = supabase.createClient(
-  "https://whnnyuozicuphrpgomno.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
-  { auth: { persistSession: true, autoRefreshToken: true } }
-);
+    async function ensureBalanceRow() {
+      const { data: existing } = await supabaseClient
+        .from("user_balances")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
 
-let currentUser = null;
+      if (!existing) {
+        await supabaseClient.from("user_balances").insert({
+          id: currentUser.id,
+          balance: 0,
+          invested_balance: 0
+        });
+      }
+    }
 
-let weeklyPrice = 1500;
-let signalsPrice = 300;
-let monthlyPrice = 2000;
+    async function loadBalance() {
+      const { data } = await supabaseClient
+        .from("user_balances")
+        .select("balance, invested_balance")
+        .eq("id", currentUser.id)
+        .single();
 
-// =======================================
-// LOAD USER
-// =======================================
-async function loadUser() {
-  const { data: { session }} = await supabaseClient.auth.getSession();
-  if (!session) return window.location.href = "index.html";
+      availableBalance = Number(data.balance || 0);
+      investedBalance = Number(data.invested_balance || 0);
 
-  currentUser = session.user;
-  await enforceKYC();
-  await loadBalance();
-  await loadDeposits();
-  updateBonuses();
-}
+      document.getElementById("balance").innerText = "$" + availableBalance.toFixed(2);
+      document.getElementById("investedBalance").innerText = "$" + investedBalance.toFixed(2);
 
-async function enforceKYC() {
-  const { data } = await supabaseClient
-    .from("profiles")
-    .select("*")
-    .eq("id", currentUser.id)
-    .maybeSingle();
+      updateBonuses();
+    }
 
-  if (!data || !data.first_name || !data.last_name || !data.dob || !data.mobile) {
-    alert("Please complete your profile before accessing your dashboard.");
-    window.location.href = "profile.html";
-  }
-}
+    // =========================
+    // BONUS / INCENTIVES
+    // =========================
+    function updateBonuses() {
+      const box = document.getElementById("bonusList");
+      box.innerHTML = "";
 
-// =======================================
-// BALANCE + BONUSES
-// =======================================
-async function loadBalance() {
-  const { data } = await supabaseClient
-    .from("user_balances")
-    .select("balance")
-    .eq("id", currentUser.id)
-    .single();
+      const totalCapital = investedBalance;
 
-  document.getElementById("balance").innerHTML = "R " + Number(data.balance).toFixed(2);
-  window.memberBalance = data.balance;
-  updateBonuses();
-}
+      box.innerHTML += `
+        <div class="bonus-item">
+          <strong>$50+ invested:</strong> Unlocks all services (Weekly Syndicate, Signals Group, Monthly Syndicate).
+        </div>
+      `;
 
-function updateBonuses() {
-  const list = document.getElementById("bonusList");
-  list.innerHTML = "";
+      if (totalCapital >= 250) {
+        box.innerHTML += `
+          <div class="bonus-item">
+            <strong>$250+ invested:</strong> Priority payout queue + personalised trade feedback once a week.
+          </div>
+        `;
+      }
 
-  const balance = window.memberBalance || 0;
+      if (totalCapital >= 500) {
+        box.innerHTML += `
+          <div class="bonus-item">
+            <strong>$500+ invested:</strong> VIP treatment – direct line for questions, early access to new strategies.
+          </div>
+        `;
+      }
 
-  if (balance >= 500)
-    list.innerHTML += `<div class='bonus-item'>Priority Customer Support</div>`;
+      if (totalCapital >= 1000) {
+        box.innerHTML += `
+          <div class="bonus-item">
+            <strong>$1000+ invested:</strong> Quarterly performance review and tailored scaling plan for your account.
+          </div>
+        `;
+      }
+    }
 
-  if (balance >= 1500)
-    list.innerHTML += `<div class='bonus-item'>Early Access to Trading Signals</div>`;
+    // =========================
+    // JOIN SERVICES (ALL ACCESS)
+    // =========================
+    async function joinService(serviceName) {
+      // If already invested enough, just record access
+      if (investedBalance >= MIN_INVESTMENT) {
+        await supabaseClient.from("purchases").insert({
+          user_id: currentUser.id,
+          product_name: serviceName + " (all-access)",
+          amount: 0
+        });
+        alert("You already have an active investment. " + serviceName + " is now available to you.");
+        return;
+      }
 
-  if (balance >= 3000)
-    list.innerHTML += `<div class='bonus-item'>Premium Insights & Market Reports</div>`;
-}
+      // Not enough invested – check available balance
+      if (availableBalance < MIN_INVESTMENT) {
+        alert("You need at least $" + MIN_INVESTMENT + " available to activate your investment.\n\nWe'll take you to the deposit screen.");
+        openDeposit();
+        return;
+      }
 
-// =======================================
-// SERVICES / PURCHASES
-// =======================================
-async function buyProduct(name, price) {
-  if (window.memberBalance < price) {
-    alert("Insufficient balance.");
-    return;
-  }
+      // Move $50 from available → invested
+      const newAvailable = availableBalance - MIN_INVESTMENT;
+      const newInvested = investedBalance + MIN_INVESTMENT;
 
-  await supabaseClient.from("purchases").insert({
-    user_id: currentUser.id,
-    product_name: name,
-    amount: price
-  });
+      await supabaseClient
+        .from("user_balances")
+        .update({ balance: newAvailable, invested_balance: newInvested })
+        .eq("id", currentUser.id);
 
-  await supabaseClient
-    .from("user_balances")
-    .update({ balance: window.memberBalance - price })
-    .eq("id", currentUser.id);
+      await supabaseClient.from("purchases").insert({
+        user_id: currentUser.id,
+        product_name: "All Services Membership",
+        amount: MIN_INVESTMENT
+      });
 
-  alert("Purchase successful!");
-  loadBalance();
-}
+      availableBalance = newAvailable;
+      investedBalance = newInvested;
 
-// =======================================
-// DEPOSITS
-// =======================================
-function openDeposit() { document.getElementById("depositModal").style.display = "flex"; }
-function closeDeposit() { document.getElementById("depositModal").style.display = "none"; }
+      await loadBalance();
 
-function showBank() { closeDeposit(); document.getElementById("bankModal").style.display = "flex"; }
-function closeBank() { document.getElementById("bankModal").style.display = "none"; }
+      alert(
+        "Your $50 investment is now active.\n\n" +
+        "You can use all three services without extra charges. Admin will grow this invested balance as your profile grows."
+      );
+    }
 
-function showXRP() { closeDeposit(); document.getElementById("xrpModal").style.display = "flex"; }
-function closeXRP() { document.getElementById("xrpModal").style.display = "none"; }
+    // =========================
+    // DEPOSITS
+    // =========================
+    function openDeposit() { document.getElementById("depositModal").style.display = "flex"; }
+    function closeDeposit() { document.getElementById("depositModal").style.display = "none"; }
+    function showBank() { closeDeposit(); document.getElementById("bankModal").style.display = "flex"; }
+    function closeBank() { document.getElementById("bankModal").style.display = "none"; }
+    function showXRP() { closeDeposit(); document.getElementById("xrpModal").style.display = "flex"; }
+    function closeXRP() { document.getElementById("xrpModal").style.display = "none"; }
 
-async function submitDeposit(type) {
-  let amount = (type === "bank")
-    ? Number(document.getElementById("bankAmount").value)
-    : Number(document.getElementById("xrpAmount").value);
+    async function submitDeposit(type) {
+      const amount = type === "bank"
+        ? Number(document.getElementById("bankAmount").value)
+        : Number(document.getElementById("xrpAmount").value);
 
-  if (!amount || amount <= 0) {
-    alert("Enter a valid amount.");
-    return;
-  }
+      if (!amount || amount <= 0) {
+        alert("Enter a valid amount.");
+        return;
+      }
 
-  await supabaseClient.from("deposits").insert({
-    user_id: currentUser.id,
-    method: type,
-    amount,
-    status: "pending"
-  });
+      if (amount < MIN_INVESTMENT) {
+        alert("Minimum deposit is $" + MIN_INVESTMENT + ".");
+        return;
+      }
 
-  alert("Deposit submitted. It will update in 5–19 minutes depending on your bank or crypto network.");
+      await supabaseClient.from("deposits").insert({
+        user_id: currentUser.id,
+        method: type,
+        amount,
+        status: "pending"
+      });
 
-  closeBank();
-  closeXRP();
-  loadDeposits();
-}
+      alert(
+        "Deposit submitted.\n\n" +
+        "Status: Pending\n" +
+        "It will typically reflect on your dashboard within 5–19 minutes depending on your bank or the XRP network."
+      );
 
-// =======================================
-// DEPOSIT HISTORY
-// =======================================
-async function loadDeposits() {
-  const { data } = await supabaseClient
-    .from("deposits")
-    .select("*")
-    .eq("user_id", currentUser.id)
-    .order("id", { ascending:false });
+      closeBank();
+      closeXRP();
+      await loadDeposits();
+    }
 
-  let html = "";
-  data.forEach(d => {
-    html += `
-      <p><strong>${d.method.toUpperCase()}</strong>: R ${d.amount} — <em>${d.status}</em></p>
-    `;
-  });
+    // =========================
+    // DEPOSIT HISTORY
+    // =========================
+    async function loadDeposits() {
+      const { data } = await supabaseClient
+        .from("deposits")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("id", { ascending: false });
 
-  document.getElementById("depositHistory").innerHTML = html || "No deposits yet.";
-}
+      const area = document.getElementById("depositHistory");
+      if (!data || data.length === 0) {
+        area.innerHTML = "No deposits yet.";
+        return;
+      }
 
-// =======================================
-// PAYOUTS
-// =======================================
-function openPayout() { document.getElementById("payoutModal").style.display = "flex"; }
-function closePayout() { document.getElementById("payoutModal").style.display = "none"; }
+      let html = "";
+      data.forEach(d => {
+        html += `<p><strong>${d.method.toUpperCase()}</strong> &mdash; $${Number(d.amount).toFixed(2)} — <em>${d.status}</em></p>`;
+      });
+      area.innerHTML = html;
+    }
 
-async function submitPayout() {
-  const amount = Number(document.getElementById("payoutAmount").value);
+    // =========================
+    // PAYOUTS
+    // =========================
+    function openPayout() { document.getElementById("payoutModal").style.display = "flex"; }
+    function closePayout() { document.getElementById("payoutModal").style.display = "none"; }
 
-  if (!amount || amount <= 0) {
-    alert("Enter a valid amount.");
-    return;
-  }
+    async function submitPayout() {
+      const amount = Number(document.getElementById("payoutAmount").value);
 
-  if (amount > window.memberBalance) {
-    alert("You cannot request more than your available balance.");
-    return;
-  }
+      if (!amount || amount <= 0) {
+        alert("Enter a valid amount.");
+        return;
+      }
 
-  await supabaseClient.from("payouts").insert({
-    user_id: currentUser.id,
-    amount,
-    status: "pending"
-  });
+      if (amount > availableBalance) {
+        alert("You cannot request more than your available balance.");
+        return;
+      }
 
-  alert("Payout request submitted. Admin will process it shortly.");
-  closePayout();
-}
+      await supabaseClient.from("payouts").insert({
+        user_id: currentUser.id,
+        amount,
+        status: "pending"
+      });
 
-// =======================================
-// LOGOUT
-// =======================================
-async function logout() {
-  await supabaseClient.auth.signOut();
-  window.location.href = "index.html";
-}
+      alert("Payout request submitted. We’ll process it as soon as possible.");
+      closePayout();
+    }
 
-loadUser();
-</script>
+    // =========================
+    // LOGOUT
+    // =========================
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = "index.html";
+    }
+
+    loadUser();
+  </script>
 
 </body>
 </html>
