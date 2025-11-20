@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Deriv Syndicates</title>
+  <title>Deriv Admin Console</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -11,8 +11,7 @@
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: #f5f6f8;
-      color: #111827;
+      background: #f3f4f6;
     }
 
     .header {
@@ -27,544 +26,317 @@
       z-index: 10;
     }
 
-    .header-title {
-      font-size: 20px;
-      font-weight: 800;
-    }
-
-    .header-sub {
-      font-size: 13px;
-      color: #6b7280;
-    }
-
     .btn {
       padding: 8px 14px;
       border-radius: 8px;
-      border: none;
       cursor: pointer;
       font-weight: 600;
+      border: none;
+      background: #111827;
       color: #fff;
-      margin-left: 8px;
     }
-
-    .btn-logout { background:#ef4444; }
-    .btn-members { background:#111827; }
+    .logout-btn {
+      background: #ef4444;
+    }
 
     .container {
       max-width: 1100px;
-      margin: 24px auto 40px;
-      padding: 0 16px;
+      margin: 30px auto;
+      padding: 0 16px 40px;
     }
 
     h1 {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 800;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
-    h2 {
-      font-size: 20px;
-      font-weight: 700;
-      margin: 0 0 10px;
-    }
-
-    .subtle {
-      color: #6b7280;
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
-    .section {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      margin-bottom: 24px;
+    .card {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      margin-top: 10px;
     }
 
     th, td {
-      padding: 8px 6px;
-      text-align: left;
+      padding: 12px;
       border-bottom: 1px solid #e5e7eb;
+      font-size: 14px;
+      text-align: left;
     }
 
     th {
+      background: #f9fafb;
       font-weight: 700;
-      background: #f3f4f6;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .03em;
-      color: #4b5563;
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .pill {
-      display:inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-
-    .pill-pending { background:#fef3c7; color:#92400e; }
-    .pill-approved { background:#dcfce7; color:#166534; }
-    .pill-rejected { background:#fee2e2; color:#991b1b; }
-    .pill-paid { background:#e0f2fe; color:#1d4ed8; }
-
-    .btn-sm {
-      padding: 6px 10px;
-      font-size: 11px;
+    .approve-btn {
+      padding: 6px 12px;
+      background: #10b981;
+      color: white;
+      border: none;
       border-radius: 6px;
-      border:none;
-      cursor:pointer;
-      font-weight:600;
-      margin-right:4px;
-      margin-bottom:4px;
+      cursor: pointer;
+      font-size: 13px;
     }
 
-    .btn-approve { background:#16a34a; color:#fff; }
-    .btn-reject { background:#ef4444; color:#fff; }
-    .btn-paid { background:#1d4ed8; color:#fff; }
-
-    .muted {
-      color:#9ca3af;
-      font-size:11px;
-    }
-
-    .empty-state {
-      font-size:13px;
-      color:#6b7280;
-      padding:6px 0;
+    .deny-btn {
+      padding: 6px 12px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- HEADER -->
   <div class="header">
     <div>
-      <div class="header-title">Deriv Admin Console</div>
-      <div class="header-sub" id="admin-info">Loading admin…</div>
+      <h2 style="margin:0;font-weight:800;">Deriv Admin Console</h2>
+      <div id="admin-email" style="font-size:13px;color:#666;"></div>
     </div>
+
     <div>
-      <button class="btn btn-members" onclick="goMembers()">Back to Members</button>
-      <button class="btn btn-logout" onclick="logout()">Log out</button>
+      <button class="btn" onclick="goMembers()">Back to Members</button>
+      <button class="btn logout-btn" onclick="logout()">Log out</button>
     </div>
   </div>
 
   <div class="container">
-    <h1>Cashier Controls</h1>
-    <p class="subtle">
-      Approve deposits and payout requests. All balances and amounts are stored in <strong>USD</strong>.
-    </p>
+    <!-- ------------------------ PENDING DEPOSITS ------------------------ -->
+    <div class="card">
+      <h1>Pending Deposits</h1>
+      <p>Approve bank / XRP deposits. On approval the amount is added to the member’s wallet.</p>
 
-    <!-- PENDING DEPOSITS -->
-    <div class="section">
-      <h2>Pending Deposits</h2>
-      <p class="subtle">Approve bank / XRP deposits. On approval, the amount is added to the member’s USD wallet.</p>
-      <div id="deposits-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>User ID</th>
-              <th>Method</th>
-              <th>Amount (USD)</th>
-              <th>Status</th>
-              <th>Created</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="deposits-body">
-            <!-- rows by JS -->
-          </tbody>
-        </table>
-      </div>
+      <table id="depositTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Method</th>
+            <th>Amount (USD)</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="depositBody">
+          <tr><td colspan="7">Loading...</td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <!-- PENDING PAYOUTS -->
-    <div class="section">
-      <h2>Pending Payouts</h2>
-      <p class="subtle">Mark payouts as paid. On approval, the amount is subtracted from the member’s USD wallet.</p>
-      <div id="payouts-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>User ID</th>
-              <th>Amount (USD)</th>
-              <th>Status</th>
-              <th>Created</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="payouts-body">
-            <!-- rows by JS -->
-          </tbody>
-        </table>
-      </div>
+    <!-- ------------------------ PENDING PAYOUTS ------------------------ -->
+    <div class="card">
+      <h1>Pending Payouts</h1>
+      <p>Mark payouts as paid. On approval the amount is subtracted from balance.</p>
+
+      <table id="payoutTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Amount (USD)</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="payoutBody">
+          <tr><td colspan="6">Loading...</td></tr>
+        </tbody>
+      </table>
     </div>
 
   </div>
 
+  <!-- ------------------------ JS ------------------------ -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // =============================
-    // Supabase setup (same as members.html)
-    // =============================
-    const SUPABASE_URL = "https://whnnyuozicuphrpgomno.supabase.co";
-    const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ";
 
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-      },
-    });
+    const supabaseClient = supabase.createClient(
+      "https://whnnyuozicuphrpgomno.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
+    );
 
-    const ADMIN_EMAIL = "iedereesfrancis@gmail.com";
     let currentUser = null;
 
-    // =============================
-    // Boot: require admin
-    // =============================
-    async function initAdmin() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        window.location.href = "index.html";
-        return;
-      }
+    async function loadAdmin() {
+      const { data: { session }} = await supabaseClient.auth.getSession();
+      if (!session) return window.location.href = "index.html";
 
       currentUser = session.user;
 
-      // Only allow your admin email
-      if (currentUser.email !== ADMIN_EMAIL) {
+      // admin-only
+      if (currentUser.email !== "iedereesfrancis@gmail.com") {
+        alert("Access denied.");
         window.location.href = "members.html";
         return;
       }
 
-      document.getElementById("admin-info").innerText =
+      document.getElementById("admin-email").innerText =
         "Signed in as admin: " + currentUser.email;
 
-      await loadPendingDeposits();
-      await loadPendingPayouts();
+      loadDeposits();
+      loadPayouts();
     }
 
-    // =============================
-    // Load Pending Deposits
-    // =============================
-    async function loadPendingDeposits() {
-      const tbody = document.getElementById("deposits-body");
-      tbody.innerHTML = "<tr><td colspan='7' class='empty-state'>Loading…</td></tr>";
-
+    /* ========================= LOAD DEPOSITS ========================= */
+    async function loadDeposits() {
       const { data, error } = await supabaseClient
         .from("deposits")
-        .select("id,user_id,method,amount,status,created_at")
+        .select("id, user_id, method, amount, currency, status, created_at")
         .eq("status", "pending")
-        .order("created_at", { ascending: false });
+        .order("id", { ascending: true });
+
+      const body = document.getElementById("depositBody");
+      body.innerHTML = "";
 
       if (error) {
-        console.error("Error loading deposits:", error);
-        tbody.innerHTML = "<tr><td colspan='7' class='empty-state'>Error loading deposits.</td></tr>";
+        body.innerHTML = `<tr><td colspan="7">Error loading deposits.</td></tr>`;
         return;
       }
 
-      if (!data || data.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='7' class='empty-state'>No pending deposits.</td></tr>";
+      if (!data.length) {
+        body.innerHTML = `<tr><td colspan="7">No pending deposits.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = "";
-      data.forEach((dep) => {
-        const tr = document.createElement("tr");
-
-        const created = dep.created_at
-          ? new Date(dep.created_at).toLocaleString()
-          : "-";
-
-        tr.innerHTML = `
-          <td>${dep.id}</td>
-          <td><span class="muted">${dep.user_id}</span></td>
-          <td>${dep.method.toUpperCase()}</td>
-          <td>${Number(dep.amount || 0).toFixed(2)}</td>
-          <td><span class="pill pill-pending">PENDING</span></td>
-          <td>${created}</td>
-          <td>
-            <button class="btn-sm btn-approve" onclick="approveDeposit(${dep.id})">Approve</button>
-            <button class="btn-sm btn-reject" onclick="rejectDeposit(${dep.id})">Reject</button>
-          </td>
+      data.forEach(row => {
+        body.innerHTML += `
+          <tr>
+            <td>${row.id}</td>
+            <td>${row.user_id}</td>
+            <td>${row.method || "-"}</td>
+            <td>$${row.amount.toFixed(2)}</td>
+            <td>${row.status}</td>
+            <td>${row.created_at || ""}</td>
+            <td>
+              <button class="approve-btn" onclick="approveDeposit(${row.id}, '${row.user_id}', ${row.amount})">Approve</button>
+            </td>
+          </tr>
         `;
-
-        tbody.appendChild(tr);
       });
     }
 
-    // Approve deposit: add to user_balances & mark approved
-    async function approveDeposit(depositId) {
-      if (!confirm("Approve this deposit and credit the member's wallet?")) return;
-
-      // Get deposit row
-      const { data: dep, error: depError } = await supabaseClient
-        .from("deposits")
-        .select("*")
-        .eq("id", depositId)
-        .maybeSingle();
-
-      if (depError || !dep) {
-        alert("Could not load deposit row.");
-        console.error(depError);
-        return;
-      }
-
-      if (dep.status !== "pending") {
-        alert("This deposit is no longer pending.");
-        await loadPendingDeposits();
-        return;
-      }
-
-      const amount = Number(dep.amount || 0);
-      const userId = dep.user_id;
-
-      // Ensure balance row exists
-      const { data: balRow, error: balError } = await supabaseClient
+    /* ========================= APPROVE DEPOSIT ========================= */
+    async function approveDeposit(id, user_id, amount) {
+      // Get user's balance
+      const { data } = await supabaseClient
         .from("user_balances")
         .select("balance")
-        .eq("id", userId)
-        .maybeSingle();
+        .eq("id", user_id)
+        .single();
 
-      if (balError) {
-        console.error("Error loading user balance:", balError);
-        alert("Could not load user balance.");
-        return;
-      }
-
-      let currentBalance = 0;
-      if (!balRow) {
-        // Create new balance row
-        const { error: insertBalError } = await supabaseClient
-          .from("user_balances")
-          .insert({ id: userId, balance: 0 });
-        if (insertBalError) {
-          console.error("Error creating balance row:", insertBalError);
-          alert("Could not create user balance row.");
-          return;
-        }
-      } else {
-        currentBalance = Number(balRow.balance || 0);
-      }
-
-      const newBalance = currentBalance + amount;
+      const currentBalance = Number(data.balance || 0);
+      const newBalance = currentBalance + Number(amount);
 
       // Update balance
-      const { error: updateBalError } = await supabaseClient
+      await supabaseClient
         .from("user_balances")
         .update({ balance: newBalance })
-        .eq("id", userId);
+        .eq("id", user_id);
 
-      if (updateBalError) {
-        console.error("Error updating balance:", updateBalError);
-        alert("Could not update user balance.");
-        return;
-      }
-
-      // Mark deposit as approved
-      const { error: updateDepError } = await supabaseClient
+      // Update deposit status
+      await supabaseClient
         .from("deposits")
         .update({ status: "approved" })
-        .eq("id", depositId);
+        .eq("id", id);
 
-      if (updateDepError) {
-        console.error("Error updating deposit status:", updateDepError);
-        alert("Balance updated, but could not update deposit status. Check logs.");
-        return;
-      }
-
-      alert("Deposit approved and balance updated.");
-      await loadPendingDeposits();
+      alert("Deposit approved & balance updated.");
+      loadDeposits();
     }
 
-    // Reject deposit: mark rejected, no balance change
-    async function rejectDeposit(depositId) {
-      if (!confirm("Reject this deposit? No balance change will be made.")) return;
-
-      const { error } = await supabaseClient
-        .from("deposits")
-        .update({ status: "rejected" })
-        .eq("id", depositId);
-
-      if (error) {
-        console.error("Error rejecting deposit:", error);
-        alert("Could not reject deposit.");
-        return;
-      }
-
-      alert("Deposit rejected.");
-      await loadPendingDeposits();
-    }
-
-    // =============================
-    // Load Pending Payouts
-    // =============================
-    async function loadPendingPayouts() {
-      const tbody = document.getElementById("payouts-body");
-      tbody.innerHTML = "<tr><td colspan='6' class='empty-state'>Loading…</td></tr>";
-
+    /* ========================= LOAD PAYOUTS ========================= */
+    async function loadPayouts() {
       const { data, error } = await supabaseClient
         .from("payouts")
-        .select("id,user_id,amount,status,created_at")
+        .select("id, user_id, amount, status, created_at")
         .eq("status", "pending")
-        .order("created_at", { ascending: false });
+        .order("id", { ascending: true });
+
+      const body = document.getElementById("payoutBody");
+      body.innerHTML = "";
 
       if (error) {
-        console.error("Error loading payouts:", error);
-        tbody.innerHTML = "<tr><td colspan='6' class='empty-state'>Error loading payouts.</td></tr>";
+        body.innerHTML = `<tr><td colspan="6">Error loading payouts.</td></tr>`;
         return;
       }
 
-      if (!data || data.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='6' class='empty-state'>No pending payouts.</td></tr>";
+      if (!data.length) {
+        body.innerHTML = `<tr><td colspan="6">No pending payouts.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = "";
-      data.forEach((p) => {
-        const tr = document.createElement("tr");
-
-        const created = p.created_at
-          ? new Date(p.created_at).toLocaleString()
-          : "-";
-
-        tr.innerHTML = `
-          <td>${p.id}</td>
-          <td><span class="muted">${p.user_id}</span></td>
-          <td>${Number(p.amount || 0).toFixed(2)}</td>
-          <td><span class="pill pill-pending">PENDING</span></td>
-          <td>${created}</td>
-          <td>
-            <button class="btn-sm btn-paid" onclick="approvePayout(${p.id})">Mark as Paid</button>
-            <button class="btn-sm btn-reject" onclick="rejectPayout(${p.id})">Reject</button>
-          </td>
+      data.forEach(row => {
+        body.innerHTML += `
+          <tr>
+            <td>${row.id}</td>
+            <td>${row.user_id}</td>
+            <td>$${row.amount.toFixed(2)}</td>
+            <td>${row.status}</td>
+            <td>${row.created_at || ""}</td>
+            <td>
+              <button class="approve-btn" onclick="approvePayout(${row.id}, '${row.user_id}', ${row.amount})">Mark Paid</button>
+            </td>
+          </tr>
         `;
-
-        tbody.appendChild(tr);
       });
     }
 
-    // Approve payout: subtract from balance & mark as paid
-    async function approvePayout(payoutId) {
-      if (!confirm("Mark this payout as PAID and subtract from the member's balance?")) return;
-
-      const { data: payout, error: payoutError } = await supabaseClient
-        .from("payouts")
-        .select("*")
-        .eq("id", payoutId)
-        .maybeSingle();
-
-      if (payoutError || !payout) {
-        alert("Could not load payout row.");
-        console.error(payoutError);
-        return;
-      }
-
-      if (payout.status !== "pending") {
-        alert("This payout is no longer pending.");
-        await loadPendingPayouts();
-        return;
-      }
-
-      const amount = Number(payout.amount || 0);
-      const userId = payout.user_id;
-
-      const { data: balRow, error: balError } = await supabaseClient
+    /* ========================= APPROVE PAYOUT ========================= */
+    async function approvePayout(id, user_id, amount) {
+      // Get current balance
+      const { data } = await supabaseClient
         .from("user_balances")
         .select("balance")
-        .eq("id", userId)
-        .maybeSingle();
+        .eq("id", user_id)
+        .single();
 
-      if (balError || !balRow) {
-        alert("Could not find a balance row for this user.");
-        console.error(balError);
-        return;
-      }
-
-      const currentBalance = Number(balRow.balance || 0);
+      const currentBalance = Number(data.balance || 0);
 
       if (amount > currentBalance) {
-        alert("User balance is lower than payout amount. Cannot approve.");
+        alert("Cannot approve. Balance too low.");
         return;
       }
 
-      const newBalance = currentBalance - amount;
+      const newBalance = currentBalance - Number(amount);
 
-      const { error: updateBalError } = await supabaseClient
+      await supabaseClient
         .from("user_balances")
         .update({ balance: newBalance })
-        .eq("id", userId);
+        .eq("id", user_id);
 
-      if (updateBalError) {
-        console.error("Error updating balance:", updateBalError);
-        alert("Could not update user balance.");
-        return;
-      }
-
-      const { error: updatePayoutError } = await supabaseClient
+      await supabaseClient
         .from("payouts")
         .update({ status: "paid" })
-        .eq("id", payoutId);
+        .eq("id", id);
 
-      if (updatePayoutError) {
-        console.error("Error updating payout:", updatePayoutError);
-        alert("Balance updated, but could not update payout status. Check logs.");
-        return;
-      }
-
-      alert("Payout marked as paid and balance updated.");
-      await loadPendingPayouts();
+      alert("Payout approved & balance updated.");
+      loadPayouts();
     }
 
-    // Reject payout: mark rejected, no balance change
-    async function rejectPayout(payoutId) {
-      if (!confirm("Reject this payout request? No balance change will be made.")) return;
-
-      const { error } = await supabaseClient
-        .from("payouts")
-        .update({ status: "rejected" })
-        .eq("id", payoutId);
-
-      if (error) {
-        console.error("Error rejecting payout:", error);
-        alert("Could not reject payout.");
-        return;
-      }
-
-      alert("Payout rejected.");
-      await loadPendingPayouts();
-    }
-
-    // =============================
-    // Navigation & logout
-    // =============================
-    function goMembers() {
-      window.location.href = "members.html";
-    }
+    /* ========================= NAV ========================= */
+    function goMembers() { window.location.href = "members.html"; }
 
     async function logout() {
       await supabaseClient.auth.signOut();
       window.location.href = "index.html";
     }
 
-    // Start
-    initAdmin();
+    loadAdmin();
   </script>
+
 </body>
 </html>
