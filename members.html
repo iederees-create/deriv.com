@@ -353,28 +353,34 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const supabaseClient = supabase.createClient(
-      "https://whnnyuozicuphrpgomno.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true
-        }
-      }
-    );
+    // =========================
+    //  SUPABASE CONFIG
+    // =========================
+    const SUPABASE_URL = "https://whnnyuozicuphrpgomno.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+      },
+    });
 
     let currentUser = null;
     let userProfile = null;
 
-    // base prices in USD
+    // =========================
+    //  PRICING / CONSTANTS
+    // =========================
     const MIN_DEPOSIT_USD = 50;
     const PRICES_USD = {
       weekly: 50,
       signals: 15,
-      monthly: 50
+      monthly: 50,
     };
 
+    // Geo display (still store everything in USD)
     let displayCurrency = "USD";
     let symbol = "$";
     let fxRate = 1; // multiply USD by this for display
@@ -387,7 +393,7 @@
         if (lang.includes("ZA") || tz.toLowerCase().includes("johannesburg")) {
           displayCurrency = "ZAR";
           symbol = "R";
-          fxRate = 18.5; // approximate, static
+          fxRate = 18.5; // static approximation
         } else {
           displayCurrency = "USD";
           symbol = "$";
@@ -417,11 +423,18 @@
         "Your minimum starting deposit is " + formatAmount(MIN_DEPOSIT_USD) + ". You can top up anytime.";
     }
 
+    // =========================
+    //  LOAD USER + PROFILE + BALANCE
+    // =========================
     async function loadUser() {
       detectGeoPricing();
       updatePriceLabels();
 
-      const { data: { session } } = await supabaseClient.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+      if (sessionError) {
+        console.error("Error getting session:", sessionError);
+      }
+
       if (!session) {
         window.location.href = "index.html";
         return;
@@ -431,7 +444,7 @@
       document.getElementById("welcome-line").innerText =
         "Signed in as " + (currentUser.email || "");
 
-      // Show admin button for your email
+      // Admin visibility
       if (currentUser.email === "iedereesfrancis@gmail.com") {
         document.getElementById("admin-btn").style.display = "inline-block";
       }
@@ -450,42 +463,56 @@
         .maybeSingle();
 
       if (error) {
-        console.error(error);
+        console.error("Error loading profile:", error);
         return;
       }
 
       userProfile = data;
-      if (!userProfile ||
-          !userProfile.first_name ||
-          !userProfile.last_name ||
-          !userProfile.mobile ||
-          !userProfile.address) {
+      if (
+        !userProfile ||
+        !userProfile.first_name ||
+        !userProfile.last_name ||
+        !userProfile.mobile ||
+        !userProfile.address
+      ) {
         // KYC required
         window.location.href = "profile.html";
       }
     }
 
     async function ensureBalanceRow() {
-      const { data: existing } = await supabaseClient
+      const { data: existing, error } = await supabaseClient
         .from("user_balances")
         .select("*")
         .eq("id", currentUser.id)
         .maybeSingle();
 
+      if (error) {
+        console.error("Error checking balance row:", error);
+      }
+
       if (!existing) {
-        await supabaseClient.from("user_balances").insert({
+        const { error: insertError } = await supabaseClient.from("user_balances").insert({
           id: currentUser.id,
-          balance: 0  // stored in USD
+          balance: 0, // stored in USD
         });
+        if (insertError) {
+          console.error("Error creating balance row:", insertError);
+        }
       }
     }
 
     async function loadBalance() {
-      const { data } = await supabaseClient
+      const { data, error } = await supabaseClient
         .from("user_balances")
         .select("balance")
         .eq("id", currentUser.id)
         .single();
+
+      if (error) {
+        console.error("Error loading balance:", error);
+        return;
+      }
 
       const usd = Number(data.balance) || 0;
       document.getElementById("balance").innerText = formatAmount(usd);
@@ -493,11 +520,19 @@
         "Balance stored in USD: $" + usd.toFixed(2);
     }
 
+    // =========================
+    //  BONUS TIERS
+    // =========================
     async function refreshBonusTiers() {
       const { data, error } = await supabaseClient
         .from("deposits")
         .select("amount")
         .eq("user_id", currentUser.id);
+
+      if (error) {
+        console.error("Error loading deposits:", error);
+        return;
+      }
 
       let totalDepositsUsd = 0;
       if (data && data.length) {
@@ -521,15 +556,24 @@
       line("1:1 monthly review call", totalDepositsUsd >= 1000);
     }
 
+    // =========================
+    //  BUY / SUBSCRIPTIONS
+    // =========================
     async function buyProduct(productKey) {
       const costUsd = PRICES_USD[productKey];
       if (!costUsd) return;
 
-      const { data: bal } = await supabaseClient
+      const { data: bal, error: balError } = await supabaseClient
         .from("user_balances")
         .select("balance")
         .eq("id", currentUser.id)
         .single();
+
+      if (balError) {
+        console.error("Error getting balance:", balError);
+        alert("Unable to check your balance. Please try again.");
+        return;
+      }
 
       const balanceUsd = Number(bal.balance) || 0;
 
@@ -544,24 +588,41 @@
       if (productKey === "signals") productName = "WhatsApp Signals Group";
       if (productKey === "monthly") productName = "Monthly Syndicate Pool";
 
-      await supabaseClient.from("purchases").insert({
+      const { error: purchaseError } = await supabaseClient.from("purchases").insert({
         user_id: currentUser.id,
         product_key: productKey,
         product_name: productName,
-        amount: costUsd
+        amount: costUsd,
       });
 
-      await supabaseClient
+      if (purchaseError) {
+        console.error("Error saving purchase:", purchaseError);
+        alert("Could not complete purchase. Please try again.");
+        return;
+      }
+
+      const { error: updateBalanceError } = await supabaseClient
         .from("user_balances")
         .update({ balance: balanceUsd - costUsd })
         .eq("id", currentUser.id);
 
-      await supabaseClient.from("subscriptions").upsert({
-        user_id: currentUser.id,
-        product_key: productKey,
-        product_name: productName,
-        status: "active"
-      }, { onConflict: "user_id,product_key" });
+      if (updateBalanceError) {
+        console.error("Error updating balance:", updateBalanceError);
+      }
+
+      const { error: subError } = await supabaseClient.from("subscriptions").upsert(
+        {
+          user_id: currentUser.id,
+          product_key: productKey,
+          product_name: productName,
+          status: "active",
+        },
+        { onConflict: "user_id,product_key" }
+      );
+
+      if (subError) {
+        console.error("Error upserting subscription:", subError);
+      }
 
       alert("You are now subscribed: " + productName);
       await loadBalance();
@@ -574,8 +635,13 @@
         .select("product_key,status")
         .eq("user_id", currentUser.id);
 
+      if (error) {
+        console.error("Error loading subscriptions:", error);
+        return;
+      }
+
       const activeKeys = new Set(
-        (data || []).filter(r => r.status === "active").map(r => r.product_key)
+        (data || []).filter((r) => r.status === "active").map((r) => r.product_key)
       );
 
       function mark(id, key) {
@@ -592,7 +658,9 @@
       mark("btn-monthly", "monthly");
     }
 
-    // ====== DEPOSIT MODALS & LOGIC (Bank / XRP) ======
+    // =========================
+    //  DEPOSITS (BANK / XRP)
+    // =========================
     function openDeposit() {
       document.getElementById("depositModal").style.display = "flex";
     }
@@ -617,21 +685,28 @@
     }
 
     async function submitDeposit(type) {
-      let amount = type === "bank"
-        ? Number(document.getElementById("bankAmount").value)
-        : Number(document.getElementById("xrpAmount").value);
+      let amount =
+        type === "bank"
+          ? Number(document.getElementById("bankAmount").value)
+          : Number(document.getElementById("xrpAmount").value);
 
       if (!amount || amount <= 0) {
         alert("Enter a valid amount in USD (or equivalent).");
         return;
       }
 
-      await supabaseClient.from("deposits").insert({
+      const { error } = await supabaseClient.from("deposits").insert({
         user_id: currentUser.id,
         method: type,
         amount: amount,
-        status: "pending"
+        status: "pending",
       });
+
+      if (error) {
+        console.error("Error saving deposit:", error);
+        alert("Could not submit deposit. Please try again.");
+        return;
+      }
 
       alert("Deposit submitted. Once we receive and allocate it, your wallet balance will update.");
 
@@ -646,7 +721,9 @@
       await refreshBonusTiers();
     }
 
-    // ====== PAYOUT MODAL & LOGIC ======
+    // =========================
+    //  PAYOUTS
+    // =========================
     function openPayout() {
       document.getElementById("payoutModal").style.display = "flex";
     }
@@ -662,11 +739,17 @@
         return;
       }
 
-      const { data: bal } = await supabaseClient
+      const { data: bal, error: balError } = await supabaseClient
         .from("user_balances")
         .select("balance")
         .eq("id", currentUser.id)
         .single();
+
+      if (balError) {
+        console.error("Error getting balance:", balError);
+        alert("Unable to check your balance. Please try again.");
+        return;
+      }
 
       const balanceUsd = Number(bal.balance) || 0;
 
@@ -675,18 +758,26 @@
         return;
       }
 
-      await supabaseClient.from("payouts").insert({
+      const { error } = await supabaseClient.from("payouts").insert({
         user_id: currentUser.id,
         amount: amount,
-        status: "pending"
+        status: "pending",
       });
+
+      if (error) {
+        console.error("Error submitting payout:", error);
+        alert("Could not submit payout request. Please try again.");
+        return;
+      }
 
       alert("Payout request submitted. Admin will process it shortly.");
       document.getElementById("payoutAmount").value = "";
       closePayout();
     }
 
-    // Navigation
+    // =========================
+    //  NAVIGATION + LOGOUT
+    // =========================
     function goProfile() {
       window.location.href = "profile.html";
     }
@@ -694,12 +785,12 @@
       window.location.href = "admin.html";
     }
 
-    // Logout
     async function logout() {
       await supabaseClient.auth.signOut();
       window.location.href = "index.html";
     }
 
+    // Boot
     loadUser().then(markSubscribedButtons);
   </script>
 
