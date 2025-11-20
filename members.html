@@ -146,25 +146,46 @@
 
     <div class="product-grid">
 
+      <!-- WEEKLY TRADE SYNDICATE -->
       <div class="card">
         <h2>Weekly Trade Syndicate – R1500</h2>
-        <p>Fast-return trading pool managed by experts. Earn weekly returns based on real trading performance.</p>
-        <p><strong>Minimum: R1500</strong></p>
-        <button class="buy-btn" onclick="buyProduct('Weekly Trade Syndicate', 1500)">Join Weekly Syndicate</button>
+        <p>
+          A short-term trading pool where your contribution is traded by our experienced team.
+          You earn a weekly return, based on real trading performance.
+        </p>
+        <p>
+          <strong>Perfect for:</strong> New investors who want fast, low-commitment returns.
+        </p>
+        <p style="color:#111;font-weight:700;">Minimum: R1500</p>
+        <button class="buy-btn">Join Weekly Syndicate</button>
       </div>
 
+      <!-- SIGNALS GROUP -->
       <div class="card">
         <h2>WhatsApp Signals Group</h2>
-        <p>Ask for signals on any chart and get expert guidance anytime.</p>
-        <p><strong>Monthly Subscription</strong></p>
-        <button class="buy-btn" onclick="buyProduct('Signals Group', 300)">Join Signals Group</button>
+        <p>
+          Get high-quality trading signals delivered directly to you. Ask for a chart of your choice,
+          and receive a personalized signal from an expert analyst — anytime.
+        </p>
+        <p>
+          <strong>Perfect for:</strong> Hands-on traders who want expert guidance.
+        </p>
+        <p style="color:#111;font-weight:700;">Monthly Subscription</p>
+        <button class="buy-btn">Join Signals Group</button>
       </div>
 
+      <!-- MONTHLY TRADE SYNDICATE -->
       <div class="card">
         <h2>Monthly Syndicate – R2000</h2>
-        <p>Stable long-term investment with steady monthly returns.</p>
-        <p><strong>Minimum: R2000</strong></p>
-        <button class="buy-btn" onclick="buyProduct('Monthly Syndicate', 2000)">Join Monthly Syndicate</button>
+        <p>
+          A longer-term syndicate that grows your contribution throughout the month.
+          Returns are more stable because trades compound over 30 days.
+        </p>
+        <p>
+          <strong>Perfect for:</strong> Investors looking for consistent, higher long-term returns.
+        </p>
+        <p style="color:#111;font-weight:700;">Minimum: R2000</p>
+        <button class="buy-btn">Join Monthly Syndicate</button>
       </div>
 
     </div>
@@ -179,71 +200,13 @@
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
     );
 
-    let currentUser = null;
-
+    // Load session + protect the page
     async function loadUser() {
       const { data } = await supabaseClient.auth.getUser();
       if (!data.user) window.location.href = "/index.html";
-      currentUser = data.user;
-
-      await ensureBalanceRow();
-      await loadBalance();
     }
 
-    async function ensureBalanceRow() {
-      const { data: existing } = await supabaseClient
-        .from("user_balances")
-        .select("*")
-        .eq("id", currentUser.id)
-        .maybeSingle();
-
-      if (!existing) {
-        await supabaseClient.from("user_balances").insert({
-          id: currentUser.id,
-          balance: 0
-        });
-      }
-    }
-
-    async function loadBalance() {
-      const { data } = await supabaseClient
-        .from("user_balances")
-        .select("balance")
-        .eq("id", currentUser.id)
-        .single();
-
-      document.getElementById("balance").innerText = "R " + Number(data.balance).toFixed(2);
-    }
-
-    async function buyProduct(name, cost) {
-      const { data: bal } = await supabaseClient
-        .from("user_balances")
-        .select("balance")
-        .eq("id", currentUser.id)
-        .single();
-
-      if (bal.balance < cost) {
-        alert("Insufficient balance. Please deposit funds.");
-        return;
-      }
-
-      // Store purchase
-      await supabaseClient.from("purchases").insert({
-        user_id: currentUser.id,
-        product_name: name,
-        amount: cost
-      });
-
-      // Deduct balance
-      await supabaseClient
-        .from("user_balances")
-        .update({ balance: bal.balance - cost })
-        .eq("id", currentUser.id);
-
-      alert("Purchase successful: " + name);
-      await loadBalance();
-    }
-
+    // Logout
     async function logout() {
       await supabaseClient.auth.signOut();
       window.location.href = "/index.html";
