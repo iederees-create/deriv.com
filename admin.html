@@ -1,343 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Raversus Syndicates</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard | Raversus</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
 
   <style>
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #020617;
-      color: #e5e7eb;
+      background: #f3f4f6;
+      font-family: "Inter", sans-serif;
     }
 
     .header {
-      background: #020617;
-      padding: 16px 24px;
-      border-bottom:1px solid rgba(148,163,184,0.35);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      background: #111;
+      padding: 20px;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 800;
+      text-align: center;
     }
-
-    .header-title{
-      font-size:20px;
-      font-weight:800;
-    }
-
-    .btn {
-      padding: 8px 14px;
-      border-radius: 8px;
-      border:none;
-      cursor:pointer;
-      font-weight:600;
-    }
-
-    .btn-primary { background:#2563eb; color:#fff; }
-    .btn-ghost { background:#111827; color:#e5e7eb; }
 
     .container {
-      max-width: 1200px;
-      margin: 20px auto 40px;
-      padding: 0 16px;
-    }
-
-    h2 {
-      font-size:18px;
-      margin:24px 0 8px;
-      font-weight:700;
-    }
-
-    .card {
-      background:#020617;
-      border-radius:12px;
-      border:1px solid rgba(148,163,184,0.35);
-      padding:16px;
-      margin-top:8px;
-      overflow:auto;
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
     }
 
     table {
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
     }
-    th,td {
-      padding:6px 8px;
-      border-bottom:1px solid rgba(30,41,59,0.9);
-      text-align:left;
-      vertical-align:top;
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
     }
+
     th {
-      background:#020617;
-      position:sticky;
-      top:0;
-      z-index:1;
+      background: #111;
+      color: #fff;
+      font-weight: 700;
     }
 
-    .pill {
-      display:inline-block;
-      padding:2px 8px;
-      border-radius:999px;
-      font-size:11px;
-    }
-    .pill-ok { background:#16a34a22; color:#4ade80; }
-    .pill-warn { background:#f9731622; color:#fdba74; }
-
-    .summary-row{
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
+    .btn {
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      color: #fff;
     }
 
-    .summary-card{
-      flex:1 1 180px;
-      background:#020617;
-      border-radius:12px;
-      border:1px solid rgba(148,163,184,0.35);
-      padding:12px 14px;
+    .btn-approve { background: #22c55e; }
+    .btn-reject { background: #ef4444; }
+
+    .logout-btn {
+      background: #ff4459;
+      width: 100%;
+      margin-top: 30px;
     }
-    .summary-label{ font-size:12px;color:#9ca3af; }
-    .summary-value{ font-size:18px;font-weight:700;margin-top:2px; }
+
+    h2 { font-size: 22px; margin-top:40px; }
   </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-title">Admin Dashboard – Raversus Syndicates</div>
-  <div>
-    <button class="btn btn-ghost" onclick="goMembers()">Back to members</button>
-    <button class="btn btn-primary" onclick="logout()">Log out</button>
-  </div>
-</div>
+  <div class="header">RAVERSUS – ADMIN DASHBOARD</div>
 
-<div class="container">
-
-  <div class="summary-row">
-    <div class="summary-card">
-      <div class="summary-label">Total users</div>
-      <div id="sum-users" class="summary-value">–</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-label">Total deposits (USD)</div>
-      <div id="sum-deposits" class="summary-value">–</div>
-    </div>
-    <div class="summary-card">
-      <div class="summary-label">Total wallet balances (USD)</div>
-      <div id="sum-balances" class="summary-value">–</div>
-    </div>
-  </div>
-
-  <h2>Users & Profiles</h2>
-  <div class="card">
-    <table>
+  <div class="container">
+    <h2>Users</h2>
+    <table id="usersTable">
       <thead>
         <tr>
           <th>Email</th>
           <th>Name</th>
           <th>Mobile</th>
-          <th>Address</th>
-          <th>Bank</th>
-          <th>Account</th>
-          <th>Balance (USD)</th>
+          <th>Balance</th>
+          <th>KYC</th>
         </tr>
       </thead>
-      <tbody id="tbl-users"></tbody>
+      <tbody></tbody>
     </table>
-  </div>
 
-  <h2>Deposits (latest 100)</h2>
-  <div class="card">
-    <table>
+    <h2>Deposits (Pending)</h2>
+    <table id="depositsTable">
       <thead>
         <tr>
           <th>User</th>
-          <th>Email</th>
-          <th>Amount (USD)</th>
-          <th>Date</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Approve</th>
+          <th>Reject</th>
         </tr>
       </thead>
-      <tbody id="tbl-deposits"></tbody>
+      <tbody></tbody>
     </table>
-  </div>
 
-  <h2>Subscriptions & Purchases (latest 100)</h2>
-  <div class="card">
-    <table>
+    <h2>Payout Requests</h2>
+    <table id="payoutsTable">
       <thead>
         <tr>
           <th>User</th>
-          <th>Email</th>
-          <th>Product</th>
-          <th>Amount (USD)</th>
+          <th>Amount</th>
           <th>Date</th>
+          <th>Status</th>
         </tr>
       </thead>
-      <tbody id="tbl-purchases"></tbody>
+      <tbody></tbody>
     </table>
-  </div>
 
-</div>
+    <button class="btn logout-btn" onclick="logout()">Log Out</button>
+  </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const supabaseClient = supabase.createClient(
-    "https://whnnyuozicuphrpgomno.supabase.co",
-    "YOUR_ANON_KEY_HERE",
-    {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true
-      }
-    }
-  );
+const supabaseClient = supabase.createClient(
+  "https://whnnyuozicuphrpgomno.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
+  { auth: { persistSession: true, autoRefreshToken: true } }
+);
 
-  async function init() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
-      window.location.href = "index.html";
-      return;
-    }
+let adminEmail = "iedereesfrancis@gmail.com";
+let sessionUser = null;
 
-    if (session.user.email !== "iedereesfrancis@gmail.com") {
-      alert("Admin only area.");
-      window.location.href = "members.html";
-      return;
-    }
+async function loadAdmin() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
 
-    await loadSummary();
-    await loadUsers();
-    await loadDeposits();
-    await loadPurchases();
+  if (!session) return window.location.href = "index.html";
+  sessionUser = session.user;
+
+  if (sessionUser.email !== adminEmail) {
+    alert("Access denied: Admin only.");
+    return window.location.href = "members.html";
   }
 
-  async function loadSummary() {
-    const { data: balances } = await supabaseClient
-      .from("user_balances")
-      .select("id,balance");
+  loadUsers();
+  loadDeposits();
+  loadPayouts();
+}
 
-    const totalUsers = balances ? balances.length : 0;
-    const totalBalances = balances ?
-      balances.reduce((sum, r) => sum + Number(r.balance || 0), 0) : 0;
+async function loadUsers() {
+  const { data: profiles } = await supabaseClient
+    .from("profiles")
+    .select("*");
 
-    const { data: deposits } = await supabaseClient
-      .from("deposits")
-      .select("amount");
+  const { data: balances } = await supabaseClient
+    .from("user_balances")
+    .select("*");
 
-    const totalDeposits = deposits ?
-      deposits.reduce((sum, r) => sum + Number(r.amount || 0), 0) : 0;
+  const table = document.querySelector("#usersTable tbody");
+  table.innerHTML = "";
 
-    document.getElementById("sum-users").innerText = totalUsers;
-    document.getElementById("sum-deposits").innerText = "$" + totalDeposits.toFixed(2);
-    document.getElementById("sum-balances").innerText = "$" + totalBalances.toFixed(2);
-  }
+  profiles.forEach(p => {
+    const bal = balances.find(b => b.id === p.id)?.balance || 0;
+    const kycStatus = (p.first_name && p.last_name && p.dob) ? "Complete" : "Incomplete";
 
-  async function loadUsers() {
-    const { data: authUsers } = await supabaseClient
-      .from("user_balances")
-      .select("id,balance");
-
-    const ids = (authUsers || []).map(u => u.id);
-    if (!ids.length) return;
-
-    const { data: profiles } = await supabaseClient
-      .from("profiles")
-      .select("*")
-      .in("id", ids);
-
-    const profilesMap = {};
-    (profiles || []).forEach(p => profilesMap[p.id] = p);
-
-    const { data: authEmails } = await supabaseClient
-      .from("auth_users_view")
-      .select("id,email")
-      .in("id", ids);
-
-    const emailMap = {};
-    (authEmails || []).forEach(u => emailMap[u.id] = u.email);
-
-    const tbody = document.getElementById("tbl-users");
-    tbody.innerHTML = "";
-
-    (authUsers || []).forEach(row => {
-      const p = profilesMap[row.id] || {};
-      const email = emailMap[row.id] || "(no email)";
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${email}</td>
-        <td>${(p.first_name || "")} ${(p.last_name || "")}</td>
+    table.innerHTML += `
+      <tr>
+        <td>${p.id}</td>
+        <td>${p.first_name || ""} ${p.last_name || ""}</td>
         <td>${p.mobile || ""}</td>
-        <td>${(p.address || "").slice(0,80)}</td>
-        <td>${p.bank_name || ""}</td>
-        <td>${p.account_number || ""}</td>
-        <td>$${Number(row.balance || 0).toFixed(2)}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+        <td>$${bal}</td>
+        <td>${kycStatus}</td>
+      </tr>
+    `;
+  });
+}
 
-  async function loadDeposits() {
-    const { data } = await supabaseClient
-      .from("deposits")
-      .select("user_id,amount,created_at,auth_email")
-      .order("created_at", { ascending:false })
-      .limit(100);
+async function loadDeposits() {
+  const { data } = await supabaseClient
+    .from("deposits")
+    .select("*, user_id")
+    .eq("status", "pending");
 
-    const tbody = document.getElementById("tbl-deposits");
-    tbody.innerHTML = "";
+  const table = document.querySelector("#depositsTable tbody");
+  table.innerHTML = "";
 
-    (data || []).forEach(row => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${row.user_id}</td>
-        <td>${row.auth_email || ""}</td>
-        <td>$${Number(row.amount || 0).toFixed(2)}</td>
-        <td>${new Date(row.created_at).toLocaleString()}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+  data.forEach(dep => {
+    table.innerHTML += `
+      <tr>
+        <td>${dep.user_id}</td>
+        <td>$${dep.amount}</td>
+        <td>${dep.status}</td>
+        <td><button class="btn btn-approve" onclick="approveDeposit(${dep.id}, ${dep.amount}, '${dep.user_id}')">Approve</button></td>
+        <td><button class="btn btn-reject" onclick="rejectDeposit(${dep.id})">Reject</button></td>
+      </tr>
+    `;
+  });
+}
 
-  async function loadPurchases() {
-    const { data } = await supabaseClient
-      .from("purchases")
-      .select("user_id,product_name,amount,created_at,auth_email")
-      .order("created_at", { ascending:false })
-      .limit(100);
+async function approveDeposit(id, amount, user_id) {
+  await supabaseClient.from("deposits").update({ status:"approved" }).eq("id", id);
 
-    const tbody = document.getElementById("tbl-purchases");
-    tbody.innerHTML = "";
+  const { data: bal } = await supabaseClient
+    .from("user_balances")
+    .select("balance")
+    .eq("id", user_id)
+    .single();
 
-    (data || []).forEach(row => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${row.user_id}</td>
-        <td>${row.auth_email || ""}</td>
-        <td>${row.product_name}</td>
-        <td>$${Number(row.amount || 0).toFixed(2)}</td>
-        <td>${new Date(row.created_at).toLocaleString()}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+  await supabaseClient
+    .from("user_balances")
+    .update({ balance: bal.balance + amount })
+    .eq("id", user_id);
 
-  function goMembers() {
-    window.location.href = "members.html";
-  }
+  loadDeposits();
+}
 
-  async function logout() {
-    await supabaseClient.auth.signOut();
-    window.location.href = "index.html";
-  }
+async function rejectDeposit(id) {
+  await supabaseClient.from("deposits").update({ status:"rejected" }).eq("id", id);
+  loadDeposits();
+}
 
-  init();
+async function loadPayouts() {
+  const { data } = await supabaseClient.from("payouts").select("*");
+  const table = document.querySelector("#payoutsTable tbody");
+  table.innerHTML = "";
+
+  data.forEach(p => {
+    table.innerHTML += `
+      <tr>
+        <td>${p.user_id}</td>
+        <td>$${p.amount}</td>
+        <td>${p.payout_date || ""}</td>
+        <td>${p.status}</td>
+      </tr>
+    `;
+  });
+}
+
+async function logout() {
+  await supabaseClient.auth.signOut();
+  window.location.href = "index.html";
+}
+
+loadAdmin();
 </script>
+
 </body>
 </html>
