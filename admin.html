@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Raversus Syndicates</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+    }
+
+    .header {
+      background: #020617;
+      padding: 16px 24px;
+      border-bottom:1px solid rgba(148,163,184,0.35);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-title{
+      font-size:20px;
+      font-weight:800;
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border:none;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .btn-primary { background:#2563eb; color:#fff; }
+    .btn-ghost { background:#111827; color:#e5e7eb; }
+
+    .container {
+      max-width: 1200px;
+      margin: 20px auto 40px;
+      padding: 0 16px;
+    }
+
+    h2 {
+      font-size:18px;
+      margin:24px 0 8px;
+      font-weight:700;
+    }
+
+    .card {
+      background:#020617;
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,0.35);
+      padding:16px;
+      margin-top:8px;
+      overflow:auto;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+    th,td {
+      padding:6px 8px;
+      border-bottom:1px solid rgba(30,41,59,0.9);
+      text-align:left;
+      vertical-align:top;
+    }
+    th {
+      background:#020617;
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+
+    .pill {
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:11px;
+    }
+    .pill-ok { background:#16a34a22; color:#4ade80; }
+    .pill-warn { background:#f9731622; color:#fdba74; }
+
+    .summary-row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .summary-card{
+      flex:1 1 180px;
+      background:#020617;
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,0.35);
+      padding:12px 14px;
+    }
+    .summary-label{ font-size:12px;color:#9ca3af; }
+    .summary-value{ font-size:18px;font-weight:700;margin-top:2px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">Admin Dashboard – Raversus Syndicates</div>
+  <div>
+    <button class="btn btn-ghost" onclick="goMembers()">Back to members</button>
+    <button class="btn btn-primary" onclick="logout()">Log out</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="summary-row">
+    <div class="summary-card">
+      <div class="summary-label">Total users</div>
+      <div id="sum-users" class="summary-value">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Total deposits (USD)</div>
+      <div id="sum-deposits" class="summary-value">–</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Total wallet balances (USD)</div>
+      <div id="sum-balances" class="summary-value">–</div>
+    </div>
+  </div>
+
+  <h2>Users & Profiles</h2>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Mobile</th>
+          <th>Address</th>
+          <th>Bank</th>
+          <th>Account</th>
+          <th>Balance (USD)</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-users"></tbody>
+    </table>
+  </div>
+
+  <h2>Deposits (latest 100)</h2>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Amount (USD)</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-deposits"></tbody>
+    </table>
+  </div>
+
+  <h2>Subscriptions & Purchases (latest 100)</h2>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Product</th>
+          <th>Amount (USD)</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-purchases"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://whnnyuozicuphrpgomno.supabase.co",
+    "YOUR_ANON_KEY_HERE",
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true
+      }
+    }
+  );
+
+  async function init() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    if (session.user.email !== "iedereesfrancis@gmail.com") {
+      alert("Admin only area.");
+      window.location.href = "members.html";
+      return;
+    }
+
+    await loadSummary();
+    await loadUsers();
+    await loadDeposits();
+    await loadPurchases();
+  }
+
+  async function loadSummary() {
+    const { data: balances } = await supabaseClient
+      .from("user_balances")
+      .select("id,balance");
+
+    const totalUsers = balances ? balances.length : 0;
+    const totalBalances = balances ?
+      balances.reduce((sum, r) => sum + Number(r.balance || 0), 0) : 0;
+
+    const { data: deposits } = await supabaseClient
+      .from("deposits")
+      .select("amount");
+
+    const totalDeposits = deposits ?
+      deposits.reduce((sum, r) => sum + Number(r.amount || 0), 0) : 0;
+
+    document.getElementById("sum-users").innerText = totalUsers;
+    document.getElementById("sum-deposits").innerText = "$" + totalDeposits.toFixed(2);
+    document.getElementById("sum-balances").innerText = "$" + totalBalances.toFixed(2);
+  }
+
+  async function loadUsers() {
+    const { data: authUsers } = await supabaseClient
+      .from("user_balances")
+      .select("id,balance");
+
+    const ids = (authUsers || []).map(u => u.id);
+    if (!ids.length) return;
+
+    const { data: profiles } = await supabaseClient
+      .from("profiles")
+      .select("*")
+      .in("id", ids);
+
+    const profilesMap = {};
+    (profiles || []).forEach(p => profilesMap[p.id] = p);
+
+    const { data: authEmails } = await supabaseClient
+      .from("auth_users_view")
+      .select("id,email")
+      .in("id", ids);
+
+    const emailMap = {};
+    (authEmails || []).forEach(u => emailMap[u.id] = u.email);
+
+    const tbody = document.getElementById("tbl-users");
+    tbody.innerHTML = "";
+
+    (authUsers || []).forEach(row => {
+      const p = profilesMap[row.id] || {};
+      const email = emailMap[row.id] || "(no email)";
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${email}</td>
+        <td>${(p.first_name || "")} ${(p.last_name || "")}</td>
+        <td>${p.mobile || ""}</td>
+        <td>${(p.address || "").slice(0,80)}</td>
+        <td>${p.bank_name || ""}</td>
+        <td>${p.account_number || ""}</td>
+        <td>$${Number(row.balance || 0).toFixed(2)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function loadDeposits() {
+    const { data } = await supabaseClient
+      .from("deposits")
+      .select("user_id,amount,created_at,auth_email")
+      .order("created_at", { ascending:false })
+      .limit(100);
+
+    const tbody = document.getElementById("tbl-deposits");
+    tbody.innerHTML = "";
+
+    (data || []).forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.user_id}</td>
+        <td>${row.auth_email || ""}</td>
+        <td>$${Number(row.amount || 0).toFixed(2)}</td>
+        <td>${new Date(row.created_at).toLocaleString()}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function loadPurchases() {
+    const { data } = await supabaseClient
+      .from("purchases")
+      .select("user_id,product_name,amount,created_at,auth_email")
+      .order("created_at", { ascending:false })
+      .limit(100);
+
+    const tbody = document.getElementById("tbl-purchases");
+    tbody.innerHTML = "";
+
+    (data || []).forEach(row => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.user_id}</td>
+        <td>${row.auth_email || ""}</td>
+        <td>${row.product_name}</td>
+        <td>$${Number(row.amount || 0).toFixed(2)}</td>
+        <td>${new Date(row.created_at).toLocaleString()}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function goMembers() {
+    window.location.href = "members.html";
+  }
+
+  async function logout() {
+    await supabaseClient.auth.signOut();
+    window.location.href = "index.html";
+  }
+
+  init();
+</script>
+</body>
+</html>
