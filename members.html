@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Member Dashboard | Raversus Syndicates</title>
+  <title>Member Dashboard | Deriv Syndicates</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -166,15 +166,15 @@
       background:#059669;
     }
 
-    /* Modal */
-    #depositModal {
+    /* Modals: deposit method, bank, XRP, payout */
+    .modal-bg {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.5);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index:50;
+      z-index: 50;
     }
 
     .modal-content {
@@ -202,6 +202,7 @@
       border: none;
       border-radius: 8px;
       font-weight: 700;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -210,7 +211,7 @@
 
   <div class="header">
     <div>
-      <div style="font-size:20px; font-weight:800;">Raversus Members Area</div>
+      <div style="font-size:20px; font-weight:800;">Deriv Members Area</div>
       <div id="welcome-line" style="font-size:13px;color:#666;"></div>
     </div>
     <div>
@@ -234,7 +235,12 @@
         monthly pools, and WhatsApp signals – all from this dashboard.
       </p>
 
-      <button class="deposit-btn" onclick="openDeposit()">Make a Deposit</button>
+      <div style="margin-top:8px;">
+        <button class="deposit-btn" onclick="openDeposit()">Make a Deposit</button>
+        <button class="deposit-btn" style="background:#111;margin-left:8px;" onclick="openPayout()">
+          Request Payout
+        </button>
+      </div>
       <div class="min-text" id="min-text"></div>
 
       <div class="bonus-box">
@@ -275,16 +281,73 @@
 
   </div>
 
-  <!-- Deposit Modal -->
-  <div id="depositModal">
+  <!-- DEPOSIT SELECT MODAL -->
+  <div id="depositModal" class="modal-bg">
     <div class="modal-content">
-      <h2>Deposit Funds</h2>
+      <h2>Select Deposit Method</h2>
       <p style="font-size:13px;color:#555;margin-top:4px;">
         Minimum first deposit: 50 USD (or local equivalent).
       </p>
-      <input id="depositAmount" type="number" placeholder="Enter amount in USD" />
-      <button class="modal-btn" onclick="submitDeposit()">Confirm Deposit</button>
-      <button class="modal-btn" style="background:#333; margin-top:8px" onclick="closeDeposit()">Cancel</button>
+      <button class="modal-btn" onclick="showBank()">Bank Deposit</button>
+      <button class="modal-btn" style="margin-top:8px;background:#111;" onclick="showXRP()">Deposit with XRP</button>
+      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeDeposit()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- BANK MODAL -->
+  <div id="bankModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Bank Deposit</h2>
+      <p><strong>Bank:</strong> Nedbank</p>
+      <p><strong>Account Number:</strong> 1236268857</p>
+      <p><strong>Reference:</strong> Your Name + Surname</p>
+      <p style="font-size:13px;color:#555;">
+        Enter the amount you are sending (in USD equivalent) so we can allocate it correctly.
+      </p>
+
+      <input id="bankAmount" type="number" placeholder="Amount in USD" />
+
+      <button class="modal-btn" onclick="submitDeposit('bank')">I've Deposited</button>
+      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeBank()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- XRP MODAL -->
+  <div id="xrpModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Deposit with XRP</h2>
+
+      <img src="images/xrp_qr.png" style="width:180px; margin:10px auto; display:block;">
+
+      <p style="font-size:13px;color:#111;">
+        <strong>Address:</strong><br>
+        rsRy14FvipgqudiGmptJBhr1RtpsgfzKMM
+      </p>
+      <p style="font-size:13px;color:#111;">
+        <strong>Tag:</strong> 1574868947
+      </p>
+
+      <p style="font-size:13px;color:#555;">
+        Send XRP, then enter the USD value you intended so we can match it on our side.
+      </p>
+
+      <input id="xrpAmount" type="number" placeholder="Amount in USD" />
+
+      <button class="modal-btn" onclick="submitDeposit('xrp')">I've Sent the XRP</button>
+      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeXRP()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- PAYOUT MODAL -->
+  <div id="payoutModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Payout Request</h2>
+      <p style="font-size:13px;color:#555;margin-top:4px;">
+        Enter the amount you want to withdraw from your USD wallet.
+      </p>
+      <input id="payoutAmount" type="number" placeholder="Amount in USD" />
+      <button class="modal-btn" onclick="submitPayout()">Submit Request</button>
+      <button class="modal-btn" style="margin-top:8px;background:#333;" onclick="closePayout()">Cancel</button>
     </div>
   </div>
 
@@ -471,7 +534,8 @@
       const balanceUsd = Number(bal.balance) || 0;
 
       if (balanceUsd < costUsd) {
-        alert("Insufficient balance. Please deposit more funds.");
+        alert("Insufficient balance. Please deposit more funds to join this option.");
+        openDeposit();
         return;
       }
 
@@ -528,27 +592,75 @@
       mark("btn-monthly", "monthly");
     }
 
-    // Deposit Modal
+    // ====== DEPOSIT MODALS & LOGIC (Bank / XRP) ======
     function openDeposit() {
       document.getElementById("depositModal").style.display = "flex";
     }
-
     function closeDeposit() {
       document.getElementById("depositModal").style.display = "none";
     }
 
-    async function submitDeposit() {
-      const amount = Number(document.getElementById("depositAmount").value);
+    function showBank() {
+      closeDeposit();
+      document.getElementById("bankModal").style.display = "flex";
+    }
+    function closeBank() {
+      document.getElementById("bankModal").style.display = "none";
+    }
+
+    function showXRP() {
+      closeDeposit();
+      document.getElementById("xrpModal").style.display = "flex";
+    }
+    function closeXRP() {
+      document.getElementById("xrpModal").style.display = "none";
+    }
+
+    async function submitDeposit(type) {
+      let amount = type === "bank"
+        ? Number(document.getElementById("bankAmount").value)
+        : Number(document.getElementById("xrpAmount").value);
 
       if (!amount || amount <= 0) {
-        alert("Enter a valid amount in USD.");
+        alert("Enter a valid amount in USD (or equivalent).");
         return;
       }
 
       await supabaseClient.from("deposits").insert({
         user_id: currentUser.id,
-        amount: amount
+        method: type,
+        amount: amount,
+        status: "pending"
       });
+
+      alert("Deposit submitted. Once we receive and allocate it, your wallet balance will update.");
+
+      if (type === "bank") {
+        document.getElementById("bankAmount").value = "";
+        closeBank();
+      } else {
+        document.getElementById("xrpAmount").value = "";
+        closeXRP();
+      }
+
+      await refreshBonusTiers();
+    }
+
+    // ====== PAYOUT MODAL & LOGIC ======
+    function openPayout() {
+      document.getElementById("payoutModal").style.display = "flex";
+    }
+    function closePayout() {
+      document.getElementById("payoutModal").style.display = "none";
+    }
+
+    async function submitPayout() {
+      const amount = Number(document.getElementById("payoutAmount").value);
+
+      if (!amount || amount <= 0) {
+        alert("Enter a valid amount in USD.");
+        return;
+      }
 
       const { data: bal } = await supabaseClient
         .from("user_balances")
@@ -556,18 +668,22 @@
         .eq("id", currentUser.id)
         .single();
 
-      const currentUsd = Number(bal.balance) || 0;
+      const balanceUsd = Number(bal.balance) || 0;
 
-      await supabaseClient
-        .from("user_balances")
-        .update({ balance: currentUsd + amount })
-        .eq("id", currentUser.id);
+      if (amount > balanceUsd) {
+        alert("You cannot request more than your available wallet balance.");
+        return;
+      }
 
-      alert("Deposit successful!");
-      document.getElementById("depositAmount").value = "";
-      closeDeposit();
-      await loadBalance();
-      await refreshBonusTiers();
+      await supabaseClient.from("payouts").insert({
+        user_id: currentUser.id,
+        amount: amount,
+        status: "pending"
+      });
+
+      alert("Payout request submitted. Admin will process it shortly.");
+      document.getElementById("payoutAmount").value = "";
+      closePayout();
     }
 
     // Navigation
