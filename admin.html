@@ -35,6 +35,7 @@
       background: #111827;
       color: #fff;
     }
+
     .logout-btn {
       background: #ef4444;
     }
@@ -62,14 +63,14 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     th, td {
       padding: 12px;
       border-bottom: 1px solid #e5e7eb;
-      font-size: 14px;
       text-align: left;
+      font-size: 14px;
     }
 
     th {
@@ -101,6 +102,7 @@
 
 <body>
 
+  <!-- ================= HEADER ================= -->
   <div class="header">
     <div>
       <h2 style="margin:0;font-weight:800;">Deriv Admin Console</h2>
@@ -114,12 +116,13 @@
   </div>
 
   <div class="container">
-    <!-- ------------------------ PENDING DEPOSITS ------------------------ -->
+
+    <!-- ================= PENDING DEPOSITS ================= -->
     <div class="card">
       <h1>Pending Deposits</h1>
-      <p>Approve bank / XRP deposits. On approval the amount is added to the member’s wallet.</p>
+      <p>Approve deposits to add balance to the user's Wallet.</p>
 
-      <table id="depositTable">
+      <table>
         <thead>
           <tr>
             <th>ID</th>
@@ -137,12 +140,12 @@
       </table>
     </div>
 
-    <!-- ------------------------ PENDING PAYOUTS ------------------------ -->
+    <!-- ================= PENDING PAYOUTS ================= -->
     <div class="card">
       <h1>Pending Payouts</h1>
-      <p>Mark payouts as paid. On approval the amount is subtracted from balance.</p>
+      <p>Approve payouts to subtract from the user's Wallet.</p>
 
-      <table id="payoutTable">
+      <table>
         <thead>
           <tr>
             <th>ID</th>
@@ -161,10 +164,10 @@
 
   </div>
 
-  <!-- ------------------------ JS ------------------------ -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
 
+    /* ================= SUPABASE ================= */
     const supabaseClient = supabase.createClient(
       "https://whnnyuozicuphrpgomno.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
@@ -172,15 +175,18 @@
 
     let currentUser = null;
 
+
+    /* ============================================================
+       LOAD ADMIN + VALIDATE ACCESS
+    ============================================================ */
     async function loadAdmin() {
       const { data: { session }} = await supabaseClient.auth.getSession();
-      if (!session) return window.location.href = "index.html";
+      if (!session) return (window.location.href = "index.html");
 
       currentUser = session.user;
 
-      // admin-only
       if (currentUser.email !== "iedereesfrancis@gmail.com") {
-        alert("Access denied.");
+        alert("Access Denied: Admin Only");
         window.location.href = "members.html";
         return;
       }
@@ -192,11 +198,14 @@
       loadPayouts();
     }
 
-    /* ========================= LOAD DEPOSITS ========================= */
+
+    /* ============================================================
+       LOAD PENDING DEPOSITS
+    ============================================================ */
     async function loadDeposits() {
       const { data, error } = await supabaseClient
         .from("deposits")
-        .select("id, user_id, method, amount, currency, status, created_at")
+        .select("*")
         .eq("status", "pending")
         .order("id", { ascending: true });
 
@@ -218,51 +227,68 @@
           <tr>
             <td>${row.id}</td>
             <td>${row.user_id}</td>
-            <td>${row.method || "-"}</td>
+            <td>${row.method}</td>
             <td>$${row.amount.toFixed(2)}</td>
             <td>${row.status}</td>
             <td>${row.created_at || ""}</td>
-            <td>
-              <button class="approve-btn" onclick="approveDeposit(${row.id}, '${row.user_id}', ${row.amount})">Approve</button>
-            </td>
+            <td><button class="approve-btn" onclick="approveDeposit(${row.id}, '${row.user_id}', ${row.amount})">Approve</button></td>
           </tr>
         `;
       });
     }
 
-    /* ========================= APPROVE DEPOSIT ========================= */
-    async function approveDeposit(id, user_id, amount) {
-      // Get user's balance
-      const { data } = await supabaseClient
+
+    /* ============================================================
+       APPROVE DEPOSIT + FIX BALANCE BUG (AUTO-CREATE ROW)
+    ============================================================ */
+    async function approveDeposit(depositId, user_id, amount) {
+
+      // 1. Ensure balance row exists
+      let { data: balanceRow } = await supabaseClient
         .from("user_balances")
-        .select("balance")
+        .select("*")
         .eq("id", user_id)
-        .single();
+        .maybeSingle();
 
-      const currentBalance = Number(data.balance || 0);
-      const newBalance = currentBalance + Number(amount);
+      if (!balanceRow) {
+        await supabaseClient.from("user_balances").insert({
+          id: user_id,
+          balance: 0
+        });
+        balanceRow = { balance: 0 };
+      }
 
-      // Update balance
-      await supabaseClient
+      const newBalance = Number(balanceRow.balance || 0) + Number(amount);
+
+      // 2. Update balance
+      const { error: balanceError } = await supabaseClient
         .from("user_balances")
         .update({ balance: newBalance })
         .eq("id", user_id);
 
-      // Update deposit status
+      if (balanceError) {
+        alert("Error updating balance: " + balanceError.message);
+        return;
+      }
+
+      // 3. Mark deposit as approved
       await supabaseClient
         .from("deposits")
         .update({ status: "approved" })
-        .eq("id", id);
+        .eq("id", depositId);
 
-      alert("Deposit approved & balance updated.");
+      alert("Deposit approved and balance updated!");
       loadDeposits();
     }
 
-    /* ========================= LOAD PAYOUTS ========================= */
+
+    /* ============================================================
+       LOAD PENDING PAYOUTS
+    ============================================================ */
     async function loadPayouts() {
       const { data, error } = await supabaseClient
         .from("payouts")
-        .select("id, user_id, amount, status, created_at")
+        .select("*")
         .eq("status", "pending")
         .order("id", { ascending: true });
 
@@ -287,31 +313,32 @@
             <td>$${row.amount.toFixed(2)}</td>
             <td>${row.status}</td>
             <td>${row.created_at || ""}</td>
-            <td>
-              <button class="approve-btn" onclick="approvePayout(${row.id}, '${row.user_id}', ${row.amount})">Mark Paid</button>
-            </td>
+            <td><button class="approve-btn" onclick="approvePayout(${row.id}, '${row.user_id}', ${row.amount})">Mark Paid</button></td>
           </tr>
         `;
       });
     }
 
-    /* ========================= APPROVE PAYOUT ========================= */
-    async function approvePayout(id, user_id, amount) {
-      // Get current balance
-      const { data } = await supabaseClient
+
+    /* ============================================================
+       APPROVE PAYOUT (subtract balance)
+    ============================================================ */
+    async function approvePayout(payoutId, user_id, amount) {
+
+      const { data: bal } = await supabaseClient
         .from("user_balances")
-        .select("balance")
+        .select("*")
         .eq("id", user_id)
         .single();
 
-      const currentBalance = Number(data.balance || 0);
+      const current = Number(bal.balance || 0);
 
-      if (amount > currentBalance) {
-        alert("Cannot approve. Balance too low.");
+      if (amount > current) {
+        alert("Insufficient balance to approve payout!");
         return;
       }
 
-      const newBalance = currentBalance - Number(amount);
+      const newBalance = current - Number(amount);
 
       await supabaseClient
         .from("user_balances")
@@ -321,13 +348,16 @@
       await supabaseClient
         .from("payouts")
         .update({ status: "paid" })
-        .eq("id", id);
+        .eq("id", payoutId);
 
-      alert("Payout approved & balance updated.");
+      alert("Payout approved!");
       loadPayouts();
     }
 
-    /* ========================= NAV ========================= */
+
+    /* ============================================================
+       NAVIGATION + LOGOUT
+    ============================================================ */
     function goMembers() { window.location.href = "members.html"; }
 
     async function logout() {
