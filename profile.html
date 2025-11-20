@@ -2,208 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Your Profile | Raversus Syndicates</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
+      padding: 0;
       font-family: 'Inter', sans-serif;
-      background: #0b1020;
-      color: #fff;
+      background: #f3f4f6;
+      color: #111;
     }
 
-    .wrap {
+    .container {
       max-width: 900px;
-      margin: 30px auto;
-      padding: 0 16px 40px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.12);
     }
 
-    h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
-      font-weight: 800;
-    }
-
-    .subtitle {
-      color: #c0c4d4;
-      margin-bottom: 24px;
-    }
-
-    form {
-      background: #151a2b;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 14px 40px rgba(0,0,0,0.35);
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px 24px;
-    }
+    h1 { font-size: 32px; font-weight: 800; }
+    h2 { font-size: 24px; margin-top: 30px; font-weight: 700; }
 
     label {
-      font-size: 13px;
-      color: #c0c4d4;
-      display:block;
-      margin-bottom:4px;
+      display: block;
+      margin-top: 18px;
+      font-weight: 600;
     }
 
-    input, textarea {
+    input, select {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
+      border: 1px solid #ccc;
       border-radius: 8px;
-      border: 1px solid #30364f;
-      background: #0f1523;
-      color: #fff;
-      font-size: 14px;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    .full-row {
-      grid-column: 1 / -1;
-    }
-
-    .btn-row {
-      grid-column: 1 / -1;
-      display:flex;
-      justify-content:flex-end;
-      gap:10px;
-      margin-top:10px;
+      margin-top: 6px;
+      font-size: 16px;
     }
 
     .btn {
-      padding: 10px 18px;
-      border-radius: 10px;
+      margin-top: 30px;
+      padding: 14px 20px;
+      background: #ff4459;
+      color: white;
       border: none;
+      border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
-      font-size: 14px;
+      width: 100%;
+      font-size: 18px;
     }
 
-    .btn-save {
-      background: #ff4459;
-      color:#fff;
+    .logout-btn {
+      margin-top: 20px;
+      width: 100%;
+      background: #111;
     }
-    .btn-back {
-      background:#2b3045;
-      color:#fff;
-    }
+
   </style>
 </head>
 <body>
 
-<div class="wrap">
-  <h1>Your Profile</h1>
-  <p class="subtitle">
-    Please complete your details below. This helps us personalise your dashboard and process payouts securely.
-  </p>
+  <div class="container">
+    <h1>Your Profile</h1>
+    <p>Please complete your profile so we can personalise your experience and enable payouts.</p>
 
-  <form id="profile-form" onsubmit="event.preventDefault(); saveProfile();">
-    <!-- Personal info -->
-    <div>
-      <label for="first_name">First name</label>
-      <input id="first_name" />
-    </div>
+    <form id="profileForm">
 
-    <div>
-      <label for="last_name">Surname</label>
-      <input id="last_name" />
-    </div>
+      <h2>Personal Information</h2>
 
-    <div>
-      <label for="dob">Date of birth</label>
-      <input id="dob" type="date" />
-    </div>
+      <label>First Name</label>
+      <input id="first_name">
 
-    <div>
-      <label for="mobile">Mobile number</label>
-      <input id="mobile" placeholder="+27..." />
-    </div>
+      <label>Last Name</label>
+      <input id="last_name">
 
-    <div class="full-row">
-      <label for="address">Residential address</label>
-      <textarea id="address" placeholder="Street, suburb, city, country"></textarea>
-    </div>
+      <label>Date of Birth</label>
+      <input id="dob" type="date">
 
-    <!-- Banking -->
-    <div>
-      <label for="bank_name">Bank name</label>
-      <input id="bank_name" />
-    </div>
+      <label>Mobile Number</label>
+      <input id="mobile" placeholder="e.g., +27 82 123 4567">
 
-    <div>
-      <label for="account_name">Account holder name</label>
-      <input id="account_name" />
-    </div>
+      <label>Home Address</label>
+      <input id="address">
 
-    <div>
-      <label for="account_number">Account number</label>
-      <input id="account_number" />
-    </div>
+      <h2>Banking Details (for payouts)</h2>
 
-    <div>
-      <label for="account_type">Account type</label>
-      <input id="account_type" placeholder="Cheque / Savings" />
-    </div>
+      <label>Bank Name</label>
+      <input id="bank_name">
 
-    <div>
-      <label for="branch_code">Branch code</label>
-      <input id="branch_code" />
-    </div>
+      <label>Account Holder Name</label>
+      <input id="account_name">
 
-    <div class="full-row">
-      <label for="payout_notes">Payout notes (optional)</label>
-      <textarea id="payout_notes" placeholder="Special payout preferences, e.g. preferred payout dates."></textarea>
-    </div>
+      <label>Account Number</label>
+      <input id="account_number">
 
-    <div class="btn-row">
-      <button type="button" class="btn btn-back" onclick="goBack()">Back to dashboard</button>
-      <button type="submit" class="btn btn-save">Save profile</button>
-    </div>
-  </form>
-</div>
+      <label>Account Type</label>
+      <select id="account_type">
+        <option value="Cheque">Cheque</option>
+        <option value="Savings">Savings</option>
+        <option value="Transmission">Transmission</option>
+      </select>
+
+      <label>Branch Code</label>
+      <input id="branch_code">
+
+      <label>Additional Notes</label>
+      <input id="payout_notes">
+
+      <button class="btn" onclick="saveProfile()">Save Profile</button>
+    </form>
+
+    <button class="btn logout-btn" onclick="logout()">Log Out</button>
+
+  </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const supabaseClient = supabase.createClient(
     "https://whnnyuozicuphrpgomno.supabase.co",
-    "YOUR_ANON_KEY_HERE",
-    {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true
-      }
-    }
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
+    { auth: { persistSession: true, autoRefreshToken: true } }
   );
 
-  let currentUser = null;
+  let sessionUser = null;
 
-  async function init() {
+  async function loadProfile() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
       window.location.href = "index.html";
       return;
     }
-    currentUser = session.user;
-    await loadProfile();
-  }
 
-  async function loadProfile() {
-    const { data, error } = await supabaseClient
+    sessionUser = session.user;
+
+    const { data } = await supabaseClient
       .from("profiles")
       .select("*")
-      .eq("id", currentUser.id)
+      .eq("id", sessionUser.id)
       .maybeSingle();
-
-    if (error) {
-      console.error(error);
-      return;
-    }
 
     if (data) {
       document.getElementById("first_name").value = data.first_name || "";
@@ -211,6 +150,7 @@
       document.getElementById("dob").value = data.dob || "";
       document.getElementById("mobile").value = data.mobile || "";
       document.getElementById("address").value = data.address || "";
+
       document.getElementById("bank_name").value = data.bank_name || "";
       document.getElementById("account_name").value = data.account_name || "";
       document.getElementById("account_number").value = data.account_number || "";
@@ -221,38 +161,35 @@
   }
 
   async function saveProfile() {
+    event.preventDefault();
+
     const payload = {
-      id: currentUser.id,
-      first_name: document.getElementById("first_name").value.trim(),
-      last_name: document.getElementById("last_name").value.trim(),
-      dob: document.getElementById("dob").value || null,
-      mobile: document.getElementById("mobile").value.trim(),
-      address: document.getElementById("address").value.trim(),
-      bank_name: document.getElementById("bank_name").value.trim(),
-      account_name: document.getElementById("account_name").value.trim(),
-      account_number: document.getElementById("account_number").value.trim(),
-      account_type: document.getElementById("account_type").value.trim(),
-      branch_code: document.getElementById("branch_code").value.trim(),
-      payout_notes: document.getElementById("payout_notes").value.trim()
+      id: sessionUser.id,
+      first_name: document.getElementById("first_name").value,
+      last_name: document.getElementById("last_name").value,
+      dob: document.getElementById("dob").value,
+      mobile: document.getElementById("mobile").value,
+      address: document.getElementById("address").value,
+      bank_name: document.getElementById("bank_name").value,
+      account_name: document.getElementById("account_name").value,
+      account_number: document.getElementById("account_number").value,
+      account_type: document.getElementById("account_type").value,
+      branch_code: document.getElementById("branch_code").value,
+      payout_notes: document.getElementById("payout_notes").value
     };
 
-    const { error } = await supabaseClient
-      .from("profiles")
-      .upsert(payload, { onConflict: "id" });
-
-    if (error) {
-      alert("Error saving profile: " + error.message);
-      return;
-    }
-
+    await supabaseClient.from("profiles").upsert(payload);
     alert("Profile saved!");
-  }
-
-  function goBack() {
     window.location.href = "members.html";
   }
 
-  init();
+  async function logout() {
+    await supabaseClient.auth.signOut();
+    window.location.href = "index.html";
+  }
+
+  loadProfile();
 </script>
+
 </body>
 </html>
