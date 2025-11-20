@@ -1,248 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Dashboard | Raversus</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Deriv Portal</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     body {
       margin: 0;
-      background: #f3f4f6;
-      font-family: "Inter", sans-serif;
+      font-family: 'Inter', sans-serif;
+      background: #f4f5f7;
+      color: #111;
     }
 
     .header {
       background: #111;
-      padding: 20px;
-      color: #fff;
-      font-size: 24px;
-      font-weight: 800;
-      text-align: center;
+      padding: 16px 24px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logout-btn {
+      background: #ff4459;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
     }
 
     .container {
-      max-width: 1300px;
+      max-width: 1200px;
       margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      padding: 0 16px;
     }
+
+    .section {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 26px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    h1 { font-weight: 800; margin-bottom: 14px; }
+    h2 { font-weight: 700; margin-bottom: 6px; }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 25px;
+      margin-top: 16px;
     }
 
     th, td {
       padding: 12px;
       border-bottom: 1px solid #ddd;
-      text-align: left;
+      font-size: 14px;
     }
 
     th {
-      background: #111;
-      color: #fff;
+      background: #fafafa;
       font-weight: 700;
+      text-align: left;
     }
 
     .btn {
-      padding: 10px 14px;
-      border-radius: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
       font-weight: 700;
       cursor: pointer;
-      border: none;
-      color: #fff;
+      color: white;
     }
 
-    .btn-approve { background: #22c55e; }
-    .btn-reject { background: #ef4444; }
+    .btn-black { background: #111; }
+    .btn-red { background: #ff4459; }
+    .btn-green { background: #0a9d57; }
 
-    .logout-btn {
-      background: #ff4459;
+    /* Modal */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: #fff;
+      width: 350px;
+      padding: 26px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .modal-content input {
       width: 100%;
-      margin-top: 30px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 12px;
+      font-size: 16px;
     }
-
-    h2 { font-size: 22px; margin-top:40px; }
   </style>
 </head>
+
 <body>
 
-  <div class="header">RAVERSUS – ADMIN DASHBOARD</div>
-
-  <div class="container">
-    <h2>Users</h2>
-    <table id="usersTable">
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>Name</th>
-          <th>Mobile</th>
-          <th>Balance</th>
-          <th>KYC</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <h2>Deposits (Pending)</h2>
-    <table id="depositsTable">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Amount</th>
-          <th>Status</th>
-          <th>Approve</th>
-          <th>Reject</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <h2>Payout Requests</h2>
-    <table id="payoutsTable">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Amount</th>
-          <th>Date</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <button class="btn logout-btn" onclick="logout()">Log Out</button>
+  <!-- HEADER -->
+  <div class="header">
+    <div style="font-size:20px; font-weight:800;">Admin Dashboard</div>
+    <button class="logout-btn" onclick="logout()">Log out</button>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const supabaseClient = supabase.createClient(
-  "https://whnnyuozicuphrpgomno.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
-  { auth: { persistSession: true, autoRefreshToken: true } }
-);
+  <div class="container">
+    
+    <!-- USERS TABLE -->
+    <div class="section">
+      <h1>Users</h1>
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>Available</th>
+            <th>Invested</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-let adminEmail = "iedereesfrancis@gmail.com";
-let sessionUser = null;
+    <!-- DEPOSITS -->
+    <div class="section">
+      <h1>Pending Deposits</h1>
+      <table id="depositTable">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Approve</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-async function loadAdmin() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
+    <!-- PAYOUTS -->
+    <div class="section">
+      <h1>Pending Payouts</h1>
+      <table id="payoutTable">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Approve</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
 
-  if (!session) return window.location.href = "index.html";
-  sessionUser = session.user;
+  </div>
 
-  if (sessionUser.email !== adminEmail) {
-    alert("Access denied: Admin only.");
-    return window.location.href = "members.html";
-  }
+  <!-- EDIT BALANCE MODAL -->
+  <div id="editModal" class="modal-bg">
+    <div class="modal-content">
+      <h2 id="editTitle">Edit Balance</h2>
+      <input id="editAmount" type="number" placeholder="Amount" />
+      <button class="btn btn-green" onclick="applyEdit()">Confirm</button>
+      <button class="btn btn-black" onclick="closeEdit()">Cancel</button>
+    </div>
+  </div>
 
-  loadUsers();
-  loadDeposits();
-  loadPayouts();
-}
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const ADMIN_EMAIL = "iedereesfrancis@gmail.com";
 
-async function loadUsers() {
-  const { data: profiles } = await supabaseClient
-    .from("profiles")
-    .select("*");
+    const supabaseClient = supabase.createClient(
+      "https://whnnyuozicuphrpgomno.supabase.co",
+      "YOUR_ANON_KEY_HERE",
+      { auth: { persistSession: true } }
+    );
 
-  const { data: balances } = await supabaseClient
-    .from("user_balances")
-    .select("*");
+    let currentUser = null;
+    let editTarget = null;
+    let editType = null;
 
-  const table = document.querySelector("#usersTable tbody");
-  table.innerHTML = "";
+    // =========================
+    // Verify Admin
+    // =========================
+    async function loadAdmin() {
+      const { data: { session }} = await supabaseClient.auth.getSession();
 
-  profiles.forEach(p => {
-    const bal = balances.find(b => b.id === p.id)?.balance || 0;
-    const kycStatus = (p.first_name && p.last_name && p.dob) ? "Complete" : "Incomplete";
+      if (!session || session.user.email !== ADMIN_EMAIL) {
+        alert("Access denied.");
+        window.location.href = "index.html";
+        return;
+      }
 
-    table.innerHTML += `
-      <tr>
-        <td>${p.id}</td>
-        <td>${p.first_name || ""} ${p.last_name || ""}</td>
-        <td>${p.mobile || ""}</td>
-        <td>$${bal}</td>
-        <td>${kycStatus}</td>
-      </tr>
-    `;
-  });
-}
+      currentUser = session.user;
+      loadUsers();
+      loadDeposits();
+      loadPayouts();
+    }
 
-async function loadDeposits() {
-  const { data } = await supabaseClient
-    .from("deposits")
-    .select("*, user_id")
-    .eq("status", "pending");
+    // =========================
+    // Load Users + Balances
+    // =========================
+    async function loadUsers() {
+      const { data: users } = await supabaseClient.from("profiles").select("*");
 
-  const table = document.querySelector("#depositsTable tbody");
-  table.innerHTML = "";
+      const { data: balances } = await supabaseClient
+        .from("user_balances")
+        .select("*");
 
-  data.forEach(dep => {
-    table.innerHTML += `
-      <tr>
-        <td>${dep.user_id}</td>
-        <td>$${dep.amount}</td>
-        <td>${dep.status}</td>
-        <td><button class="btn btn-approve" onclick="approveDeposit(${dep.id}, ${dep.amount}, '${dep.user_id}')">Approve</button></td>
-        <td><button class="btn btn-reject" onclick="rejectDeposit(${dep.id})">Reject</button></td>
-      </tr>
-    `;
-  });
-}
+      const map = {};
+      balances.forEach(b => map[b.id] = b);
 
-async function approveDeposit(id, amount, user_id) {
-  await supabaseClient.from("deposits").update({ status:"approved" }).eq("id", id);
+      let html = "";
+      users.forEach(u => {
+        const bal = map[u.id] || { balance: 0, invested_balance: 0 };
 
-  const { data: bal } = await supabaseClient
-    .from("user_balances")
-    .select("balance")
-    .eq("id", user_id)
-    .single();
+        html += `
+          <tr>
+            <td>${u.email}</td>
+            <td>${u.first_name || ""} ${u.last_name || ""}</td>
+            <td>${u.mobile || "-"}</td>
+            <td>$${Number(bal.balance).toFixed(2)}</td>
+            <td>$${Number(bal.invested_balance).toFixed(2)}</td>
+            <td>
+              <button class="btn btn-black" onclick="openEdit('${u.id}', 'available')">Edit Available</button>
+              <button class="btn btn-black" onclick="openEdit('${u.id}', 'invested')">Edit Invested</button>
+              <button class="btn btn-green" onclick="grow('${u.id}')">Grow Investment</button>
+            </td>
+          </tr>
+        `;
+      });
 
-  await supabaseClient
-    .from("user_balances")
-    .update({ balance: bal.balance + amount })
-    .eq("id", user_id);
+      document.querySelector("#userTable tbody").innerHTML = html;
+    }
 
-  loadDeposits();
-}
+    // =========================
+    // Grow Investment
+    // =========================
+    async function grow(userID) {
+      const amount = prompt("Enter profit amount to add to invested balance:");
 
-async function rejectDeposit(id) {
-  await supabaseClient.from("deposits").update({ status:"rejected" }).eq("id", id);
-  loadDeposits();
-}
+      if (!amount || Number(amount) <= 0) return alert("Invalid amount.");
 
-async function loadPayouts() {
-  const { data } = await supabaseClient.from("payouts").select("*");
-  const table = document.querySelector("#payoutsTable tbody");
-  table.innerHTML = "";
+      await supabaseClient
+        .from("user_balances")
+        .update({
+          invested_balance: supabaseClient.rpc('increment_value', { col: 'invested_balance', amount: Number(amount) })
+        })
+        .eq("id", userID);
 
-  data.forEach(p => {
-    table.innerHTML += `
-      <tr>
-        <td>${p.user_id}</td>
-        <td>$${p.amount}</td>
-        <td>${p.payout_date || ""}</td>
-        <td>${p.status}</td>
-      </tr>
-    `;
-  });
-}
+      alert("Investment increased.");
+      loadUsers();
+    }
 
-async function logout() {
-  await supabaseClient.auth.signOut();
-  window.location.href = "index.html";
-}
+    // =========================
+    // Edit Balances Manually
+    // =========================
+    function openEdit(id, type) {
+      editTarget = id;
+      editType = type;
+      document.getElementById("editModal").style.display = "flex";
+      document.getElementById("editTitle").innerText =
+        type === "available" ? "Edit Available Balance" : "Edit Invested Balance";
+    }
 
-loadAdmin();
-</script>
+    async function applyEdit() {
+      const amount = Number(document.getElementById("editAmount").value);
+      if (!amount) return alert("Invalid amount.");
+
+      const field = editType === "available" ? "balance" : "invested_balance";
+
+      await supabaseClient
+        .from("user_balances")
+        .update({ [field]: amount })
+        .eq("id", editTarget);
+
+      closeEdit();
+      loadUsers();
+    }
+
+    function closeEdit() {
+      document.getElementById("editModal").style.display = "none";
+      document.getElementById("editAmount").value = "";
+    }
+
+    // =========================
+    // Deposits
+    // =========================
+    async function loadDeposits() {
+      const { data } = await supabaseClient
+        .from("deposits")
+        .select("*, profiles(first_name, last_name, email)")
+        .eq("status", "pending");
+
+      let html = "";
+      data.forEach(d => {
+        html += `
+          <tr>
+            <td>${d.profiles.first_name} ${d.profiles.last_name} (${d.profiles.email})</td>
+            <td>$${Number(d.amount).toFixed(2)}</td>
+            <td>${d.method}</td>
+            <td>${d.status}</td>
+            <td><button class="btn btn-green" onclick="approveDeposit(${d.id}, '${d.user_id}', ${d.amount})">Approve</button></td>
+          </tr>
+        `;
+      });
+
+      document.querySelector("#depositTable tbody").innerHTML = html;
+    }
+
+    async function approveDeposit(depID, userID, amount) {
+      await supabaseClient
+        .from("deposits")
+        .update({ status: "approved" })
+        .eq("id", depID);
+
+      const { data: bal } = await supabaseClient
+        .from("user_balances")
+        .select("balance")
+        .eq("id", userID)
+        .single();
+
+      await supabaseClient
+        .from("user_balances")
+        .update({ balance: bal.balance + amount })
+        .eq("id", userID);
+
+      alert("Deposit approved.");
+      loadDeposits();
+      loadUsers();
+    }
+
+    // =========================
+    // Payouts
+    // =========================
+    async function loadPayouts() {
+      const { data } = await supabaseClient
+        .from("payouts")
+        .select("*, profiles(first_name, last_name, email)")
+        .eq("status", "pending");
+
+      let html = "";
+      data.forEach(p => {
+        html += `
+          <tr>
+            <td>${p.profiles.first_name} ${p.profiles.last_name} (${p.profiles.email})</td>
+            <td>$${Number(p.amount).toFixed(2)}</td>
+            <td>${p.status}</td>
+            <td><button class="btn btn-green" onclick="approvePayout(${p.id})">Approve</button></td>
+          </tr>
+        `;
+      });
+
+      document.querySelector("#payoutTable tbody").innerHTML = html;
+    }
+
+    async function approvePayout(payoutID) {
+      await supabaseClient
+        .from("payouts")
+        .update({ status: "approved" })
+        .eq("id", payoutID);
+
+      alert("Payout approved.");
+      loadPayouts();
+    }
+
+    // =========================
+    // Logout
+    // =========================
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = "index.html";
+    }
+
+    loadAdmin();
+  </script>
 
 </body>
 </html>
