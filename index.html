@@ -20,15 +20,13 @@
       --maxw: 1200px;
     }
     *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    html,body{ height:100%; margin:0; }
     body{
-      margin:0;
-      font-family:'Inter',system-ui,Segoe UI,Helvetica,Arial,sans-serif;
+      font-family:'Inter',sans-serif;
       color:var(--text);
       background:#000;
     }
 
-    /* ===== HERO WRAPPER ===== */
     .hero{
       position:relative;
       min-height:100vh;
@@ -45,7 +43,6 @@
       z-index:0;
     }
 
-    /* ===== HEADER ===== */
     .header-wrap{ display:flex; justify-content:center; z-index:2; }
     .header{
       width:100%; max-width:var(--maxw);
@@ -53,47 +50,79 @@
       backdrop-filter:saturate(1.2) blur(10px);
       border-radius:40px;
       padding:10px 18px;
-      display:flex; align-items:center; justify-content:space-between; gap:16px;
+      display:flex; align-items:center; justify-content:space-between;
       box-shadow:0 2px 12px rgba(0,0,0,.35);
     }
 
     .logo-row{display:flex;align-items:center;gap:10px;}
-    .logo-row img{ height:22px; width:auto; display:block; }
+    .logo-row img{ height:22px; }
     .years{ color:#3dd6ff; font-weight:700; font-size:12px; white-space:nowrap; }
 
-    .nav{ display:flex; align-items:center; gap:22px; font-size:14px; color:#fff; opacity:.95; }
-    .nav .item{ position:relative; display:flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;}
-    .nav .chev{ font-size:12px; opacity:.75; transform:translateY(-1px); }
-    .nav .ext{ font-size:13px; }
-
+    .nav{ display:flex; align-items:center; gap:22px; font-size:14px; }
     .right{ display:flex; align-items:center; gap:14px; }
-    .lang{ display:flex; align-items:center; gap:6px; font-size:14px; opacity:.95; }
-    .globe{ width:16px; height:16px; display:inline-block; }
+
     .btn{
       display:inline-flex; align-items:center; justify-content:center;
       padding:8px 16px; border-radius:var(--pill-radius);
-      font-weight:700; text-decoration:none; transition:.2s; white-space:nowrap;
-      cursor:pointer;
+      font-weight:700; cursor:pointer;
     }
-    .btn-outline{ border:2px solid var(--outline); color:#fff; background:transparent; }
+    .btn-outline{ border:2px solid var(--outline); color:#fff; }
     .btn-outline:hover{ background:#fff; color:#000; }
     .btn-red{ background:var(--brand-red); color:#fff; padding:10px 20px; }
     .btn-red:hover{ background:var(--brand-red-hover); }
 
-    /* ===== HERO CONTENT ===== */
-    .hero-inner{ position:relative; z-index:1; width:100%; max-width:var(--maxw); margin:48px auto 0; padding:0 6px; }
-    .kicker{ font-size:32px; font-weight:800; letter-spacing:-.01em; margin:12px 0 8px; }
-    .headline{ margin:0 0 12px 0; font-weight:900; font-size:clamp(52px, 9vw, 120px); line-height:0.96; letter-spacing:-.02em; }
-    .sub{ margin-top:14px; max-width:780px; color:var(--muted); font-size:16px; line-height:1.6; }
-    .hero-cta{ margin-top:28px; }
+    .hero-inner{ position:relative; z-index:1; max-width:var(--maxw); margin:48px auto 0; }
+    .headline{ font-weight:900; font-size:clamp(52px, 9vw, 120px); line-height:0.96; }
+    .kicker{ font-size:32px; font-weight:800; }
+    .sub{ margin-top:14px; max-width:780px; color:var(--muted); }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 900px){
-      .nav{ display:none; }
-      .years{ display:none; }
+    /* LOGIN MODAL */
+    #modal-bg {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.7);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      z-index:999;
+    }
+    #modal-box {
+      background:#111;
+      padding:30px;
+      border-radius:14px;
+      width:320px;
+      text-align:center;
+      box-shadow:0 4px 30px rgba(0,0,0,.4);
+    }
+    #modal-box input{
+      width:100%;
+      padding:12px;
+      margin-top:12px;
+      border-radius:8px;
+      border:none;
+      font-size:16px;
+    }
+    #modal-box button{
+      margin-top:14px;
+      width:100%;
+      padding:12px;
+      border-radius:8px;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .close-btn{
+      margin-top:12px;
+      background:#444;
+      color:white;
+    }
+    .email-btn{
+      background:var(--brand-red);
+      color:white;
     }
   </style>
 </head>
+
 <body>
 
   <section class="hero">
@@ -114,8 +143,8 @@
 
         <div class="right">
           <span class="lang">🌐 EN</span>
-          <button onclick="loginWithGoogle()" class="btn btn-outline">Log in</button>
-          <button onclick="loginWithGoogle()" class="btn btn-red">Open account</button>
+          <button class="btn btn-outline" onclick="openLogin()">Log in</button>
+          <button class="btn btn-red" onclick="openSignup()">Open account</button>
         </div>
       </div>
     </div>
@@ -128,31 +157,73 @@
       <p class="sub">Widest range of products with 24/7 customer support.</p>
 
       <div class="hero-cta">
-        <button onclick="loginWithGoogle()" class="btn btn-red" style="padding:14px 24px; font-size:16px;">Open account</button>
+        <button class="btn btn-red" style="padding:14px 24px; font-size:16px;" onclick="openSignup()">Open account</button>
       </div>
     </div>
   </section>
 
-<!-- SUPABASE LOGIN SCRIPT -->
+<!-- LOGIN MODAL -->
+<div id="modal-bg">
+  <div id="modal-box">
+    <h2 id="modal-title">Log in</h2>
+    
+    <input id="email" placeholder="Email"/>
+    <input id="password" type="password" placeholder="Password"/>
+
+    <button class="email-btn" id="modal-action" onclick="login()">Log in</button>
+    <button class="close-btn" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const supabaseClient = supabase.createClient(
     "https://whnnyuozicuphrpgomno.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
+    "YOUR_ANON_KEY_HERE"
   );
 
-  async function loginWithGoogle() {
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "https://iederees-create.github.io/deriv.com/members.html"
-      }
+  function openLogin() {
+    document.getElementById("modal-title").innerText = "Log in";
+    document.getElementById("modal-action").innerText = "Log in";
+    document.getElementById("modal-action").onclick = login;
+    document.getElementById("modal-bg").style.display = "flex";
+  }
+
+  function openSignup() {
+    document.getElementById("modal-title").innerText = "Create Account";
+    document.getElementById("modal-action").innerText = "Sign up";
+    document.getElementById("modal-action").onclick = signup;
+    document.getElementById("modal-bg").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("modal-bg").style.display = "none";
+  }
+
+  async function login() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
     });
 
-    if (error) {
-      console.error(error);
-      alert("Google login failed");
-    }
+    if (error) { alert(error.message); return; }
+
+    window.location.href = "https://iederees-create.github.io/deriv.com/members.html";
+  }
+
+  async function signup() {
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
+
+    const { error } = await supabaseClient.auth.signUp({ email, password });
+
+    if (error) { alert(error.message); return; }
+
+    alert("Account created! Please log in.");
+    closeModal();
   }
 </script>
 
