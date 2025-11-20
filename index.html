@@ -60,6 +60,7 @@
 
     .nav{ display:flex; align-items:center; gap:22px; font-size:14px; }
     .right{ display:flex; align-items:center; gap:14px; }
+    .lang{ display:flex; align-items:center; gap:6px; }
 
     .btn{
       display:inline-flex; align-items:center; justify-content:center;
@@ -120,6 +121,15 @@
       background:var(--brand-red);
       color:white;
     }
+    .helper-text{
+      margin-top:10px;
+      font-size:13px;
+      color:#bbb;
+    }
+    .helper-text span{
+      text-decoration:underline;
+      cursor:pointer;
+    }
   </style>
 </head>
 
@@ -154,7 +164,9 @@
       <h1 class="headline">Anyone</h1>
       <h1 class="headline">Anywhere</h1>
       <h1 class="headline">Anytime</h1>
-      <p class="sub">Widest range of products with 24/7 customer support.</p>
+      <p class="sub">
+        Start with a minimum deposit of 50 USD. Build your own combination of weekly syndicates, WhatsApp signals, and monthly pools.
+      </p>
 
       <div class="hero-cta">
         <button class="btn btn-red" style="padding:14px 24px; font-size:16px;" onclick="openSignup()">Open account</button>
@@ -166,12 +178,18 @@
 <div id="modal-bg">
   <div id="modal-box">
     <h2 id="modal-title">Log in</h2>
-    
-    <input id="email" placeholder="Email"/>
-    <input id="password" type="password" placeholder="Password"/>
+
+    <form id="auth-form" onsubmit="return false;">
+      <input id="email" type="email" placeholder="Email"/>
+      <input id="password" type="password" placeholder="Password"/>
+    </form>
 
     <button class="email-btn" id="modal-action" onclick="login()">Log in</button>
     <button class="close-btn" onclick="closeModal()">Cancel</button>
+
+    <div class="helper-text">
+      Forgot password? <span onclick="resetPassword()">Reset</span>
+    </div>
   </div>
 </div>
 
@@ -179,8 +197,7 @@
 <script>
   const supabaseClient = supabase.createClient(
     "https://whnnyuozicuphrpgomno.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ
-",
+    "YOUR_ANON_KEY_HERE",
     {
       auth: {
         persistSession: true,
@@ -188,6 +205,14 @@
       }
     }
   );
+
+  // If already logged in, go straight to members
+  (async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) {
+      window.location.href = "members.html";
+    }
+  })();
 
   function openLogin() {
     document.getElementById("modal-title").innerText = "Log in";
@@ -208,28 +233,40 @@
   }
 
   async function login() {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
+    let email = document.getElementById("email").value.trim();
+    let password = document.getElementById("password").value.trim();
 
-    const { error } = await supabaseClient.auth.signInWithPassword({
-      email, password
-    });
-
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) { alert(error.message); return; }
 
     window.location.href = "members.html";
   }
 
   async function signup() {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
+    let email = document.getElementById("email").value.trim();
+    let password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+      alert("Enter email and password.");
+      return;
+    }
 
     const { error } = await supabaseClient.auth.signUp({ email, password });
-
     if (error) { alert(error.message); return; }
 
     alert("Account created! Please log in.");
     closeModal();
+  }
+
+  async function resetPassword() {
+    let email = document.getElementById("email").value.trim();
+    if (!email) {
+      alert("Enter your email in the field first.");
+      return;
+    }
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+    if (error) alert(error.message);
+    else alert("If this email exists, a reset link was sent.");
   }
 </script>
 
