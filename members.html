@@ -183,22 +183,27 @@
     <!-- ====== CASHIER ====== -->
     <div class="cashier-box">
       <h1>Cashier</h1>
-      <p class="subtle">Your wallet for syndicates & premium services.</p>
+      <p class="subtle">Your wallet for syndicates, signals & premium tools.</p>
 
       <div id="balance" class="balance">–</div>
       <div id="balanceSub" class="balance-sub"></div>
 
-      <p>Add funds once (minimum 50 USD). Then join weekly / monthly syndicates and WhatsApp signals.</p>
+      <p>Add funds once (minimum 50 USD). Then join weekly / monthly syndicates, WhatsApp signals, and buy trading tools.</p>
 
       <div style="margin-top:8px;">
         <button class="deposit-btn" onclick="openDeposit()">Make a Deposit</button>
         <button class="deposit-btn" style="background:#111;margin-left:8px;" onclick="openPayout()">Request Payout</button>
       </div>
 
-      <div class="min-text" id="min-text"></div>
+      <div class="subtle" id="min-text" style="font-size:13px;margin-top:6px;"></div>
     </div>
 
+    <!-- ====== INVESTMENT OPTIONS ====== -->
     <h1>Investment Options</h1>
+    <p class="subtle">
+      Build your own mix. As long as you meet the minimum wallet deposit, you can subscribe to all three.
+    </p>
+
     <div class="product-grid">
       <div class="card">
         <h2>Weekly Trade Syndicate</h2>
@@ -219,6 +224,43 @@
         <p>Stable monthly compounding & reduced volatility.</p>
         <div id="price-monthly" class="price-pill"></div>
         <button id="btn-monthly" class="buy-btn" onclick="buyProduct('monthly')">Join Monthly Syndicate</button>
+      </div>
+
+      <!-- ====== NEW: BOT PRODUCT CARD ====== -->
+      <div class="card">
+        <h2>AutoTrader RSI Engine Pro (MT5 Bot)</h2>
+        <p>
+          Fully automated MT5 expert advisor using RSI-based logic, automatic stop loss,
+          and emotion-free execution. Downloadable bot file for MT5.
+        </p>
+        <div id="price-bot" class="price-pill"></div>
+        <button id="btn-bot" class="buy-btn" onclick="buyProduct('bot_rsi')">
+          Buy Trading Bot
+        </button>
+      </div>
+    </div>
+
+    <!-- ====== TOOLS & DOWNLOADS SECTION ====== -->
+    <h1 style="margin-top:32px;">Your Tools & Downloads</h1>
+    <p class="subtle">
+      Any bots or tools you purchase will appear here for download.
+    </p>
+
+    <div class="cashier-box">
+      <div id="bot-download-section" style="display:none;">
+        <h2 style="font-size:20px;margin:0 0 6px;">AutoTrader RSI Engine Pro (MT5 Bot)</h2>
+        <p class="subtle" style="margin-bottom:12px;">
+          You own this bot. Download the latest version of <strong>AutoTrader_RSI_Engine_Pro.zip</strong> below.
+        </p>
+        <button class="deposit-btn" id="download-bot-btn" style="margin-top:0;">
+          Download Bot
+        </button>
+        <button class="deposit-btn" id="bot-info-btn" style="background:#111;margin-left:8px;margin-top:0;">
+          What does this bot do?
+        </button>
+      </div>
+      <div id="no-tools" class="subtle" style="font-size:14px;">
+        Once you purchase tools like the AutoTrader RSI Engine Pro, they’ll show here for download.
       </div>
     </div>
 
@@ -278,6 +320,36 @@
     </div>
   </div>
 
+  <!-- ========================= BOT INFO MODAL ========================= -->
+  <div id="botInfoModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>About AutoTrader RSI Engine Pro</h2>
+      <p style="font-size:14px;color:#444;">
+        This MT5 bot automates trading based on RSI levels. It can:
+        <br><br>
+        • Monitor RSI on your chosen symbol & timeframe<br>
+        • Open buys when RSI is oversold and sells when RSI is overbought<br>
+        • Auto-apply stop loss using your configured points<br>
+        • Close opposite positions to keep the logic clean<br><br>
+        Always test on demo before going live and use it as a tool inside a risk-managed plan.
+      </p>
+      <button class="modal-btn" style="margin-top:12px;background:#333;" onclick="closeBotInfoModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- ========================= BOT DOWNLOAD MODAL ========================= -->
+  <div id="botDownloadModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Your bot download is ready</h2>
+      <p style="font-size:14px;color:#444;">
+        We’ve started the download of <strong>AutoTrader_RSI_Engine_Pro.zip</strong>.<br>
+        If it didn’t start automatically, click the button below.
+      </p>
+      <button class="modal-btn" id="botDownloadNowBtn">Download Again</button>
+      <button class="modal-btn" style="margin-top:8px;background:#333;" onclick="closeBotDownloadModal()">Close</button>
+    </div>
+  </div>
+
   <!-- ========================= JS ========================= -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -292,6 +364,9 @@
     let displayCurrency = "USD";
     let symbol = "$";
     let fxRate = 1;
+
+    // 🔗 Replace this with your real GitHub raw URL once the zip is uploaded
+    const BOT_DOWNLOAD_URL = "https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/raw/main/AutoTrader_RSI_Engine_Pro.zip";
 
     // ---------- GEO PRICING ----------
     function detectGeoPricing() {
@@ -328,7 +403,8 @@
       await ensureBalanceRow();
       await loadBalance();
       updatePrices();
-      markSubscriptions();
+      await markSubscriptions();
+      await checkBotOwnership();
     }
 
     async function ensureBalanceRow() {
@@ -353,14 +429,20 @@
         .eq("id", currentUser.id)
         .single();
 
-      const usd = Number(data.balance || 0);
+      const usd = Number(data?.balance || 0);
 
       document.getElementById("balance").innerText = formatAmount(usd);
       document.getElementById("balanceSub").innerText =
         "Balance stored in USD: $" + usd.toFixed(2);
     }
 
-    const PRICES_USD = { weekly: 50, signals: 15, monthly: 50 };
+    // Base prices in USD (wallet-based)
+    const PRICES_USD = { 
+      weekly: 50, 
+      signals: 15, 
+      monthly: 50,
+      bot_rsi: 40   // 🧠 you can change this bot price
+    };
 
     function updatePrices() {
       document.getElementById("price-weekly").innerText =
@@ -372,12 +454,19 @@
       document.getElementById("price-monthly").innerText =
         "Monthly: " + formatAmount(PRICES_USD.monthly);
 
+      document.getElementById("price-bot").innerText =
+        "One-time: " + formatAmount(PRICES_USD.bot_rsi);
+
       document.getElementById("min-text").innerText =
         "Minimum starting deposit: " + formatAmount(50);
     }
 
     async function buyProduct(key) {
       const cost = PRICES_USD[key];
+      if (!cost) {
+        alert("Unknown product selected.");
+        return;
+      }
 
       const { data } = await supabaseClient
         .from("user_balances")
@@ -385,7 +474,7 @@
         .eq("id", currentUser.id)
         .single();
 
-      const usd = Number(data.balance || 0);
+      const usd = Number(data?.balance || 0);
 
       if (usd < cost) {
         alert("Insufficient funds. Please deposit first.");
@@ -393,33 +482,71 @@
         return;
       }
 
-      const productName =
-        key === "weekly" ? "Weekly Trade Syndicate" :
-        key === "signals" ? "WhatsApp Signals Group" :
-        "Monthly Syndicate";
+      let productName = "";
+      let isBot = false;
 
-      await supabaseClient.from("purchases").insert({
+      if (key === "weekly") productName = "Weekly Trade Syndicate";
+      else if (key === "signals") productName = "WhatsApp Signals Group";
+      else if (key === "monthly") productName = "Monthly Syndicate";
+      else if (key === "bot_rsi") {
+        productName = "AutoTrader RSI Engine Pro (MT5 Bot)";
+        isBot = true;
+      } else {
+        productName = "Unknown Product";
+      }
+
+      // Record purchase
+      const { error: purchaseError } = await supabaseClient.from("purchases").insert({
         user_id: currentUser.id,
         product_key: key,
         product_name: productName,
         amount: cost
       });
 
-      await supabaseClient
+      if (purchaseError) {
+        console.error(purchaseError);
+        alert("Could not complete purchase. Please try again.");
+        return;
+      }
+
+      // Deduct from wallet
+      const { error: balError } = await supabaseClient
         .from("user_balances")
         .update({ balance: usd - cost })
         .eq("id", currentUser.id);
 
-      await supabaseClient.from("subscriptions").upsert({
-        user_id: currentUser.id,
-        product_key: key,
-        product_name: productName,
-        status: "active"
-      }, { onConflict: "user_id,product_key" });
+      if (balError) {
+        console.error(balError);
+        alert("Error updating balance. Contact support.");
+        return;
+      }
 
-      alert("You are now subscribed to " + productName);
       await loadBalance();
-      markSubscriptions();
+
+      if (isBot) {
+        // One-time product: no subscription entry, just unlock download
+        alert("You have purchased " + productName + ". Your download is ready.");
+        await checkBotOwnership();
+        openBotDownloadModal();
+        triggerBotDownload();
+      } else {
+        // Syndicates / Signals: subscription-style
+        const { error: subError } = await supabaseClient.from("subscriptions").upsert({
+          user_id: currentUser.id,
+          product_key: key,
+          product_name: productName,
+          status: "active"
+        }, { onConflict: "user_id,product_key" });
+
+        if (subError) {
+          console.error(subError);
+          alert("Purchase recorded but could not activate subscription. Contact support.");
+          return;
+        }
+
+        alert("You are now subscribed to " + productName);
+        await markSubscriptions();
+      }
     }
 
     async function markSubscriptions() {
@@ -428,7 +555,9 @@
         .select("product_key,status")
         .eq("user_id", currentUser.id);
 
-      const active = new Set((data || []).map(r => r.product_key));
+      const active = new Set((data || [])
+        .filter(r => r.status === "active")
+        .map(r => r.product_key));
 
       if (active.has("weekly")) {
         const btn = document.getElementById("btn-weekly");
@@ -445,6 +574,58 @@
         btn.innerText = "Active Subscription";
         btn.classList.add("subscribed");
       }
+    }
+
+    // ------- BOT OWNERSHIP CHECK -------
+    async function checkBotOwnership() {
+      const { data, error } = await supabaseClient
+        .from("purchases")
+        .select("product_key")
+        .eq("user_id", currentUser.id)
+        .eq("product_key", "bot_rsi");
+
+      const hasBot = data && data.length > 0;
+
+      const botSection = document.getElementById("bot-download-section");
+      const noTools = document.getElementById("no-tools");
+
+      if (hasBot) {
+        if (botSection) botSection.style.display = "block";
+        if (noTools) noTools.style.display = "none";
+      } else {
+        if (botSection) botSection.style.display = "none";
+        if (noTools) noTools.style.display = "block";
+      }
+    }
+
+    // ------- BOT DOWNLOAD HELPERS -------
+    function triggerBotDownload() {
+      if (!BOT_DOWNLOAD_URL || BOT_DOWNLOAD_URL.includes("YOUR_GITHUB_USERNAME")) {
+        alert("Download link not configured yet. Please contact support or update BOT_DOWNLOAD_URL.");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = BOT_DOWNLOAD_URL;
+      a.download = "";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function openBotDownloadModal() {
+      const modal = document.getElementById("botDownloadModal");
+      if (modal) modal.style.display = "flex";
+    }
+
+    function closeBotDownloadModal() {
+      const modal = document.getElementById("botDownloadModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function closeBotInfoModal() {
+      const modal = document.getElementById("botInfoModal");
+      if (modal) modal.style.display = "none";
     }
 
     // ------------------- DEPOSIT MODALS -------------------
@@ -471,7 +652,7 @@
 
       const { error } = await supabaseClient.from("deposits").insert({
         user_id: currentUser.id,
-        method: type,      // <--- NOW VALID (column added)
+        method: type,
         amount: amount,
         currency: "USD",
         status: "pending"
@@ -512,7 +693,7 @@
         .eq("id", currentUser.id)
         .single();
 
-      const balance = Number(data.balance || 0);
+      const balance = Number(data?.balance || 0);
 
       if (amount > balance) {
         alert("You cannot withdraw more than your balance.");
@@ -536,6 +717,26 @@
       await supabaseClient.auth.signOut();
       window.location.href = "index.html";
     }
+
+    // ------- WIRE BUTTONS FOR BOT MODALS & DOWNLOAD -------
+    document.addEventListener("DOMContentLoaded", () => {
+      const downloadBtn = document.getElementById("download-bot-btn");
+      const infoBtn = document.getElementById("bot-info-btn");
+      const dlAgainBtn = document.getElementById("botDownloadNowBtn");
+
+      if (downloadBtn) {
+        downloadBtn.addEventListener("click", triggerBotDownload);
+      }
+      if (infoBtn) {
+        infoBtn.addEventListener("click", () => {
+          const modal = document.getElementById("botInfoModal");
+          if (modal) modal.style.display = "flex";
+        });
+      }
+      if (dlAgainBtn) {
+        dlAgainBtn.addEventListener("click", triggerBotDownload);
+      }
+    });
 
     loadUser();
   </script>
