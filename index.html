@@ -1,274 +1,366 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Online broker for trading anytime, anywhere | Deriv</title>
-
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
 
   <style>
     :root{
-      --glass-bg: rgba(42,42,42,.88);
-      --text: #ffffff;
-      --muted: #d7d7d7;
-      --brand-red: #ff4459;
-      --brand-red-hover:#ff5f72;
-      --outline: #ffffff;
-      --pill-radius: 28px;
-      --maxw: 1200px;
+      --bg:#0b0b0f;
+      --card:#121218;
+      --text:#fff;
+      --muted:#a9a9b3;
+      --line:rgba(255,255,255,.14);
+      --red:#ff4459;
+      --red2:#ff5f72;
+      --ok:#38d39f;
+      --warn:#ffce5c;
+      --radius:16px;
     }
+
     *{ box-sizing:border-box; }
     html,body{ height:100%; margin:0; }
     body{
-      font-family:'Inter',sans-serif;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(900px 500px at 20% 20%, rgba(255,68,89,.18), transparent 55%),
+        radial-gradient(800px 500px at 80% 70%, rgba(56,211,159,.12), transparent 55%),
+        var(--bg);
       color:var(--text);
-      background:#000;
+      display:grid;
+      place-items:center;
     }
 
-    .hero{
-      position:relative;
-      min-height:100vh;
-      background:url("images/6757e5e572227e392b5db34e_background-new-p-1600.webp") center/cover no-repeat;
-      display:flex;
-      flex-direction:column;
-      padding:16px;
-      isolation:isolate;
-    }
-    .hero::before{
-      content:"";
-      position:absolute; inset:0;
-      background:linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.35) 45%, rgba(0,0,0,.15) 70%, rgba(0,0,0,0) 100%);
-      z-index:0;
-    }
-
-    .header-wrap{ display:flex; justify-content:center; z-index:2; }
-    .header{
-      width:100%; max-width:var(--maxw);
-      background:var(--glass-bg);
-      backdrop-filter:saturate(1.2) blur(10px);
-      border-radius:40px;
-      padding:10px 18px;
-      display:flex; align-items:center; justify-content:space-between;
-      box-shadow:0 2px 12px rgba(0,0,0,.35);
-    }
-
-    .logo-row{display:flex;align-items:center;gap:10px;}
-    .logo-row img{ height:22px; }
-    .years{ color:#3dd6ff; font-weight:700; font-size:12px; white-space:nowrap; }
-
-    .nav{ display:flex; align-items:center; gap:22px; font-size:14px; }
-    .right{ display:flex; align-items:center; gap:14px; }
-    .lang{ display:flex; align-items:center; gap:6px; }
-
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center;
-      padding:8px 16px; border-radius:var(--pill-radius);
-      font-weight:700; cursor:pointer;
-    }
-    .btn-outline{ border:2px solid var(--outline); color:#fff; }
-    .btn-outline:hover{ background:#fff; color:#000; }
-    .btn-red{ background:var(--brand-red); color:#fff; padding:10px 20px; }
-    .btn-red:hover{ background:var(--brand-red-hover); }
-
-    .hero-inner{ position:relative; z-index:1; max-width:var(--maxw); margin:48px auto 0; }
-    .headline{ font-weight:900; font-size:clamp(52px, 9vw, 120px); line-height:0.96; }
-    .kicker{ font-size:32px; font-weight:800; }
-    .sub{ margin-top:14px; max-width:780px; color:var(--muted); }
-
-    /* LOGIN MODAL */
-    #modal-bg {
+    /* Modal backdrop */
+    #modal-bg{
       position:fixed;
       inset:0;
-      background:rgba(0,0,0,0.7);
-      display:none;
-      justify-content:center;
+      background:rgba(0,0,0,.72);
+      display:flex;
       align-items:center;
-      z-index:999;
+      justify-content:center;
+      padding:18px;
     }
-    #modal-box {
-      background:#111;
-      padding:30px;
-      border-radius:14px;
-      width:320px;
-      text-align:center;
-      box-shadow:0 4px 30px rgba(0,0,0,.4);
+
+    /* Modal card */
+    #modal-box{
+      width:min(420px, 100%);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      backdrop-filter: blur(12px) saturate(1.2);
+      border-radius:var(--radius);
+      box-shadow: 0 18px 60px rgba(0,0,0,.55);
+      padding:18px;
     }
-    #modal-box input{
-      width:100%;
-      padding:12px;
-      margin-top:12px;
-      border-radius:8px;
-      border:none;
-      font-size:16px;
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:10px;
     }
-    #modal-box button{
-      margin-top:14px;
-      width:100%;
-      padding:12px;
-      border-radius:8px;
-      border:none;
-      font-weight:700;
+
+    .title{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+    }
+
+    .mode{
+      display:flex;
+      gap:8px;
+      margin:14px 0 12px;
+    }
+    .chip{
+      flex:1;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:800;
       cursor:pointer;
     }
-    .close-btn{
+    .chip.active{
+      border-color:rgba(255,68,89,.55);
+      box-shadow: 0 0 0 3px rgba(255,68,89,.14) inset;
+    }
+
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:12px 0 6px;
+    }
+    input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.25);
+      color:var(--text);
+      outline:none;
+      font-size:15px;
+    }
+    input:focus{
+      border-color: rgba(255,68,89,.55);
+      box-shadow: 0 0 0 4px rgba(255,68,89,.12);
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    button{
+      border:none;
+      border-radius:12px;
+      padding:12px 12px;
+      font-weight:900;
+      cursor:pointer;
+      width:100%;
+    }
+
+    .primary{
+      background:var(--red);
+      color:#fff;
+    }
+    .primary:hover{ background:var(--red2); }
+
+    .ghost{
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      border:1px solid var(--line);
+    }
+    .ghost:hover{ background:rgba(255,255,255,.10); }
+
+    .helper{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
       margin-top:12px;
-      background:#444;
-      color:white;
-    }
-    .email-btn{
-      background:var(--brand-red);
-      color:white;
-    }
-    .helper-text{
-      margin-top:10px;
       font-size:13px;
-      color:#bbb;
+      color:var(--muted);
     }
-    .helper-text span{
+    .link{
+      color:#fff;
       text-decoration:underline;
       cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .msg{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.22);
+      font-size:13px;
+      line-height:1.35;
+      display:none;
+    }
+    .msg.ok{ border-color: rgba(56,211,159,.55); display:block; }
+    .msg.warn{ border-color: rgba(255,206,92,.55); display:block; }
+    .msg.err{ border-color: rgba(255,68,89,.55); display:block; }
+
+    .tiny{
+      margin-top:12px;
+      color:rgba(255,255,255,.55);
+      font-size:12px;
+      line-height:1.35;
     }
   </style>
 </head>
 
 <body>
 
-  <section class="hero">
-    <div class="header-wrap">
-      <div class="header">
-        <div class="logo-row">
-          <img src="images/deriv-removebg-preview.png" alt="Deriv logo"/>
-          <span class="years">25 years</span>
+  <!-- LOGIN MODAL (always shown) -->
+  <div id="modal-bg" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div id="modal-box">
+      <div class="top">
+        <div>
+          <h1 class="title" id="modal-title">Welcome back</h1>
+          <p class="subtitle" id="modal-subtitle">Log in to continue to members.</p>
         </div>
+        <button class="ghost" id="xBtn" style="width:auto;padding:10px 12px;" title="Close">✕</button>
+      </div>
 
-        <nav class="nav">
-          <div class="item">Trading ⌄</div>
-          <div class="item">Platforms ⌄</div>
-          <div class="item">Support ⌄</div>
-          <div class="item">About ⌄</div>
-          <div class="item">Partners ↗</div>
-        </nav>
+      <div class="mode" role="tablist" aria-label="Auth mode">
+        <button class="chip active" id="loginTab" type="button">Log in</button>
+        <button class="chip" id="signupTab" type="button">Sign up</button>
+      </div>
 
-        <div class="right">
-          <span class="lang">🌐 EN</span>
-          <button class="btn btn-outline" onclick="openLogin()">Log in</button>
-          <button class="btn btn-red" onclick="openSignup()">Open account</button>
+      <form id="auth-form">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="you@email.com" autocomplete="email" required />
+
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required />
+
+        <div class="row">
+          <button class="primary" id="primaryBtn" type="submit">Log in</button>
         </div>
+      </form>
+
+      <div class="helper">
+        <span id="helperLeft">Forgot password?</span>
+        <span class="link" id="resetLink">Send reset link</span>
       </div>
-    </div>
 
-    <div class="hero-inner">
-      <div class="kicker">Trading for</div>
-      <h1 class="headline">Anyone</h1>
-      <h1 class="headline">Anywhere</h1>
-      <h1 class="headline">Anytime</h1>
-      <p class="sub">
-        Start with a minimum deposit of 50 USD. Build your own combination of weekly syndicates, WhatsApp signals, and monthly pools.
-      </p>
+      <div class="msg" id="msg"></div>
 
-      <div class="hero-cta">
-        <button class="btn btn-red" style="padding:14px 24px; font-size:16px;" onclick="openSignup()">Open account</button>
+      <div class="tiny">
+        If you’re already logged in, this page will auto-forward you to <b>members.html</b>.
       </div>
-    </div>
-  </section>
-
-<!-- LOGIN MODAL -->
-<div id="modal-bg">
-  <div id="modal-box">
-    <h2 id="modal-title">Log in</h2>
-
-    <form id="auth-form" onsubmit="return false;">
-      <input id="email" type="email" placeholder="Email"/>
-      <input id="password" type="password" placeholder="Password"/>
-    </form>
-
-    <button class="email-btn" id="modal-action" onclick="login()">Log in</button>
-    <button class="close-btn" onclick="closeModal()">Cancel</button>
-
-    <div class="helper-text">
-      Forgot password? <span onclick="resetPassword()">Reset</span>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const supabaseClient = supabase.createClient(
-    "https://whnnyuozicuphrpgomno.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
-    {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // --- Supabase client ---
+    const supabaseClient = supabase.createClient(
+      "https://whnnyuozicuphrpgomno.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycG9tbm8iLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc2MzUyOTcwMCwiZXhwIjoyMDc5MTA1NzAwfQ.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
+      { auth: { persistSession: true, autoRefreshToken: true } }
+    );
+
+    // --- UI state ---
+    let mode = "login"; // "login" | "signup"
+    const loginTab = document.getElementById("loginTab");
+    const signupTab = document.getElementById("signupTab");
+    const form = document.getElementById("auth-form");
+    const primaryBtn = document.getElementById("primaryBtn");
+    const title = document.getElementById("modal-title");
+    const subtitle = document.getElementById("modal-subtitle");
+    const resetLink = document.getElementById("resetLink");
+    const msg = document.getElementById("msg");
+    const xBtn = document.getElementById("xBtn");
+
+    function setMessage(type, text){
+      msg.className = "msg " + (type || "");
+      msg.textContent = text || "";
+      msg.style.display = text ? "block" : "none";
+    }
+
+    function setLoading(isLoading){
+      primaryBtn.disabled = isLoading;
+      primaryBtn.style.opacity = isLoading ? 0.75 : 1;
+      primaryBtn.style.cursor = isLoading ? "not-allowed" : "pointer";
+    }
+
+    function setMode(next){
+      mode = next;
+      const isLogin = mode === "login";
+      loginTab.classList.toggle("active", isLogin);
+      signupTab.classList.toggle("active", !isLogin);
+
+      title.textContent = isLogin ? "Welcome back" : "Create your account";
+      subtitle.textContent = isLogin
+        ? "Log in to continue to members."
+        : "Sign up, then you can log in (depending on email confirmation settings).";
+
+      primaryBtn.textContent = isLogin ? "Log in" : "Sign up";
+      document.getElementById("password").autocomplete = isLogin ? "current-password" : "new-password";
+
+      setMessage("", "");
+    }
+
+    loginTab.addEventListener("click", () => setMode("login"));
+    signupTab.addEventListener("click", () => setMode("signup"));
+
+    // Optional close behavior (you can remove this if you always want it visible)
+    xBtn.addEventListener("click", () => {
+      document.getElementById("modal-bg").style.display = "none";
+    });
+
+    // --- Auto-forward if session exists ---
+    (async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) window.location.href = "members.html";
+    })();
+
+    // Also forward on auth changes
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      if (session) window.location.href = "members.html";
+    });
+
+    // --- Submit handler (login/signup) ---
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setMessage("", "");
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password){
+        setMessage("warn", "Please enter both email and password.");
+        return;
       }
-    }
-  );
 
-  // If already logged in, go straight to members
-  (async () => {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session) {
-      window.location.href = "members.html";
-    }
-  })();
+      setLoading(true);
 
-  function openLogin() {
-    document.getElementById("modal-title").innerText = "Log in";
-    document.getElementById("modal-action").innerText = "Log in";
-    document.getElementById("modal-action").onclick = login;
-    document.getElementById("modal-bg").style.display = "flex";
-  }
+      try{
+        if (mode === "login"){
+          const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          // redirect happens via onAuthStateChange
+        } else {
+          const { data, error } = await supabaseClient.auth.signUp({ email, password });
+          if (error) throw error;
 
-  function openSignup() {
-    document.getElementById("modal-title").innerText = "Create Account";
-    document.getElementById("modal-action").innerText = "Sign up";
-    document.getElementById("modal-action").onclick = signup;
-    document.getElementById("modal-bg").style.display = "flex";
-  }
+          // Depending on your Supabase settings, user might need email confirmation
+          if (data?.session){
+            // already logged in, redirect via onAuthStateChange
+          } else {
+            setMessage("ok", "Sign up successful. Check your email if confirmation is required, then switch to Log in.");
+            setMode("login");
+          }
+        }
+      } catch (err){
+        setMessage("err", err?.message || "Something went wrong.");
+      } finally{
+        setLoading(false);
+      }
+    });
 
-  function closeModal() {
-    document.getElementById("modal-bg").style.display = "none";
-  }
+    // --- Password reset ---
+    resetLink.addEventListener("click", async () => {
+      setMessage("", "");
+      const email = document.getElementById("email").value.trim();
+      if (!email){
+        setMessage("warn", "Type your email first, then click reset.");
+        return;
+      }
 
-  async function login() {
-    let email = document.getElementById("email").value.trim();
-    let password = document.getElementById("password").value.trim();
+      setLoading(true);
+      try{
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          // Optional: set this to your deployed URL if you have a reset page
+          // redirectTo: window.location.origin + "/reset.html"
+        });
+        if (error) throw error;
 
-    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if (error) { alert(error.message); return; }
+        setMessage("ok", "If that email exists, a reset link was sent.");
+      } catch (err){
+        setMessage("err", err?.message || "Could not send reset email.");
+      } finally{
+        setLoading(false);
+      }
+    });
 
-    window.location.href = "members.html";
-  }
-
-  async function signup() {
-    let email = document.getElementById("email").value.trim();
-    let password = document.getElementById("password").value.trim();
-
-    if (!email || !password) {
-      alert("Enter email and password.");
-      return;
-    }
-
-    const { error } = await supabaseClient.auth.signUp({ email, password });
-    if (error) { alert(error.message); return; }
-
-    alert("Account created! Please log in.");
-    closeModal();
-  }
-
-  async function resetPassword() {
-    let email = document.getElementById("email").value.trim();
-    if (!email) {
-      alert("Enter your email in the field first.");
-      return;
-    }
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
-    if (error) alert(error.message);
-    else alert("If this email exists, a reset link was sent.");
-  }
-</script>
-
+    // Start in login mode
+    setMode("login");
+  </script>
 </body>
 </html>
