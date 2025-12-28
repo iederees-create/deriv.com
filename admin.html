@@ -36,9 +36,8 @@
       color: #fff;
     }
 
-    .logout-btn {
-      background: #ef4444;
-    }
+    .logout-btn { background: #ef4444; }
+    .ghost-btn { background: #374151; }
 
     .container {
       max-width: 1100px;
@@ -49,7 +48,7 @@
     h1 {
       font-size: 28px;
       font-weight: 800;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
 
     .card {
@@ -57,8 +56,10 @@
       padding: 24px;
       border-radius: 12px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      margin-bottom: 30px;
+      margin-bottom: 22px;
     }
+
+    .subtle { color:#6b7280; font-size: 14px; margin-top: 6px; }
 
     table {
       width: 100%;
@@ -71,11 +72,14 @@
       border-bottom: 1px solid #e5e7eb;
       text-align: left;
       font-size: 14px;
+      vertical-align: top;
     }
 
     th {
       background: #f9fafb;
-      font-weight: 700;
+      font-weight: 800;
+      font-size: 13px;
+      color:#111827;
     }
 
     .approve-btn {
@@ -86,17 +90,67 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 13px;
+      font-weight: 700;
     }
 
-    .deny-btn {
-      padding: 6px 12px;
-      background: #ef4444;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
+    .pill {
+      display:inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eef2ff;
+      color:#111827;
     }
+
+    .row {
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search {
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search input {
+      padding: 10px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      min-width: 260px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+    }
+
+    .toast {
+      display:none;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #111827;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .err {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #fee2e2;
+      color: #991b1b;
+      font-size: 13px;
+      font-weight: 700;
+      display:none;
+    }
+
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
   </style>
 </head>
 
@@ -105,22 +159,56 @@
   <!-- ================= HEADER ================= -->
   <div class="header">
     <div>
-      <h2 style="margin:0;font-weight:800;">Deriv Admin Console</h2>
+      <h2 style="margin:0;font-weight:900;">Deriv Admin Console</h2>
       <div id="admin-email" style="font-size:13px;color:#666;"></div>
     </div>
 
     <div>
-      <button class="btn" onclick="goMembers()">Back to Members</button>
+      <button class="btn ghost-btn" onclick="goMembers()">Back to Members</button>
       <button class="btn logout-btn" onclick="logout()">Log out</button>
     </div>
   </div>
 
   <div class="container">
 
+    <!-- ================= RECENT PURCHASES ================= -->
+    <div class="card">
+      <div class="row">
+        <div>
+          <h1 style="margin:0;">Recent Purchases</h1>
+          <div class="subtle">Shows who bought what (from the <span class="mono">purchases</span> table).</div>
+        </div>
+
+        <div class="search">
+          <input id="purchaseSearch" type="text" placeholder="Search email / product / key..." oninput="renderPurchases()">
+          <button class="btn" onclick="loadPurchases()">Refresh</button>
+        </div>
+      </div>
+
+      <div id="purchaseToast" class="toast"></div>
+      <div id="purchaseErr" class="err"></div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Buyer</th>
+            <th>Product</th>
+            <th>Key</th>
+            <th>Amount</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody id="purchaseBody">
+          <tr><td colspan="6">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
     <!-- ================= PENDING DEPOSITS ================= -->
     <div class="card">
       <h1>Pending Deposits</h1>
-      <p>Approve deposits to add balance to the user's Wallet.</p>
+      <p class="subtle">Approve deposits to add balance to the user's Wallet.</p>
 
       <table>
         <thead>
@@ -143,7 +231,7 @@
     <!-- ================= PENDING PAYOUTS ================= -->
     <div class="card">
       <h1>Pending Payouts</h1>
-      <p>Approve payouts to subtract from the user's Wallet.</p>
+      <p class="subtle">Approve payouts to subtract from the user's Wallet.</p>
 
       <table>
         <thead>
@@ -166,6 +254,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    const ADMIN_EMAIL = "iedereesfrancis@gmail.com";
 
     /* ================= SUPABASE ================= */
     const supabaseClient = supabase.createClient(
@@ -174,7 +263,33 @@
     );
 
     let currentUser = null;
+    let purchasesCache = [];
 
+    function setErr(msg) {
+      const el = document.getElementById("purchaseErr");
+      if (!el) return;
+      if (!msg) { el.style.display = "none"; el.textContent = ""; return; }
+      el.style.display = "block";
+      el.textContent = msg;
+    }
+
+    function toast(msg) {
+      const el = document.getElementById("purchaseToast");
+      if (!el) return;
+      el.textContent = msg;
+      el.style.display = "block";
+      setTimeout(() => { el.style.display = "none"; }, 3500);
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return "";
+      try {
+        const d = new Date(iso);
+        return d.toLocaleString();
+      } catch (e) {
+        return iso;
+      }
+    }
 
     /* ============================================================
        LOAD ADMIN + VALIDATE ACCESS
@@ -185,7 +300,7 @@
 
       currentUser = session.user;
 
-      if (currentUser.email !== "iedereesfrancis@gmail.com") {
+      if (currentUser.email !== ADMIN_EMAIL) {
         alert("Access Denied: Admin Only");
         window.location.href = "members.html";
         return;
@@ -194,10 +309,96 @@
       document.getElementById("admin-email").innerText =
         "Signed in as admin: " + currentUser.email;
 
-      loadDeposits();
-      loadPayouts();
+      // Load everything
+      await loadPurchases();
+      await loadDeposits();
+      await loadPayouts();
+
+      // Live updates for purchases
+      supabaseClient
+        .channel("purchases-live")
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "purchases" }, (payload) => {
+          const p = payload.new || {};
+          toast(`New purchase: ${(p.purchaser_email || p.user_id || "Someone")} bought ${(p.product_name || p.product_key || "a product")}`);
+          loadPurchases();
+        })
+        .subscribe();
     }
 
+    /* ============================================================
+       LOAD PURCHASES (RECENT)
+    ============================================================ */
+    async function loadPurchases() {
+      setErr("");
+
+      // Try selecting with purchaser_email first (best UX)
+      let res = await supabaseClient
+        .from("purchases")
+        .select("id,user_id,purchaser_email,product_key,product_name,amount,created_at")
+        .order("created_at", { ascending: false })
+        .limit(200);
+
+      // If that fails (e.g., purchaser_email column doesn’t exist), fallback
+      if (res.error && String(res.error.message || "").toLowerCase().includes("purchaser_email")) {
+        res = await supabaseClient
+          .from("purchases")
+          .select("id,user_id,product_key,product_name,amount,created_at")
+          .order("created_at", { ascending: false })
+          .limit(200);
+      }
+
+      const body = document.getElementById("purchaseBody");
+      if (!body) return;
+
+      if (res.error) {
+        console.error("Purchases load error:", res.error);
+        body.innerHTML = `<tr><td colspan="6">Could not load purchases.</td></tr>`;
+        setErr("Purchases not readable. If you see 'permission denied' in console, your RLS policy is blocking admin SELECT on purchases.");
+        return;
+      }
+
+      purchasesCache = res.data || [];
+      renderPurchases();
+    }
+
+    function renderPurchases() {
+      const body = document.getElementById("purchaseBody");
+      const q = (document.getElementById("purchaseSearch")?.value || "").trim().toLowerCase();
+
+      if (!body) return;
+
+      let rows = purchasesCache;
+
+      if (q) {
+        rows = rows.filter(r => {
+          const buyer = (r.purchaser_email || r.user_id || "").toLowerCase();
+          const pname = (r.product_name || "").toLowerCase();
+          const pkey  = (r.product_key || "").toLowerCase();
+          return buyer.includes(q) || pname.includes(q) || pkey.includes(q);
+        });
+      }
+
+      if (!rows.length) {
+        body.innerHTML = `<tr><td colspan="6">No purchases found.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = "";
+      rows.forEach(r => {
+        const buyer = r.purchaser_email || r.user_id || "";
+        const amount = (r.amount !== undefined && r.amount !== null) ? Number(r.amount).toFixed(2) : "";
+        body.innerHTML += `
+          <tr>
+            <td>${r.id ?? ""}</td>
+            <td><span class="pill">${buyer}</span></td>
+            <td>${r.product_name || ""}</td>
+            <td class="mono">${r.product_key || ""}</td>
+            <td>$${amount}</td>
+            <td>${fmtDate(r.created_at)}</td>
+          </tr>
+        `;
+      });
+    }
 
     /* ============================================================
        LOAD PENDING DEPOSITS
@@ -226,9 +427,9 @@
         body.innerHTML += `
           <tr>
             <td>${row.id}</td>
-            <td>${row.user_id}</td>
+            <td class="mono">${row.user_id}</td>
             <td>${row.method}</td>
-            <td>$${row.amount.toFixed(2)}</td>
+            <td>$${Number(row.amount).toFixed(2)}</td>
             <td>${row.status}</td>
             <td>${row.created_at || ""}</td>
             <td><button class="approve-btn" onclick="approveDeposit(${row.id}, '${row.user_id}', ${row.amount})">Approve</button></td>
@@ -237,13 +438,10 @@
       });
     }
 
-
     /* ============================================================
-       APPROVE DEPOSIT + FIX BALANCE BUG (AUTO-CREATE ROW)
+       APPROVE DEPOSIT (AUTO-CREATE BALANCE ROW)
     ============================================================ */
     async function approveDeposit(depositId, user_id, amount) {
-
-      // 1. Ensure balance row exists
       let { data: balanceRow } = await supabaseClient
         .from("user_balances")
         .select("*")
@@ -251,16 +449,12 @@
         .maybeSingle();
 
       if (!balanceRow) {
-        await supabaseClient.from("user_balances").insert({
-          id: user_id,
-          balance: 0
-        });
+        await supabaseClient.from("user_balances").insert({ id: user_id, balance: 0 });
         balanceRow = { balance: 0 };
       }
 
       const newBalance = Number(balanceRow.balance || 0) + Number(amount);
 
-      // 2. Update balance
       const { error: balanceError } = await supabaseClient
         .from("user_balances")
         .update({ balance: newBalance })
@@ -271,7 +465,6 @@
         return;
       }
 
-      // 3. Mark deposit as approved
       await supabaseClient
         .from("deposits")
         .update({ status: "approved" })
@@ -280,7 +473,6 @@
       alert("Deposit approved and balance updated!");
       loadDeposits();
     }
-
 
     /* ============================================================
        LOAD PENDING PAYOUTS
@@ -309,8 +501,8 @@
         body.innerHTML += `
           <tr>
             <td>${row.id}</td>
-            <td>${row.user_id}</td>
-            <td>$${row.amount.toFixed(2)}</td>
+            <td class="mono">${row.user_id}</td>
+            <td>$${Number(row.amount).toFixed(2)}</td>
             <td>${row.status}</td>
             <td>${row.created_at || ""}</td>
             <td><button class="approve-btn" onclick="approvePayout(${row.id}, '${row.user_id}', ${row.amount})">Mark Paid</button></td>
@@ -319,17 +511,20 @@
       });
     }
 
-
     /* ============================================================
        APPROVE PAYOUT (subtract balance)
     ============================================================ */
     async function approvePayout(payoutId, user_id, amount) {
-
-      const { data: bal } = await supabaseClient
+      const { data: bal, error } = await supabaseClient
         .from("user_balances")
         .select("*")
         .eq("id", user_id)
         .single();
+
+      if (error) {
+        alert("Could not load balance: " + error.message);
+        return;
+      }
 
       const current = Number(bal.balance || 0);
 
@@ -353,7 +548,6 @@
       alert("Payout approved!");
       loadPayouts();
     }
-
 
     /* ============================================================
        NAVIGATION + LOGOUT
