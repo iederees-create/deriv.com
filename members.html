@@ -226,7 +226,7 @@
         <button id="btn-monthly" class="buy-btn" onclick="buyProduct('monthly')">Join Monthly Syndicate</button>
       </div>
 
-      <!-- ====== NEW: BOT PRODUCT CARD ====== -->
+      <!-- ====== BOT PRODUCT CARD ====== -->
       <div class="card">
         <h2>AutoTrader RSI Engine Pro (MT5 Bot)</h2>
         <p>
@@ -234,17 +234,13 @@
           and emotion-free execution. Downloadable bot file for MT5.
         </p>
         <div id="price-bot" class="price-pill"></div>
-        <button id="btn-bot" class="buy-btn" onclick="buyProduct('bot_rsi')">
-          Buy Trading Bot
-        </button>
+        <button id="btn-bot" class="buy-btn" onclick="buyProduct('bot_rsi')">Buy Trading Bot</button>
       </div>
     </div>
 
     <!-- ====== TOOLS & DOWNLOADS SECTION ====== -->
     <h1 style="margin-top:32px;">Your Tools & Downloads</h1>
-    <p class="subtle">
-      Any bots or tools you purchase will appear here for download.
-    </p>
+    <p class="subtle">Any bots or tools you purchase will appear here for download.</p>
 
     <div class="cashier-box">
       <div id="bot-download-section" style="display:none;">
@@ -252,12 +248,8 @@
         <p class="subtle" style="margin-bottom:12px;">
           You own this bot. Download the latest version of <strong>AutoTrader_RSI_Engine_Pro.zip</strong> below.
         </p>
-        <button class="deposit-btn" id="download-bot-btn" style="margin-top:0;">
-          Download Bot
-        </button>
-        <button class="deposit-btn" id="bot-info-btn" style="background:#111;margin-left:8px;margin-top:0;">
-          What does this bot do?
-        </button>
+        <button class="deposit-btn" id="download-bot-btn" style="margin-top:0;">Download Bot</button>
+        <button class="deposit-btn" id="bot-info-btn" style="background:#111;margin-left:8px;margin-top:0;">What does this bot do?</button>
       </div>
       <div id="no-tools" class="subtle" style="font-size:14px;">
         Once you purchase tools like the AutoTrader RSI Engine Pro, they’ll show here for download.
@@ -287,7 +279,6 @@
       <p><strong>Reference:</strong> Your Name + Surname</p>
 
       <input id="bankAmount" type="number" placeholder="Amount in USD" />
-
       <button class="modal-btn" onclick="submitDeposit('bank')">I've Deposited</button>
       <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeBank()">Cancel</button>
     </div>
@@ -304,7 +295,6 @@
       <p><strong>Tag:</strong> 1574868947</p>
 
       <input id="xrpAmount" type="number" placeholder="Amount in USD" />
-
       <button class="modal-btn" onclick="submitDeposit('xrp')">I've Sent the XRP</button>
       <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeXRP()">Cancel</button>
     </div>
@@ -353,7 +343,6 @@
   <!-- ========================= JS ========================= -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-
     const supabaseClient = supabase.createClient(
       "https://whnnyuozicuphrpgomno.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
@@ -373,7 +362,6 @@
       try {
         const lang = navigator.language || "";
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-
         if (lang.includes("ZA") || tz.toLowerCase().includes("johannesburg")) {
           displayCurrency = "ZAR";
           symbol = "R";
@@ -397,8 +385,7 @@
       if (currentUser.email === "iedereesfrancis@gmail.com")
         document.getElementById("admin-btn").style.display = "inline-block";
 
-      document.getElementById("welcome-line").innerText =
-        "Signed in as " + currentUser.email;
+      document.getElementById("welcome-line").innerText = "Signed in as " + currentUser.email;
 
       await ensureBalanceRow();
       await loadBalance();
@@ -415,10 +402,7 @@
         .maybeSingle();
 
       if (!data) {
-        await supabaseClient.from("user_balances").insert({
-          id: currentUser.id,
-          balance: 0
-        });
+        await supabaseClient.from("user_balances").insert({ id: currentUser.id, balance: 0 });
       }
     }
 
@@ -430,43 +414,24 @@
         .single();
 
       const usd = Number(data?.balance || 0);
-
       document.getElementById("balance").innerText = formatAmount(usd);
-      document.getElementById("balanceSub").innerText =
-        "Balance stored in USD: $" + usd.toFixed(2);
+      document.getElementById("balanceSub").innerText = "Balance stored in USD: $" + usd.toFixed(2);
     }
 
     // Base prices in USD (wallet-based)
-    const PRICES_USD = { 
-      weekly: 50, 
-      signals: 15, 
-      monthly: 50,
-      bot_rsi: 40   // 🧠 you can change this bot price
-    };
+    const PRICES_USD = { weekly: 50, signals: 15, monthly: 50, bot_rsi: 40 };
 
     function updatePrices() {
-      document.getElementById("price-weekly").innerText =
-        "Weekly: " + formatAmount(PRICES_USD.weekly);
-
-      document.getElementById("price-signals").innerText =
-        "Signals: " + formatAmount(PRICES_USD.signals);
-
-      document.getElementById("price-monthly").innerText =
-        "Monthly: " + formatAmount(PRICES_USD.monthly);
-
-      document.getElementById("price-bot").innerText =
-        "One-time: " + formatAmount(PRICES_USD.bot_rsi);
-
-      document.getElementById("min-text").innerText =
-        "Minimum starting deposit: " + formatAmount(50);
+      document.getElementById("price-weekly").innerText = "Weekly: " + formatAmount(PRICES_USD.weekly);
+      document.getElementById("price-signals").innerText = "Signals: " + formatAmount(PRICES_USD.signals);
+      document.getElementById("price-monthly").innerText = "Monthly: " + formatAmount(PRICES_USD.monthly);
+      document.getElementById("price-bot").innerText = "One-time: " + formatAmount(PRICES_USD.bot_rsi);
+      document.getElementById("min-text").innerText = "Minimum starting deposit: " + formatAmount(50);
     }
 
     async function buyProduct(key) {
       const cost = PRICES_USD[key];
-      if (!cost) {
-        alert("Unknown product selected.");
-        return;
-      }
+      if (!cost) return alert("Unknown product selected.");
 
       const { data } = await supabaseClient
         .from("user_balances")
@@ -488,16 +453,13 @@
       if (key === "weekly") productName = "Weekly Trade Syndicate";
       else if (key === "signals") productName = "WhatsApp Signals Group";
       else if (key === "monthly") productName = "Monthly Syndicate";
-      else if (key === "bot_rsi") {
-        productName = "AutoTrader RSI Engine Pro (MT5 Bot)";
-        isBot = true;
-      } else {
-        productName = "Unknown Product";
-      }
+      else if (key === "bot_rsi") { productName = "AutoTrader RSI Engine Pro (MT5 Bot)"; isBot = true; }
+      else productName = "Unknown Product";
 
-      // Record purchase
+      // ✅ Record purchase + store buyer email for admin dashboard
       const { error: purchaseError } = await supabaseClient.from("purchases").insert({
         user_id: currentUser.id,
+        purchaser_email: currentUser.email,
         product_key: key,
         product_name: productName,
         amount: cost
@@ -524,13 +486,11 @@
       await loadBalance();
 
       if (isBot) {
-        // One-time product: no subscription entry, just unlock download
         alert("You have purchased " + productName + ". Your download is ready.");
         await checkBotOwnership();
         openBotDownloadModal();
         triggerBotDownload();
       } else {
-        // Syndicates / Signals: subscription-style
         const { error: subError } = await supabaseClient.from("subscriptions").upsert({
           user_id: currentUser.id,
           product_key: key,
@@ -576,9 +536,8 @@
       }
     }
 
-    // ------- BOT OWNERSHIP CHECK -------
     async function checkBotOwnership() {
-      const { data, error } = await supabaseClient
+      const { data } = await supabaseClient
         .from("purchases")
         .select("product_key")
         .eq("user_id", currentUser.id)
@@ -590,15 +549,14 @@
       const noTools = document.getElementById("no-tools");
 
       if (hasBot) {
-        if (botSection) botSection.style.display = "block";
-        if (noTools) noTools.style.display = "none";
+        botSection.style.display = "block";
+        noTools.style.display = "none";
       } else {
-        if (botSection) botSection.style.display = "none";
-        if (noTools) noTools.style.display = "block";
+        botSection.style.display = "none";
+        noTools.style.display = "block";
       }
     }
 
-    // ------- BOT DOWNLOAD HELPERS -------
     function triggerBotDownload() {
       if (!BOT_DOWNLOAD_URL || BOT_DOWNLOAD_URL.includes("YOUR_GITHUB_USERNAME")) {
         alert("Download link not configured yet. Please contact support or update BOT_DOWNLOAD_URL.");
@@ -617,28 +575,22 @@
       const modal = document.getElementById("botDownloadModal");
       if (modal) modal.style.display = "flex";
     }
-
     function closeBotDownloadModal() {
       const modal = document.getElementById("botDownloadModal");
       if (modal) modal.style.display = "none";
     }
-
     function closeBotInfoModal() {
       const modal = document.getElementById("botInfoModal");
       if (modal) modal.style.display = "none";
     }
 
-    // ------------------- DEPOSIT MODALS -------------------
     function openDeposit() { document.getElementById("depositModal").style.display = "flex"; }
     function closeDeposit() { document.getElementById("depositModal").style.display = "none"; }
-
     function showBank() { closeDeposit(); document.getElementById("bankModal").style.display = "flex"; }
     function closeBank() { document.getElementById("bankModal").style.display = "none"; }
-
     function showXRP() { closeDeposit(); document.getElementById("xrpModal").style.display = "flex"; }
     function closeXRP() { document.getElementById("xrpModal").style.display = "none"; }
 
-    // ------------------- FIXED DEPOSIT INSERT -------------------
     async function submitDeposit(type) {
       let amount =
         type === "bank"
@@ -675,7 +627,6 @@
       }
     }
 
-    // ------------------- PAYOUT -------------------
     function openPayout() { document.getElementById("payoutModal").style.display = "flex"; }
     function closePayout() { document.getElementById("payoutModal").style.display = "none"; }
 
@@ -718,24 +669,17 @@
       window.location.href = "index.html";
     }
 
-    // ------- WIRE BUTTONS FOR BOT MODALS & DOWNLOAD -------
     document.addEventListener("DOMContentLoaded", () => {
       const downloadBtn = document.getElementById("download-bot-btn");
       const infoBtn = document.getElementById("bot-info-btn");
       const dlAgainBtn = document.getElementById("botDownloadNowBtn");
 
-      if (downloadBtn) {
-        downloadBtn.addEventListener("click", triggerBotDownload);
-      }
-      if (infoBtn) {
-        infoBtn.addEventListener("click", () => {
-          const modal = document.getElementById("botInfoModal");
-          if (modal) modal.style.display = "flex";
-        });
-      }
-      if (dlAgainBtn) {
-        dlAgainBtn.addEventListener("click", triggerBotDownload);
-      }
+      if (downloadBtn) downloadBtn.addEventListener("click", triggerBotDownload);
+      if (infoBtn) infoBtn.addEventListener("click", () => {
+        const modal = document.getElementById("botInfoModal");
+        if (modal) modal.style.display = "flex";
+      });
+      if (dlAgainBtn) dlAgainBtn.addEventListener("click", triggerBotDownload);
     });
 
     loadUser();
