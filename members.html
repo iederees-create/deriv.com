@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Member Dashboard | Deriv Syndicates</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
 
     .header {
       background: #ffffff;
-      padding: 16px 24px;
+      padding: 14px 16px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       display: flex;
       justify-content: space-between;
@@ -25,67 +25,70 @@
       position: sticky;
       top: 0;
       z-index: 10;
+      gap: 10px;
+      flex-wrap: wrap; /* ✅ stops buttons getting cropped on small screens */
+    }
+
+    .header-left { min-width: 220px; }
+    .header-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;           /* ✅ wrap instead of pushing off-screen */
+      justify-content:flex-end;
+      align-items:center;
     }
 
     .logout-btn, .profile-btn, .admin-btn {
-      padding: 8px 14px;
-      border-radius: 8px;
+      padding: 10px 14px;
+      border-radius: 10px;
       background: #ff4459;
       color: #fff;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       border: none;
-      margin-left: 8px;
+      margin: 0;               /* ✅ remove left margin that causes overflow */
+      white-space: nowrap;
     }
-    .profile-btn { background:#333; }
+    .profile-btn { background:#111; }
     .admin-btn { background:#0b7bd3; }
 
     .container {
       max-width: 1100px;
-      margin: 30px auto;
+      margin: 26px auto;
       padding: 0 16px 40px;
     }
 
-    h1 {
-      font-size: 26px;
-      margin-bottom: 10px;
-      font-weight: 800;
-    }
-
-    .subtle { color:#555; margin-bottom: 24px; }
+    h1 { font-size: 26px; margin-bottom: 10px; font-weight: 900; }
+    .subtle { color:#555; margin-bottom: 18px; }
 
     .cashier-box {
       background: #fff;
-      padding: 24px;
+      padding: 22px;
       border-radius: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
 
-    .balance { font-size: 32px; font-weight: 900; margin: 10px 0 2px; }
-
-    .balance-sub {
-      font-size:13px;
-      color:#777;
-      margin-bottom:10px;
-    }
+    .balance { font-size: 34px; font-weight: 900; margin: 10px 0 2px; }
+    .balance-sub { font-size:13px; color:#777; margin-bottom:10px; }
 
     .deposit-btn {
-      padding: 12px 18px;
+      padding: 12px 16px;
       background: #ff4459;
       color: white;
-      border-radius: 8px;
-      font-weight: 700;
+      border-radius: 10px;
+      font-weight: 800;
       margin-top: 8px;
       cursor: pointer;
       border: none;
+      white-space: nowrap;
     }
 
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 24px;
-      margin-top: 20px;
+      gap: 22px;
+      margin-top: 18px;
     }
 
     .card {
@@ -94,18 +97,17 @@
       border-radius: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-
-    .card h2 { margin: 0; font-size: 20px; font-weight: 800; }
+    .card h2 { margin: 0; font-size: 20px; font-weight: 900; }
 
     .price-pill {
       display:inline-block;
       margin-top:6px;
       font-size:13px;
-      padding:4px 10px;
+      padding:6px 10px;
       border-radius:999px;
       background:#eef2ff;
       color:#111827;
-      font-weight:600;
+      font-weight:700;
     }
 
     .buy-btn {
@@ -114,73 +116,124 @@
       background: #111;
       color: white;
       border: none;
-      border-radius: 8px;
-      font-weight: 700;
+      border-radius: 10px;
+      font-weight: 800;
       cursor: pointer;
       width: 100%;
     }
     .buy-btn.subscribed { background:#059669; }
+    .buy-btn:disabled { opacity:.6; cursor:not-allowed; }
 
     /* ---- MODALS ---- */
     .modal-bg {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.55);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 50;
+      padding: 16px;
     }
 
     .modal-content {
       background: #fff;
-      padding: 24px;
-      border-radius: 12px;
-      width: 320px;
+      padding: 22px;
+      border-radius: 14px;
+      width: min(420px, 100%);
       text-align: center;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.25);
     }
 
     .modal-content input {
       width: 100%;
       padding: 10px;
       margin: 12px 0;
-      border-radius: 8px;
+      border-radius: 10px;
       border: 1px solid #ccc;
       font-size: 16px;
     }
 
     .modal-btn {
-      padding: 10px;
+      padding: 12px;
       width: 100%;
       background: #ff4459;
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-weight: 700;
+      border-radius: 10px;
+      font-weight: 900;
       cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .asset-list{
+      margin-top: 10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      text-align:left;
+    }
+
+    .asset-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:12px;
+      background:#fafafa;
+    }
+
+    .asset-name{
+      font-size:13px;
+      font-weight:800;
+      color:#111;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width: 240px;
+    }
+
+    .asset-dl{
+      padding:10px 12px;
+      border-radius:10px;
+      border:none;
+      cursor:pointer;
+      background:#111;
+      color:#fff;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .tiny-link{
+      display:inline-block;
+      margin-top:10px;
+      font-size:12px;
+      color:#0b7bd3;
+      font-weight:800;
+      text-decoration:underline;
+      cursor:pointer;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ========================= HEADER ========================= -->
   <div class="header">
-    <div>
-      <div style="font-size:20px; font-weight:800;">Deriv Members Area</div>
+    <div class="header-left">
+      <div style="font-size:20px; font-weight:900;">Deriv Members Area</div>
       <div id="welcome-line" style="font-size:13px;color:#666;"></div>
     </div>
-    <div>
+    <div class="header-actions">
       <button class="profile-btn" onclick="goProfile()">Profile / Banking</button>
       <button class="admin-btn" id="admin-btn" style="display:none;" onclick="goAdmin()">Admin</button>
       <button class="logout-btn" onclick="logout()">Log out</button>
     </div>
   </div>
 
-  <!-- ========================= BODY ========================= -->
   <div class="container">
 
-    <!-- ====== CASHIER ====== -->
     <div class="cashier-box">
       <h1>Cashier</h1>
       <p class="subtle">Your wallet for syndicates, signals & premium tools.</p>
@@ -198,11 +251,8 @@
       <div class="subtle" id="min-text" style="font-size:13px;margin-top:6px;"></div>
     </div>
 
-    <!-- ====== INVESTMENT OPTIONS ====== -->
     <h1>Investment Options</h1>
-    <p class="subtle">
-      Build your own mix. As long as you meet the minimum wallet deposit, you can subscribe to all three.
-    </p>
+    <p class="subtle">Build your own mix. As long as you meet the minimum wallet deposit, you can subscribe to all three.</p>
 
     <div class="product-grid">
       <div class="card">
@@ -214,7 +264,7 @@
 
       <div class="card">
         <h2>WhatsApp Signals</h2>
-        <p>Ask for signals on any chart — anytime.</p>
+        <p>Ask for signals on any chart anytime.</p>
         <div id="price-signals" class="price-pill"></div>
         <button id="btn-signals" class="buy-btn" onclick="buyProduct('signals')">Join Signals Group</button>
       </div>
@@ -226,7 +276,6 @@
         <button id="btn-monthly" class="buy-btn" onclick="buyProduct('monthly')">Join Monthly Syndicate</button>
       </div>
 
-      <!-- ====== BOT PRODUCT CARD ====== -->
       <div class="card">
         <h2>AutoTrader RSI Engine Pro (MT5 Bot)</h2>
         <p>
@@ -238,7 +287,6 @@
       </div>
     </div>
 
-    <!-- ====== TOOLS & DOWNLOADS SECTION ====== -->
     <h1 style="margin-top:32px;">Your Tools & Downloads</h1>
     <p class="subtle">Any bots or tools you purchase will appear here for download.</p>
 
@@ -246,11 +294,16 @@
       <div id="bot-download-section" style="display:none;">
         <h2 style="font-size:20px;margin:0 0 6px;">AutoTrader RSI Engine Pro (MT5 Bot)</h2>
         <p class="subtle" style="margin-bottom:12px;">
-          You own this bot. Download the latest version of <strong>AutoTrader_RSI_Engine_Pro.zip</strong> below.
+          You own this bot. Download the latest file(s) below.
         </p>
+
         <button class="deposit-btn" id="download-bot-btn" style="margin-top:0;">Download Bot</button>
         <button class="deposit-btn" id="bot-info-btn" style="background:#111;margin-left:8px;margin-top:0;">What does this bot do?</button>
+
+        <div id="bot-asset-list" class="asset-list" style="margin-top:14px;"></div>
+        <a id="bot-release-link" class="tiny-link" href="#" target="_blank" rel="noopener">Open the Release page</a>
       </div>
+
       <div id="no-tools" class="subtle" style="font-size:14px;">
         Once you purchase tools like the AutoTrader RSI Engine Pro, they’ll show here for download.
       </div>
@@ -264,8 +317,8 @@
       <h2>Select Deposit Method</h2>
       <p style="font-size:13px;color:#555;margin-top:4px;">Minimum first deposit: 50 USD.</p>
       <button class="modal-btn" onclick="showBank()">Bank Deposit</button>
-      <button class="modal-btn" style="margin-top:8px;background:#111;" onclick="showXRP()">Deposit with XRP</button>
-      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeDeposit()">Cancel</button>
+      <button class="modal-btn" style="background:#111;" onclick="showXRP()">Deposit with XRP</button>
+      <button class="modal-btn" style="background:#6b7280;" onclick="closeDeposit()">Cancel</button>
     </div>
   </div>
 
@@ -280,7 +333,7 @@
 
       <input id="bankAmount" type="number" placeholder="Amount in USD" />
       <button class="modal-btn" onclick="submitDeposit('bank')">I've Deposited</button>
-      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeBank()">Cancel</button>
+      <button class="modal-btn" style="background:#6b7280;" onclick="closeBank()">Cancel</button>
     </div>
   </div>
 
@@ -296,7 +349,7 @@
 
       <input id="xrpAmount" type="number" placeholder="Amount in USD" />
       <button class="modal-btn" onclick="submitDeposit('xrp')">I've Sent the XRP</button>
-      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeXRP()">Cancel</button>
+      <button class="modal-btn" style="background:#6b7280;" onclick="closeXRP()">Cancel</button>
     </div>
   </div>
 
@@ -306,7 +359,7 @@
       <h2>Payout Request</h2>
       <input id="payoutAmount" type="number" placeholder="Amount in USD" />
       <button class="modal-btn" onclick="submitPayout()">Submit Request</button>
-      <button class="modal-btn" style="margin-top:8px;background:#333;" onclick="closePayout()">Cancel</button>
+      <button class="modal-btn" style="background:#333;" onclick="closePayout()">Cancel</button>
     </div>
   </div>
 
@@ -314,7 +367,7 @@
   <div id="botInfoModal" class="modal-bg">
     <div class="modal-content">
       <h2>About AutoTrader RSI Engine Pro</h2>
-      <p style="font-size:14px;color:#444;">
+      <p style="font-size:14px;color:#444; text-align:left;">
         This MT5 bot automates trading based on RSI levels. It can:
         <br><br>
         • Monitor RSI on your chosen symbol & timeframe<br>
@@ -323,24 +376,23 @@
         • Close opposite positions to keep the logic clean<br><br>
         Always test on demo before going live and use it as a tool inside a risk-managed plan.
       </p>
-      <button class="modal-btn" style="margin-top:12px;background:#333;" onclick="closeBotInfoModal()">Close</button>
+      <button class="modal-btn" style="background:#333;" onclick="closeBotInfoModal()">Close</button>
     </div>
   </div>
 
   <!-- ========================= BOT DOWNLOAD MODAL ========================= -->
   <div id="botDownloadModal" class="modal-bg">
     <div class="modal-content">
-      <h2>Your bot download is ready</h2>
-      <p style="font-size:14px;color:#444;">
-        We’ve started the download of <strong>AutoTrader_RSI_Engine_Pro.zip</strong>.<br>
-        If it didn’t start automatically, click the button below.
+      <h2>Your bot is ready ✅</h2>
+      <p style="font-size:14px;color:#444; text-align:left;">
+        Click the button below to download your latest bot file from GitHub Releases.
+        (This avoids popup-blocking issues.)
       </p>
-      <button class="modal-btn" id="botDownloadNowBtn">Download Again</button>
-      <button class="modal-btn" style="margin-top:8px;background:#333;" onclick="closeBotDownloadModal()">Close</button>
+      <button class="modal-btn" id="botDownloadNowBtn">Download Now</button>
+      <button class="modal-btn" style="background:#333;" onclick="closeBotDownloadModal()">Close</button>
     </div>
   </div>
 
-  <!-- ========================= JS ========================= -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const supabaseClient = supabase.createClient(
@@ -349,15 +401,28 @@
       { auth: { persistSession: true, autoRefreshToken: true } }
     );
 
+    const ADMIN_EMAILS = ["iedereesfrancis@gmail.com"];
+
+    // ✅ GitHub Release (tag page you gave)
+    const GITHUB_OWNER = "iederees-create";
+    const GITHUB_REPO  = "deriv.com";
+    const BOT_RELEASE_TAG = "v2.31"; // change this when you publish a new version
+
+    const BOT_RELEASE_PAGE = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/releases/tag/${BOT_RELEASE_TAG}`;
+    const BOT_RELEASE_API  = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/tags/${BOT_RELEASE_TAG}`;
+
     let currentUser = null;
+
     let displayCurrency = "USD";
     let symbol = "$";
     let fxRate = 1;
 
-    // 🔗 Replace this with your real GitHub raw URL once the zip is uploaded
-    const BOT_DOWNLOAD_URL = "https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/raw/main/AutoTrader_RSI_Engine_Pro.zip";
+    const PRICES_USD = { weekly: 50, signals: 15, monthly: 50, bot_rsi: 40 };
 
-    // ---------- GEO PRICING ----------
+    // Bot assets loaded from GitHub API (no guessing filenames)
+    let botAssets = [];
+    let botPrimaryUrl = BOT_RELEASE_PAGE;
+
     function detectGeoPricing() {
       try {
         const lang = navigator.language || "";
@@ -374,6 +439,74 @@
       return symbol + (usd * fxRate).toFixed(2);
     }
 
+    function startDownload(url){
+      // must be called from a user click to avoid popup blockers
+      window.open(url, "_blank", "noopener");
+    }
+
+    async function fetchBotReleaseAssets(){
+      try{
+        const res = await fetch(BOT_RELEASE_API, {
+          headers: { "Accept":"application/vnd.github+json" }
+        });
+        if (!res.ok) throw new Error("GitHub API error " + res.status);
+
+        const json = await res.json();
+        botAssets = (json.assets || []).map(a => ({
+          name: a.name,
+          url: a.browser_download_url,
+          size: a.size
+        }));
+
+        const zip = botAssets.find(a => a.name.toLowerCase().endsWith(".zip"));
+        botPrimaryUrl = (zip || botAssets[0])?.url || BOT_RELEASE_PAGE;
+      } catch (e){
+        console.warn("Could not load GitHub release assets, using release page fallback.", e);
+        botAssets = [];
+        botPrimaryUrl = BOT_RELEASE_PAGE;
+      }
+
+      renderBotAssetsUI();
+    }
+
+    function renderBotAssetsUI(){
+      const list = document.getElementById("bot-asset-list");
+      const rel  = document.getElementById("bot-release-link");
+      if (rel) rel.href = BOT_RELEASE_PAGE;
+
+      if (!list) return;
+      list.innerHTML = "";
+
+      if (!botAssets.length){
+        const div = document.createElement("div");
+        div.className = "asset-item";
+        div.innerHTML = `
+          <div class="asset-name">No asset list found via API. Use the Release page.</div>
+          <button class="asset-dl" type="button">Open</button>
+        `;
+        div.querySelector("button").addEventListener("click", () => startDownload(BOT_RELEASE_PAGE));
+        list.appendChild(div);
+        return;
+      }
+
+      botAssets.forEach(a => {
+        const row = document.createElement("div");
+        row.className = "asset-item";
+        row.innerHTML = `
+          <div class="asset-name" title="${a.name}">${a.name}</div>
+          <button class="asset-dl" type="button">Download</button>
+        `;
+        row.querySelector("button").addEventListener("click", () => startDownload(a.url));
+        list.appendChild(row);
+      });
+
+      // Hook main buttons to primary url
+      const downloadBtn = document.getElementById("download-bot-btn");
+      const dlNowBtn = document.getElementById("botDownloadNowBtn");
+      if (downloadBtn) downloadBtn.onclick = () => startDownload(botPrimaryUrl);
+      if (dlNowBtn) dlNowBtn.onclick = () => startDownload(botPrimaryUrl);
+    }
+
     async function loadUser() {
       detectGeoPricing();
 
@@ -382,8 +515,10 @@
 
       currentUser = session.user;
 
-      if (currentUser.email === "iedereesfrancis@gmail.com")
-        document.getElementById("admin-btn").style.display = "inline-block";
+      if (ADMIN_EMAILS.includes(currentUser.email)) {
+        const adminBtn = document.getElementById("admin-btn");
+        if (adminBtn) adminBtn.style.display = "inline-block";
+      }
 
       document.getElementById("welcome-line").innerText = "Signed in as " + currentUser.email;
 
@@ -391,7 +526,9 @@
       await loadBalance();
       updatePrices();
       await markSubscriptions();
-      await checkBotOwnership();
+
+      await fetchBotReleaseAssets();   // ✅ load GitHub assets
+      await checkBotOwnership();       // ✅ show download section if owned
     }
 
     async function ensureBalanceRow() {
@@ -418,9 +555,6 @@
       document.getElementById("balanceSub").innerText = "Balance stored in USD: $" + usd.toFixed(2);
     }
 
-    // Base prices in USD (wallet-based)
-    const PRICES_USD = { weekly: 50, signals: 15, monthly: 50, bot_rsi: 40 };
-
     function updatePrices() {
       document.getElementById("price-weekly").innerText = "Weekly: " + formatAmount(PRICES_USD.weekly);
       document.getElementById("price-signals").innerText = "Signals: " + formatAmount(PRICES_USD.signals);
@@ -429,9 +563,28 @@
       document.getElementById("min-text").innerText = "Minimum starting deposit: " + formatAmount(50);
     }
 
+    async function hasBotPurchase() {
+      const { data } = await supabaseClient
+        .from("purchases")
+        .select("id")
+        .eq("user_id", currentUser.id)
+        .eq("product_key", "bot_rsi")
+        .limit(1);
+      return !!(data && data.length);
+    }
+
     async function buyProduct(key) {
       const cost = PRICES_USD[key];
       if (!cost) return alert("Unknown product selected.");
+
+      // Prevent double-buy for bot
+      if (key === "bot_rsi") {
+        const already = await hasBotPurchase();
+        if (already) {
+          openBotDownloadModal();
+          return;
+        }
+      }
 
       const { data } = await supabaseClient
         .from("user_balances")
@@ -440,7 +593,6 @@
         .single();
 
       const usd = Number(data?.balance || 0);
-
       if (usd < cost) {
         alert("Insufficient funds. Please deposit first.");
         openDeposit();
@@ -456,7 +608,6 @@
       else if (key === "bot_rsi") { productName = "AutoTrader RSI Engine Pro (MT5 Bot)"; isBot = true; }
       else productName = "Unknown Product";
 
-      // ✅ Record purchase + store buyer email for admin dashboard
       const { error: purchaseError } = await supabaseClient.from("purchases").insert({
         user_id: currentUser.id,
         purchaser_email: currentUser.email,
@@ -467,11 +618,10 @@
 
       if (purchaseError) {
         console.error(purchaseError);
-        alert("Could not complete purchase. Please try again.");
+        alert("Purchase failed: " + purchaseError.message);
         return;
       }
 
-      // Deduct from wallet
       const { error: balError } = await supabaseClient
         .from("user_balances")
         .update({ balance: usd - cost })
@@ -479,17 +629,16 @@
 
       if (balError) {
         console.error(balError);
-        alert("Error updating balance. Contact support.");
+        alert("Balance update failed: " + balError.message);
         return;
       }
 
       await loadBalance();
 
       if (isBot) {
-        alert("You have purchased " + productName + ". Your download is ready.");
+        alert("Purchase successful ✅ Your bot is now available in Downloads.");
         await checkBotOwnership();
-        openBotDownloadModal();
-        triggerBotDownload();
+        openBotDownloadModal(); // ✅ user clicks to download (no popup blocking)
       } else {
         const { error: subError } = await supabaseClient.from("subscriptions").upsert({
           user_id: currentUser.id,
@@ -500,7 +649,7 @@
 
         if (subError) {
           console.error(subError);
-          alert("Purchase recorded but could not activate subscription. Contact support.");
+          alert("Subscription activate failed: " + subError.message);
           return;
         }
 
@@ -515,9 +664,7 @@
         .select("product_key,status")
         .eq("user_id", currentUser.id);
 
-      const active = new Set((data || [])
-        .filter(r => r.status === "active")
-        .map(r => r.product_key));
+      const active = new Set((data || []).filter(r => r.status === "active").map(r => r.product_key));
 
       if (active.has("weekly")) {
         const btn = document.getElementById("btn-weekly");
@@ -537,38 +684,21 @@
     }
 
     async function checkBotOwnership() {
-      const { data } = await supabaseClient
-        .from("purchases")
-        .select("product_key")
-        .eq("user_id", currentUser.id)
-        .eq("product_key", "bot_rsi");
-
-      const hasBot = data && data.length > 0;
+      const hasBot = await hasBotPurchase();
 
       const botSection = document.getElementById("bot-download-section");
       const noTools = document.getElementById("no-tools");
+      const buyBtn = document.getElementById("btn-bot");
 
       if (hasBot) {
-        botSection.style.display = "block";
-        noTools.style.display = "none";
+        if (botSection) botSection.style.display = "block";
+        if (noTools) noTools.style.display = "none";
+        if (buyBtn) { buyBtn.innerText = "Owned"; buyBtn.disabled = true; buyBtn.classList.add("subscribed"); }
       } else {
-        botSection.style.display = "none";
-        noTools.style.display = "block";
+        if (botSection) botSection.style.display = "none";
+        if (noTools) noTools.style.display = "block";
+        if (buyBtn) { buyBtn.innerText = "Buy Trading Bot"; buyBtn.disabled = false; buyBtn.classList.remove("subscribed"); }
       }
-    }
-
-    function triggerBotDownload() {
-      if (!BOT_DOWNLOAD_URL || BOT_DOWNLOAD_URL.includes("YOUR_GITHUB_USERNAME")) {
-        alert("Download link not configured yet. Please contact support or update BOT_DOWNLOAD_URL.");
-        return;
-      }
-      const a = document.createElement("a");
-      a.href = BOT_DOWNLOAD_URL;
-      a.download = "";
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
     }
 
     function openBotDownloadModal() {
@@ -592,15 +722,11 @@
     function closeXRP() { document.getElementById("xrpModal").style.display = "none"; }
 
     async function submitDeposit(type) {
-      let amount =
-        type === "bank"
-          ? Number(document.getElementById("bankAmount").value)
-          : Number(document.getElementById("xrpAmount").value);
+      const amount = type === "bank"
+        ? Number(document.getElementById("bankAmount").value)
+        : Number(document.getElementById("xrpAmount").value);
 
-      if (!amount || amount <= 0) {
-        alert("Enter a valid USD amount.");
-        return;
-      }
+      if (!amount || amount <= 0) return alert("Enter a valid USD amount.");
 
       const { error } = await supabaseClient.from("deposits").insert({
         user_id: currentUser.id,
@@ -612,19 +738,14 @@
 
       if (error) {
         console.error(error);
-        alert("Could not submit deposit. Please try again.");
+        alert("Deposit failed: " + error.message);
         return;
       }
 
       alert("Deposit submitted. Admin will approve shortly.");
 
-      if (type === "bank") {
-        document.getElementById("bankAmount").value = "";
-        closeBank();
-      } else {
-        document.getElementById("xrpAmount").value = "";
-        closeXRP();
-      }
+      if (type === "bank") { document.getElementById("bankAmount").value = ""; closeBank(); }
+      else { document.getElementById("xrpAmount").value = ""; closeXRP(); }
     }
 
     function openPayout() { document.getElementById("payoutModal").style.display = "flex"; }
@@ -632,11 +753,7 @@
 
     async function submitPayout() {
       const amount = Number(document.getElementById("payoutAmount").value);
-
-      if (amount <= 0) {
-        alert("Enter a valid USD amount.");
-        return;
-      }
+      if (!amount || amount <= 0) return alert("Enter a valid USD amount.");
 
       const { data } = await supabaseClient
         .from("user_balances")
@@ -645,17 +762,19 @@
         .single();
 
       const balance = Number(data?.balance || 0);
+      if (amount > balance) return alert("You cannot withdraw more than your balance.");
 
-      if (amount > balance) {
-        alert("You cannot withdraw more than your balance.");
-        return;
-      }
-
-      await supabaseClient.from("payouts").insert({
+      const { error } = await supabaseClient.from("payouts").insert({
         user_id: currentUser.id,
         amount: amount,
         status: "pending"
       });
+
+      if (error) {
+        console.error(error);
+        alert("Payout request failed: " + error.message);
+        return;
+      }
 
       alert("Payout request submitted.");
       closePayout();
@@ -670,16 +789,11 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const downloadBtn = document.getElementById("download-bot-btn");
       const infoBtn = document.getElementById("bot-info-btn");
-      const dlAgainBtn = document.getElementById("botDownloadNowBtn");
-
-      if (downloadBtn) downloadBtn.addEventListener("click", triggerBotDownload);
       if (infoBtn) infoBtn.addEventListener("click", () => {
         const modal = document.getElementById("botInfoModal");
         if (modal) modal.style.display = "flex";
       });
-      if (dlAgainBtn) dlAgainBtn.addEventListener("click", triggerBotDownload);
     });
 
     loadUser();
