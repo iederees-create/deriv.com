@@ -3,563 +3,575 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deriv Admin Console</title>
+  <title>Member Dashboard | Deriv Syndicates</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #f3f4f6;
+    body { margin:0; font-family:'Inter',sans-serif; background:#f5f6f8; color:#1a1a1a; }
+    .header{
+      background:#fff; padding:16px 24px; box-shadow:0 2px 6px rgba(0,0,0,0.08);
+      display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10;
+    }
+    .logout-btn,.profile-btn,.admin-btn{
+      padding:8px 14px; border-radius:8px; background:#ff4459; color:#fff; font-weight:600;
+      cursor:pointer; border:none; margin-left:8px;
+    }
+    .profile-btn{ background:#333; }
+    .admin-btn{ background:#0b7bd3; }
+
+    .container{ max-width:1100px; margin:30px auto; padding:0 16px 40px; }
+    h1{ font-size:26px; margin-bottom:10px; font-weight:800; }
+    .subtle{ color:#555; margin-bottom:24px; }
+
+    .cashier-box{
+      background:#fff; padding:24px; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.07); margin-bottom:24px;
+    }
+    .balance{ font-size:32px; font-weight:900; margin:10px 0 2px; }
+    .balance-sub{ font-size:13px; color:#777; margin-bottom:10px; }
+
+    .deposit-btn{
+      padding:12px 18px; background:#ff4459; color:#fff; border-radius:8px;
+      font-weight:700; margin-top:8px; cursor:pointer; border:none;
     }
 
-    .header {
-      background: #ffffff;
-      padding: 16px 24px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    .product-grid{
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:24px; margin-top:20px;
+    }
+    .card{ background:#fff; padding:22px; border-radius:14px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
+    .card h2{ margin:0; font-size:20px; font-weight:800; }
+
+    .price-pill{
+      display:inline-block; margin-top:6px; font-size:13px; padding:4px 10px; border-radius:999px;
+      background:#eef2ff; color:#111827; font-weight:600;
     }
 
-    .btn {
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      border: none;
-      background: #111827;
-      color: #fff;
+    .buy-btn{
+      margin-top:12px; padding:12px 18px; background:#111; color:#fff;
+      border:none; border-radius:8px; font-weight:700; cursor:pointer; width:100%;
     }
+    .buy-btn.subscribed{ background:#059669; }
+    .buy-btn:disabled{ opacity:0.55; cursor:not-allowed; }
 
-    .logout-btn { background: #ef4444; }
-    .ghost-btn { background: #374151; }
-
-    .container {
-      max-width: 1100px;
-      margin: 30px auto;
-      padding: 0 16px 40px;
+    .modal-bg{
+      position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none;
+      justify-content:center; align-items:center; z-index:50;
     }
-
-    h1 {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 14px;
+    .modal-content{
+      background:#fff; padding:24px; border-radius:12px; width:320px; text-align:center;
     }
-
-    .card {
-      background: #fff;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      margin-bottom: 22px;
+    .modal-content input{
+      width:100%; padding:10px; margin:12px 0; border-radius:8px; border:1px solid #ccc; font-size:16px;
     }
-
-    .subtle { color:#6b7280; font-size: 14px; margin-top: 6px; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
+    .modal-btn{
+      padding:10px; width:100%; background:#ff4459; color:#fff; border:none; border-radius:8px;
+      font-weight:700; cursor:pointer;
     }
-
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-      font-size: 14px;
-      vertical-align: top;
-    }
-
-    th {
-      background: #f9fafb;
-      font-weight: 800;
-      font-size: 13px;
-      color:#111827;
-    }
-
-    .approve-btn {
-      padding: 6px 12px;
-      background: #10b981;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .pill {
-      display:inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      background: #eef2ff;
-      color:#111827;
-    }
-
-    .row {
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .search {
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .search input {
-      padding: 10px 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      min-width: 260px;
-      font-size: 14px;
-      outline: none;
-      background: #fff;
-    }
-
-    .toast {
-      display:none;
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #111827;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .err {
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #fee2e2;
-      color: #991b1b;
-      font-size: 13px;
-      font-weight: 700;
-      display:none;
-    }
-
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 12px; }
   </style>
 </head>
 
 <body>
 
-  <!-- ================= HEADER ================= -->
   <div class="header">
     <div>
-      <h2 style="margin:0;font-weight:900;">Deriv Admin Console</h2>
-      <div id="admin-email" style="font-size:13px;color:#666;"></div>
+      <div style="font-size:20px; font-weight:800;">Deriv Members Area</div>
+      <div id="welcome-line" style="font-size:13px;color:#666;"></div>
     </div>
-
     <div>
-      <button class="btn ghost-btn" onclick="goMembers()">Back to Members</button>
-      <button class="btn logout-btn" onclick="logout()">Log out</button>
+      <button class="profile-btn" onclick="goProfile()">Profile / Banking</button>
+      <button class="admin-btn" id="admin-btn" style="display:none;" onclick="goAdmin()">Admin</button>
+      <button class="logout-btn" onclick="logout()">Log out</button>
     </div>
   </div>
 
   <div class="container">
 
-    <!-- ================= RECENT PURCHASES ================= -->
-    <div class="card">
-      <div class="row">
-        <div>
-          <h1 style="margin:0;">Recent Purchases</h1>
-          <div class="subtle">Shows who bought what (from the <span class="mono">purchases</span> table).</div>
-        </div>
+    <div class="cashier-box">
+      <h1>Cashier</h1>
+      <p class="subtle">Your wallet for syndicates, signals & premium tools.</p>
 
-        <div class="search">
-          <input id="purchaseSearch" type="text" placeholder="Search email / product / key..." oninput="renderPurchases()">
-          <button class="btn" onclick="loadPurchases()">Refresh</button>
-        </div>
+      <div id="balance" class="balance">–</div>
+      <div id="balanceSub" class="balance-sub"></div>
+
+      <p>Add funds once (minimum 50 USD). Then join weekly / monthly syndicates, WhatsApp signals, and buy trading tools.</p>
+
+      <div style="margin-top:8px;">
+        <button class="deposit-btn" onclick="openDeposit()">Make a Deposit</button>
+        <button class="deposit-btn" style="background:#111;margin-left:8px;" onclick="openPayout()">Request Payout</button>
       </div>
 
-      <div id="purchaseToast" class="toast"></div>
-      <div id="purchaseErr" class="err"></div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Buyer</th>
-            <th>Product</th>
-            <th>Key</th>
-            <th>Amount</th>
-            <th>Created</th>
-          </tr>
-        </thead>
-        <tbody id="purchaseBody">
-          <tr><td colspan="6">Loading...</td></tr>
-        </tbody>
-      </table>
+      <div class="subtle" id="min-text" style="font-size:13px;margin-top:6px;"></div>
     </div>
 
-    <!-- ================= PENDING DEPOSITS ================= -->
-    <div class="card">
-      <h1>Pending Deposits</h1>
-      <p class="subtle">Approve deposits to add balance to the user's Wallet.</p>
+    <h1>Investment Options</h1>
+    <p class="subtle">Build your own mix. As long as you meet the minimum wallet deposit, you can subscribe to all three.</p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>User ID</th>
-            <th>Method</th>
-            <th>Amount (USD)</th>
-            <th>Status</th>
-            <th>Created</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="depositBody">
-          <tr><td colspan="7">Loading...</td></tr>
-        </tbody>
-      </table>
+    <div class="product-grid">
+      <div class="card">
+        <h2>Weekly Trade Syndicate</h2>
+        <p>Weekly pooled trades & weekly updates.</p>
+        <div id="price-weekly" class="price-pill"></div>
+        <button id="btn-weekly" class="buy-btn" onclick="buyProduct('weekly')">Join Weekly Syndicate</button>
+      </div>
+
+      <div class="card">
+        <h2>WhatsApp Signals</h2>
+        <p>Ask for signals on any chart anytime.</p>
+        <div id="price-signals" class="price-pill"></div>
+        <button id="btn-signals" class="buy-btn" onclick="buyProduct('signals')">Join Signals Group</button>
+      </div>
+
+      <div class="card">
+        <h2>Monthly Syndicate</h2>
+        <p>Stable monthly compounding & reduced volatility.</p>
+        <div id="price-monthly" class="price-pill"></div>
+        <button id="btn-monthly" class="buy-btn" onclick="buyProduct('monthly')">Join Monthly Syndicate</button>
+      </div>
+
+      <div class="card">
+        <h2>AutoTrader RSI Engine Pro (MT5 Bot)</h2>
+        <p>
+          Fully automated MT5 expert advisor using RSI-based logic, automatic stop loss,
+          and emotion-free execution. Downloadable bot file for MT5.
+        </p>
+        <div id="price-bot" class="price-pill"></div>
+        <button id="btn-bot" class="buy-btn" onclick="buyProduct('bot_rsi')">Buy Trading Bot</button>
+      </div>
     </div>
 
-    <!-- ================= PENDING PAYOUTS ================= -->
-    <div class="card">
-      <h1>Pending Payouts</h1>
-      <p class="subtle">Approve payouts to subtract from the user's Wallet.</p>
+    <h1 style="margin-top:32px;">Your Tools & Downloads</h1>
+    <p class="subtle">Any bots or tools you purchase will appear here for download.</p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>User ID</th>
-            <th>Amount (USD)</th>
-            <th>Status</th>
-            <th>Created</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="payoutBody">
-          <tr><td colspan="6">Loading...</td></tr>
-        </tbody>
-      </table>
+    <div class="cashier-box">
+      <div id="bot-download-section" style="display:none;">
+        <h2 style="font-size:20px;margin:0 0 6px;">AutoTrader RSI Engine Pro (MT5 Bot)</h2>
+        <p class="subtle" style="margin-bottom:12px;">
+          You own this bot. Download the latest version of <strong>AutoTrader_RSI_Engine_Pro.zip</strong> below.
+        </p>
+        <button class="deposit-btn" id="download-bot-btn" style="margin-top:0;">Download Bot</button>
+        <button class="deposit-btn" id="bot-info-btn" style="background:#111;margin-left:8px;margin-top:0;">What does this bot do?</button>
+      </div>
+      <div id="no-tools" class="subtle" style="font-size:14px;">
+        Once you purchase tools like the AutoTrader RSI Engine Pro, they’ll show here for download.
+      </div>
     </div>
 
   </div>
 
+  <div id="depositModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Select Deposit Method</h2>
+      <p style="font-size:13px;color:#555;margin-top:4px;">Minimum first deposit: 50 USD.</p>
+      <button class="modal-btn" onclick="showBank()">Bank Deposit</button>
+      <button class="modal-btn" style="margin-top:8px;background:#111;" onclick="showXRP()">Deposit with XRP</button>
+      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeDeposit()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="bankModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Bank Deposit</h2>
+      <p><strong>Bank:</strong> Nedbank</p>
+      <p><strong>Account Number:</strong> 1236268857</p>
+      <p><strong>Reference:</strong> Your Name + Surname</p>
+      <input id="bankAmount" type="number" placeholder="Amount in USD" />
+      <button class="modal-btn" onclick="submitDeposit('bank')">I've Deposited</button>
+      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeBank()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="xrpModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Deposit with XRP</h2>
+      <img src="images/xrp_qr.png" style="width:180px; margin:10px auto; display:block;">
+      <p><strong>Address:</strong><br>rsRy14FvipgqudiGmptJBhr1RtpsgfzKMM</p>
+      <p><strong>Tag:</strong> 1574868947</p>
+      <input id="xrpAmount" type="number" placeholder="Amount in USD" />
+      <button class="modal-btn" onclick="submitDeposit('xrp')">I've Sent the XRP</button>
+      <button class="modal-btn" style="margin-top:8px;background:#6b7280;" onclick="closeXRP()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="payoutModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Payout Request</h2>
+      <input id="payoutAmount" type="number" placeholder="Amount in USD" />
+      <button class="modal-btn" onclick="submitPayout()">Submit Request</button>
+      <button class="modal-btn" style="margin-top:8px;background:#333;" onclick="closePayout()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="botInfoModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>About AutoTrader RSI Engine Pro</h2>
+      <p style="font-size:14px;color:#444;">
+        This MT5 bot automates trading based on RSI levels. It can:
+        <br><br>
+        • Monitor RSI on your chosen symbol & timeframe<br>
+        • Open buys when RSI is oversold and sells when RSI is overbought<br>
+        • Auto-apply stop loss using your configured points<br>
+        • Close opposite positions to keep the logic clean<br><br>
+        Always test on demo before going live and use it as a tool inside a risk-managed plan.
+      </p>
+      <button class="modal-btn" style="margin-top:12px;background:#333;" onclick="closeBotInfoModal()">Close</button>
+    </div>
+  </div>
+
+  <div id="botDownloadModal" class="modal-bg">
+    <div class="modal-content">
+      <h2>Your bot download is ready</h2>
+      <p style="font-size:14px;color:#444;">
+        We’ve started the download of <strong>AutoTrader_RSI_Engine_Pro.zip</strong>.<br>
+        If it didn’t start automatically, click the button below.
+      </p>
+      <button class="modal-btn" id="botDownloadNowBtn">Download Again</button>
+      <button class="modal-btn" style="margin-top:8px;background:#333;" onclick="closeBotDownloadModal()">Close</button>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const ADMIN_EMAIL = "iedereesfrancis@gmail.com";
-
-    /* ================= SUPABASE ================= */
     const supabaseClient = supabase.createClient(
       "https://whnnyuozicuphrpgomno.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indobm55dW96aWN1cGhycGdvbW5vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM1Mjk3MDAsImV4cCI6MjA3OTEwNTcwMH0.XTS5-ELx7sUmZmkyoXG1B1zOqVMJQsO5Kvk-brBW8EQ",
+      { auth: { persistSession:true, autoRefreshToken:true } }
     );
 
     let currentUser = null;
-    let purchasesCache = [];
+    let displayCurrency = "USD";
+    let symbol = "$";
+    let fxRate = 1;
 
-    function setErr(msg) {
-      const el = document.getElementById("purchaseErr");
-      if (!el) return;
-      if (!msg) { el.style.display = "none"; el.textContent = ""; return; }
-      el.style.display = "block";
-      el.textContent = msg;
-    }
+    // ✅ Put your REAL asset link here (best), example pattern below:
+    // https://github.com/iederees-create/deriv.com/releases/download/v2.31/AutoTrader_RSI_Engine_Pro.zip
+    const BOT_DOWNLOAD_URL = "https://github.com/iederees-create/deriv.com/releases/download/v2.31/AutoTrader_RSI_Engine_Pro.zip";
 
-    function toast(msg) {
-      const el = document.getElementById("purchaseToast");
-      if (!el) return;
-      el.textContent = msg;
-      el.style.display = "block";
-      setTimeout(() => { el.style.display = "none"; }, 3500);
-    }
-
-    function fmtDate(iso) {
-      if (!iso) return "";
+    function detectGeoPricing() {
       try {
-        const d = new Date(iso);
-        return d.toLocaleString();
-      } catch (e) {
-        return iso;
-      }
+        const lang = navigator.language || "";
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+        if (lang.includes("ZA") || tz.toLowerCase().includes("johannesburg")) {
+          displayCurrency = "ZAR";
+          symbol = "R";
+          fxRate = 18.5;
+        }
+      } catch (e) {}
     }
 
-    /* ============================================================
-       LOAD ADMIN + VALIDATE ACCESS
-    ============================================================ */
-    async function loadAdmin() {
-      const { data: { session }} = await supabaseClient.auth.getSession();
-      if (!session) return (window.location.href = "index.html");
+    function formatAmount(usd) {
+      return symbol + (usd * fxRate).toFixed(2);
+    }
+
+    const PRICES_USD = { weekly:50, signals:15, monthly:50, bot_rsi:40 };
+
+    async function loadUser() {
+      detectGeoPricing();
+
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) return window.location.href = "index.html";
 
       currentUser = session.user;
 
-      if (currentUser.email !== ADMIN_EMAIL) {
-        alert("Access Denied: Admin Only");
-        window.location.href = "members.html";
-        return;
+      if (currentUser.email === "iedereesfrancis@gmail.com") {
+        const adminBtn = document.getElementById("admin-btn");
+        if (adminBtn) adminBtn.style.display = "inline-block";
       }
 
-      document.getElementById("admin-email").innerText =
-        "Signed in as admin: " + currentUser.email;
+      document.getElementById("welcome-line").innerText = "Signed in as " + currentUser.email;
 
-      // Load everything
-      await loadPurchases();
-      await loadDeposits();
-      await loadPayouts();
-
-      // Live updates for purchases
-      supabaseClient
-        .channel("purchases-live")
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "purchases" }, (payload) => {
-          const p = payload.new || {};
-          toast(`New purchase: ${(p.purchaser_email || p.user_id || "Someone")} bought ${(p.product_name || p.product_key || "a product")}`);
-          loadPurchases();
-        })
-        .subscribe();
+      await ensureBalanceRow();
+      await loadBalance();
+      updatePrices();
+      await markSubscriptions();
+      await checkBotOwnership();
     }
 
-    /* ============================================================
-       LOAD PURCHASES (RECENT)
-    ============================================================ */
-    async function loadPurchases() {
-      setErr("");
-
-      // Try selecting with purchaser_email first (best UX)
-      let res = await supabaseClient
-        .from("purchases")
-        .select("id,user_id,purchaser_email,product_key,product_name,amount,created_at")
-        .order("created_at", { ascending: false })
-        .limit(200);
-
-      // If that fails (e.g., purchaser_email column doesn’t exist), fallback
-      if (res.error && String(res.error.message || "").toLowerCase().includes("purchaser_email")) {
-        res = await supabaseClient
-          .from("purchases")
-          .select("id,user_id,product_key,product_name,amount,created_at")
-          .order("created_at", { ascending: false })
-          .limit(200);
-      }
-
-      const body = document.getElementById("purchaseBody");
-      if (!body) return;
-
-      if (res.error) {
-        console.error("Purchases load error:", res.error);
-        body.innerHTML = `<tr><td colspan="6">Could not load purchases.</td></tr>`;
-        setErr("Purchases not readable. If you see 'permission denied' in console, your RLS policy is blocking admin SELECT on purchases.");
-        return;
-      }
-
-      purchasesCache = res.data || [];
-      renderPurchases();
-    }
-
-    function renderPurchases() {
-      const body = document.getElementById("purchaseBody");
-      const q = (document.getElementById("purchaseSearch")?.value || "").trim().toLowerCase();
-
-      if (!body) return;
-
-      let rows = purchasesCache;
-
-      if (q) {
-        rows = rows.filter(r => {
-          const buyer = (r.purchaser_email || r.user_id || "").toLowerCase();
-          const pname = (r.product_name || "").toLowerCase();
-          const pkey  = (r.product_key || "").toLowerCase();
-          return buyer.includes(q) || pname.includes(q) || pkey.includes(q);
-        });
-      }
-
-      if (!rows.length) {
-        body.innerHTML = `<tr><td colspan="6">No purchases found.</td></tr>`;
-        return;
-      }
-
-      body.innerHTML = "";
-      rows.forEach(r => {
-        const buyer = r.purchaser_email || r.user_id || "";
-        const amount = (r.amount !== undefined && r.amount !== null) ? Number(r.amount).toFixed(2) : "";
-        body.innerHTML += `
-          <tr>
-            <td>${r.id ?? ""}</td>
-            <td><span class="pill">${buyer}</span></td>
-            <td>${r.product_name || ""}</td>
-            <td class="mono">${r.product_key || ""}</td>
-            <td>$${amount}</td>
-            <td>${fmtDate(r.created_at)}</td>
-          </tr>
-        `;
-      });
-    }
-
-    /* ============================================================
-       LOAD PENDING DEPOSITS
-    ============================================================ */
-    async function loadDeposits() {
-      const { data, error } = await supabaseClient
-        .from("deposits")
-        .select("*")
-        .eq("status", "pending")
-        .order("id", { ascending: true });
-
-      const body = document.getElementById("depositBody");
-      body.innerHTML = "";
-
-      if (error) {
-        body.innerHTML = `<tr><td colspan="7">Error loading deposits.</td></tr>`;
-        return;
-      }
-
-      if (!data.length) {
-        body.innerHTML = `<tr><td colspan="7">No pending deposits.</td></tr>`;
-        return;
-      }
-
-      data.forEach(row => {
-        body.innerHTML += `
-          <tr>
-            <td>${row.id}</td>
-            <td class="mono">${row.user_id}</td>
-            <td>${row.method}</td>
-            <td>$${Number(row.amount).toFixed(2)}</td>
-            <td>${row.status}</td>
-            <td>${row.created_at || ""}</td>
-            <td><button class="approve-btn" onclick="approveDeposit(${row.id}, '${row.user_id}', ${row.amount})">Approve</button></td>
-          </tr>
-        `;
-      });
-    }
-
-    /* ============================================================
-       APPROVE DEPOSIT (AUTO-CREATE BALANCE ROW)
-    ============================================================ */
-    async function approveDeposit(depositId, user_id, amount) {
-      let { data: balanceRow } = await supabaseClient
+    async function ensureBalanceRow() {
+      const { data } = await supabaseClient
         .from("user_balances")
         .select("*")
-        .eq("id", user_id)
+        .eq("id", currentUser.id)
         .maybeSingle();
 
-      if (!balanceRow) {
-        await supabaseClient.from("user_balances").insert({ id: user_id, balance: 0 });
-        balanceRow = { balance: 0 };
+      if (!data) {
+        await supabaseClient.from("user_balances").insert({ id: currentUser.id, balance: 0 });
       }
-
-      const newBalance = Number(balanceRow.balance || 0) + Number(amount);
-
-      const { error: balanceError } = await supabaseClient
-        .from("user_balances")
-        .update({ balance: newBalance })
-        .eq("id", user_id);
-
-      if (balanceError) {
-        alert("Error updating balance: " + balanceError.message);
-        return;
-      }
-
-      await supabaseClient
-        .from("deposits")
-        .update({ status: "approved" })
-        .eq("id", depositId);
-
-      alert("Deposit approved and balance updated!");
-      loadDeposits();
     }
 
-    /* ============================================================
-       LOAD PENDING PAYOUTS
-    ============================================================ */
-    async function loadPayouts() {
-      const { data, error } = await supabaseClient
-        .from("payouts")
-        .select("*")
-        .eq("status", "pending")
-        .order("id", { ascending: true });
-
-      const body = document.getElementById("payoutBody");
-      body.innerHTML = "";
-
-      if (error) {
-        body.innerHTML = `<tr><td colspan="6">Error loading payouts.</td></tr>`;
-        return;
-      }
-
-      if (!data.length) {
-        body.innerHTML = `<tr><td colspan="6">No pending payouts.</td></tr>`;
-        return;
-      }
-
-      data.forEach(row => {
-        body.innerHTML += `
-          <tr>
-            <td>${row.id}</td>
-            <td class="mono">${row.user_id}</td>
-            <td>$${Number(row.amount).toFixed(2)}</td>
-            <td>${row.status}</td>
-            <td>${row.created_at || ""}</td>
-            <td><button class="approve-btn" onclick="approvePayout(${row.id}, '${row.user_id}', ${row.amount})">Mark Paid</button></td>
-          </tr>
-        `;
-      });
-    }
-
-    /* ============================================================
-       APPROVE PAYOUT (subtract balance)
-    ============================================================ */
-    async function approvePayout(payoutId, user_id, amount) {
-      const { data: bal, error } = await supabaseClient
+    async function loadBalance() {
+      const { data } = await supabaseClient
         .from("user_balances")
-        .select("*")
-        .eq("id", user_id)
+        .select("balance")
+        .eq("id", currentUser.id)
         .single();
 
-      if (error) {
-        alert("Could not load balance: " + error.message);
-        return;
-      }
-
-      const current = Number(bal.balance || 0);
-
-      if (amount > current) {
-        alert("Insufficient balance to approve payout!");
-        return;
-      }
-
-      const newBalance = current - Number(amount);
-
-      await supabaseClient
-        .from("user_balances")
-        .update({ balance: newBalance })
-        .eq("id", user_id);
-
-      await supabaseClient
-        .from("payouts")
-        .update({ status: "paid" })
-        .eq("id", payoutId);
-
-      alert("Payout approved!");
-      loadPayouts();
+      const usd = Number(data?.balance || 0);
+      document.getElementById("balance").innerText = formatAmount(usd);
+      document.getElementById("balanceSub").innerText = "Balance stored in USD: $" + usd.toFixed(2);
     }
 
-    /* ============================================================
-       NAVIGATION + LOGOUT
-    ============================================================ */
-    function goMembers() { window.location.href = "members.html"; }
+    function updatePrices() {
+      document.getElementById("price-weekly").innerText = "Weekly: " + formatAmount(PRICES_USD.weekly);
+      document.getElementById("price-signals").innerText = "Signals: " + formatAmount(PRICES_USD.signals);
+      document.getElementById("price-monthly").innerText = "Monthly: " + formatAmount(PRICES_USD.monthly);
+      document.getElementById("price-bot").innerText = "One-time: " + formatAmount(PRICES_USD.bot_rsi);
+      document.getElementById("min-text").innerText = "Minimum starting deposit: " + formatAmount(50);
+    }
+
+    async function buyProduct(key) {
+      const cost = PRICES_USD[key];
+      if (!cost) return alert("Unknown product selected.");
+
+      // Prevent double-buy for bot
+      if (key === "bot_rsi") {
+        const already = await hasBotPurchase();
+        if (already) return alert("You already own this bot. Use the download section below.");
+      }
+
+      const { data } = await supabaseClient
+        .from("user_balances")
+        .select("balance")
+        .eq("id", currentUser.id)
+        .single();
+
+      const usd = Number(data?.balance || 0);
+      if (usd < cost) {
+        alert("Insufficient funds. Please deposit first.");
+        openDeposit();
+        return;
+      }
+
+      let productName = "";
+      let isBot = false;
+
+      if (key === "weekly") productName = "Weekly Trade Syndicate";
+      else if (key === "signals") productName = "WhatsApp Signals Group";
+      else if (key === "monthly") productName = "Monthly Syndicate";
+      else if (key === "bot_rsi") { productName = "AutoTrader RSI Engine Pro (MT5 Bot)"; isBot = true; }
+      else productName = "Unknown Product";
+
+      // ✅ Record purchase (includes purchaser_email so admin can see who bought)
+      const { error: purchaseError } = await supabaseClient.from("purchases").insert({
+        user_id: currentUser.id,
+        purchaser_email: currentUser.email,
+        product_key: key,
+        product_name: productName,
+        amount: cost
+      });
+
+      if (purchaseError) {
+        console.error(purchaseError);
+        alert("Purchase failed: " + purchaseError.message);
+        return;
+      }
+
+      // Deduct from wallet
+      const { error: balError } = await supabaseClient
+        .from("user_balances")
+        .update({ balance: usd - cost })
+        .eq("id", currentUser.id);
+
+      if (balError) {
+        console.error(balError);
+        alert("Balance update failed: " + balError.message);
+        return;
+      }
+
+      await loadBalance();
+
+      if (isBot) {
+        alert("You purchased " + productName + ". Your download is ready.");
+        await checkBotOwnership();
+        openBotDownloadModal();
+        triggerBotDownload();
+      } else {
+        const { error: subError } = await supabaseClient.from("subscriptions").upsert({
+          user_id: currentUser.id,
+          product_key: key,
+          product_name: productName,
+          status: "active"
+        }, { onConflict: "user_id,product_key" });
+
+        if (subError) {
+          console.error(subError);
+          alert("Subscription activate failed: " + subError.message);
+          return;
+        }
+
+        alert("You are now subscribed to " + productName);
+        await markSubscriptions();
+      }
+    }
+
+    async function markSubscriptions() {
+      const { data } = await supabaseClient
+        .from("subscriptions")
+        .select("product_key,status")
+        .eq("user_id", currentUser.id);
+
+      const active = new Set((data || []).filter(r => r.status === "active").map(r => r.product_key));
+
+      if (active.has("weekly")) {
+        const btn = document.getElementById("btn-weekly");
+        btn.innerText = "Active Subscription";
+        btn.classList.add("subscribed");
+      }
+      if (active.has("signals")) {
+        const btn = document.getElementById("btn-signals");
+        btn.innerText = "Active Subscription";
+        btn.classList.add("subscribed");
+      }
+      if (active.has("monthly")) {
+        const btn = document.getElementById("btn-monthly");
+        btn.innerText = "Active Subscription";
+        btn.classList.add("subscribed");
+      }
+    }
+
+    async function hasBotPurchase() {
+      const { data } = await supabaseClient
+        .from("purchases")
+        .select("id")
+        .eq("user_id", currentUser.id)
+        .eq("product_key", "bot_rsi")
+        .limit(1);
+      return !!(data && data.length);
+    }
+
+    async function checkBotOwnership() {
+      const hasBot = await hasBotPurchase();
+
+      const botSection = document.getElementById("bot-download-section");
+      const noTools = document.getElementById("no-tools");
+      const buyBtn = document.getElementById("btn-bot");
+
+      if (hasBot) {
+        if (botSection) botSection.style.display = "block";
+        if (noTools) noTools.style.display = "none";
+        if (buyBtn) { buyBtn.innerText = "Owned"; buyBtn.disabled = true; buyBtn.classList.add("subscribed"); }
+      } else {
+        if (botSection) botSection.style.display = "none";
+        if (noTools) noTools.style.display = "block";
+        if (buyBtn) { buyBtn.innerText = "Buy Trading Bot"; buyBtn.disabled = false; buyBtn.classList.remove("subscribed"); }
+      }
+    }
+
+    function triggerBotDownload() {
+      if (!BOT_DOWNLOAD_URL || BOT_DOWNLOAD_URL.includes("/tag/")) {
+        alert("BOT_DOWNLOAD_URL must be a direct asset link (releases/download/...).");
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = BOT_DOWNLOAD_URL;
+      a.rel = "noopener";
+      a.target = "_blank";
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function openBotDownloadModal() {
+      const modal = document.getElementById("botDownloadModal");
+      if (modal) modal.style.display = "flex";
+    }
+    function closeBotDownloadModal() {
+      const modal = document.getElementById("botDownloadModal");
+      if (modal) modal.style.display = "none";
+    }
+    function closeBotInfoModal() {
+      const modal = document.getElementById("botInfoModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function openDeposit(){ document.getElementById("depositModal").style.display = "flex"; }
+    function closeDeposit(){ document.getElementById("depositModal").style.display = "none"; }
+    function showBank(){ closeDeposit(); document.getElementById("bankModal").style.display = "flex"; }
+    function closeBank(){ document.getElementById("bankModal").style.display = "none"; }
+    function showXRP(){ closeDeposit(); document.getElementById("xrpModal").style.display = "flex"; }
+    function closeXRP(){ document.getElementById("xrpModal").style.display = "none"; }
+
+    async function submitDeposit(type) {
+      const amount = type === "bank"
+        ? Number(document.getElementById("bankAmount").value)
+        : Number(document.getElementById("xrpAmount").value);
+
+      if (!amount || amount <= 0) return alert("Enter a valid USD amount.");
+
+      const { error } = await supabaseClient.from("deposits").insert({
+        user_id: currentUser.id,
+        method: type,
+        amount: amount,
+        currency: "USD",
+        status: "pending"
+      });
+
+      if (error) {
+        console.error(error);
+        alert("Deposit failed: " + error.message);
+        return;
+      }
+
+      alert("Deposit submitted. Admin will approve shortly.");
+
+      if (type === "bank") { document.getElementById("bankAmount").value = ""; closeBank(); }
+      else { document.getElementById("xrpAmount").value = ""; closeXRP(); }
+    }
+
+    function openPayout(){ document.getElementById("payoutModal").style.display = "flex"; }
+    function closePayout(){ document.getElementById("payoutModal").style.display = "none"; }
+
+    async function submitPayout() {
+      const amount = Number(document.getElementById("payoutAmount").value);
+      if (!amount || amount <= 0) return alert("Enter a valid USD amount.");
+
+      const { data } = await supabaseClient
+        .from("user_balances")
+        .select("balance")
+        .eq("id", currentUser.id)
+        .single();
+
+      const balance = Number(data?.balance || 0);
+      if (amount > balance) return alert("You cannot withdraw more than your balance.");
+
+      const { error } = await supabaseClient.from("payouts").insert({
+        user_id: currentUser.id,
+        amount: amount,
+        status: "pending"
+      });
+
+      if (error) {
+        console.error(error);
+        alert("Payout request failed: " + error.message);
+        return;
+      }
+
+      alert("Payout request submitted.");
+      closePayout();
+    }
+
+    function goProfile(){ window.location.href = "profile.html"; }
+    function goAdmin(){ window.location.href = "admin.html"; }
 
     async function logout() {
       await supabaseClient.auth.signOut();
       window.location.href = "index.html";
     }
 
-    loadAdmin();
+    document.addEventListener("DOMContentLoaded", () => {
+      const downloadBtn = document.getElementById("download-bot-btn");
+      const infoBtn = document.getElementById("bot-info-btn");
+      const dlAgainBtn = document.getElementById("botDownloadNowBtn");
+
+      if (downloadBtn) downloadBtn.addEventListener("click", triggerBotDownload);
+      if (infoBtn) infoBtn.addEventListener("click", () => {
+        const modal = document.getElementById("botInfoModal");
+        if (modal) modal.style.display = "flex";
+      });
+      if (dlAgainBtn) dlAgainBtn.addEventListener("click", triggerBotDownload);
+    });
+
+    loadUser();
   </script>
 
 </body>
